@@ -364,9 +364,9 @@ LOCAL nI := 0
 
 	oPrint:Say(nRowSay+0150,1060,"Agência\Codigo do Beneficiário",oFont8)
 //	cString := Alltrim(aDadosBanco[3]+iif(!Empty(aDadosBanco[10]),"-"+aDadosBanco[10],"")+"/"+iif(Empty(aDadosBanco[11]),aDadosBanco[4]+"-"+aDadosBanco[5], aDadosBanco[11]))
-//	oPrint:Say(nRowSay+0200,1060,cString,oFont11c)
 	cString := aDadosBanco[3] + "." + aDadosBanco[12] + "." + aDadosBanco[11]
-	oPrint:SayAlign(nRowSay+0200,1060, cString,oFont11c, 500, , , 1, 1)
+//	oPrint:SayAlign(nRowSay+0200,1060, cString,oFont11c, 500, , , 1, 1)
+	oPrint:Say(nRowSay+0200,1060,cString,oFont11c)
 
 	oPrint:Say(nRowSay+0150,1510,"Nro.Documento",oFont8)
 	oPrint:Say(nRowSay+0200,1510,aDadosTit[7]+aDadosTit[1],oFont10n) //Prefixo +Numero+Parcela
@@ -852,9 +852,9 @@ default lCodBar   := .F.
 
 	cRet    := iif( nRet > 9 , "0", cValToChar(nRet))
 
-	if lCpoLivre .and. cRet == "1"
-		cRet := "0"
-	endif
+//	if lCpoLivre .and. cRet == "1"
+//		cRet := "0"
+//	endif
 
 	if lCodBar .and. cRet == "0"
 		cRet := "1"
