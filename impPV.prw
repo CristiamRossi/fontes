@@ -586,7 +586,8 @@ msUnlock()
 				endif
 
 				if lOK
-					nQtdPed  := val( substr(cLinha,35,6) )
+//					nQtdPed  := val( substr(cLinha,35,6) )
+					nQtdPed  := val( substr(cLinha,79,9) ) / 1000
 
 					nVlBrut  := val(substr(cLinha,88,17))/1000000
 					nVlLiq   := nVlBrut
