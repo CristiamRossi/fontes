@@ -8,6 +8,18 @@ Rotina de Corte de Pedidos de Vendas
 @type function
 /*/
 user function cortePV()
+local lContinua := .T.
+
+	while lContinua		// loop criado para ficar com a rotina em execução sem sair
+		RodaCorte()
+		lContinua := msgYesNo( "Deseja Continuar na rotina?", "Rotina de Corte de Pedidos de Vendas" )
+	end
+
+return nil
+
+
+//-----------------------------
+static function RodaCorte()
 local   aArea     := getArea()
 local   aProds    := {}
 local   aGrps     := {}
