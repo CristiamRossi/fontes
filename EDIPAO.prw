@@ -34,7 +34,7 @@ xPutSx1(cPerg,"09","Emissao Ate?"	 ,"","" ,"mv_ch2","D",8,0,0,"G","","","","","M
 If Pergunte(cPerg,.T.)
      cArq    := "PAO_"+DTOS(MV_PAR01)+SubStr(Time(),1,2)+SubStr(Time(),4,2)+".TXT"
      nHandle := FCreate(cDir+cArq)
-     If ExistDir("C:\TEMP_PAO\")
+     If ! ExistDir("C:\TEMP_PAO\")
 		MakeDir( "C:\TEMP_PAO\")
 	Endif
 
@@ -134,7 +134,7 @@ EndDo
 dbCloseArea()
 
 //Trailler do Arquivo
-FimArq()
+//FimArq()
 
 Return Nil
 
@@ -263,7 +263,7 @@ Else
 EndIf	
 cTXT += Replicate(" ",10)
 cTXT += PadL(AllTrim(TransForm(SD2->D2_QUANT*1000  		,"@E 9999999999")),10,"0")				//38-48  //???ELVIS TRATAR OS DECIMAIS
-cTXT += PadL(AllTrim(SD2->D2_UM),03,"0")
+cTXT += PadR(AllTrim(SD2->D2_UM),03," ")
 cTXT += Replicate(" ",10)
 cTXT += Replicate(" ",03)
 cTXT += Replicate(" ",08)
@@ -278,6 +278,20 @@ cTXT += Replicate(" ",05)
 cTXT += Replicate(" ",05)
 cTXT += Replicate(" ",13)
 cTXT += Replicate(" ",05) 
+
+cTXT += Replicate("0",15) 
+cTXT += Replicate("0",15) 
+cTXT += Replicate("0",15) 
+cTXT += Replicate("0",15) 
+cTXT += PadL(AllTrim(SB1->B1_POSIPI),08,"0")
+cTXT += Replicate(" ",02)
+cTXT += Replicate("9",02) 
+cTXT += Replicate("9",02) 
+cTXT += Replicate("9",02) 
+cTXT += PadL(AllTrim(SF4->F4_SITTRIB),02,"0") 
+cTXT += Replicate("0",02)
+cTXT += Replicate("0",02)
+/*
 cTXT += PadL(AllTrim(TransForm(SD2->D2_BASEICM*100	,"@E 99999999999")),15,"0") 			//169-183
 cTXT += PadL(AllTrim(TransForm(SD2->D2_VALICM*100	,"@E 99999999999")),15,"0") 			//		
 cTXT += PadL(AllTrim(TransForm(SD2->D2_BRICMS*100	,"@E 99999999999")),15,"0") 		      
@@ -290,6 +304,7 @@ cTXT += PadL(AllTrim(SF4->F4_CSTPIS),02,"0")
 cTXT += PadL(AllTrim(SF4->F4_CSTCOF),02,"0") 
 cTXT += PadL(AllTrim(SF4->F4_CTIPI),02,"0") 
 cTXT += PadL(AllTrim(SF4->F4_SITTRIB),02,"0") 
+*/
 cTXT += Space(5)
 cTXT += Space(5)
 cTXT += Space(5)
@@ -326,16 +341,20 @@ cTXT += Space(04)
 cTXT += Space(15)         
 cTXT += PadL(AllTrim(TMP->F2_PBRUTO),09,"0") //38-46
 cTXT += Space(08)         
-cTXT += PadL(AllTrim(TransForm(TMP->F2_BASEICM*100	,"@E 99999999999")),16,"0") 		//base de calculo do ICMS
-cTXT += PadL(AllTrim(TransForm(TMP->F2_VALICM*100	,"@E 99999999999")),15,"0") 		//valor do ICMS
+//cTXT += PadL(AllTrim(TransForm(TMP->F2_BASEICM*100	,"@E 99999999999")),16,"0") 		//base de calculo do ICMS
+//cTXT += PadL(AllTrim(TransForm(TMP->F2_VALICM*100	,"@E 99999999999")),15,"0") 		//valor do ICMS
+cTXT += Replicate("0",16)
+cTXT += Replicate("0",15)
 cTXT += Space(16)         
 cTXT += Space(15)   
 cTXT += PadL(AllTrim(TransForm(TMP->F2_VALMERC*100	,"@E 99999999999")),15,"0") 	 	//valor total da nota 117-131      
 cTXT += Space(13)         
 cTXT += Space(13)         
 cTXT += Space(13)
-cTXT += PadL(AllTrim(TransForm(TMP->F2_BASEIPI*100	,"@E 99999999999")),16,"0") 	 	//valor total do IPI
-cTXT += PadL(AllTrim(TransForm(TMP->F2_VALIPI*100	,"@E 99999999999")),15,"0") 	 	//valor total do IPI
+//cTXT += PadL(AllTrim(TransForm(TMP->F2_BASEIPI*100	,"@E 99999999999")),16,"0") 	 	//valor total do IPI
+//cTXT += PadL(AllTrim(TransForm(TMP->F2_VALIPI*100	,"@E 99999999999")),15,"0") 	 	//valor total do IPI
+cTXT += Replicate("0",16)
+cTXT += Replicate("0",15)
 cTXT += Space(15)
 cTXT += PadL(AllTrim(TransForm(TMP->F2_VALBRUT*100	,"@E 99999999999")),15,"0")
 cTXT += Space(13)        
