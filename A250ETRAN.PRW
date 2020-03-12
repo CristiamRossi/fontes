@@ -10,6 +10,10 @@ P.E. - Ponto de Entrada no final do apontamento da Produção
 (examples)
 @see (links_or_references)
 /*/
+
+
+
+
 user function A250ETRAN()
 local aArea    := getArea()
 local aAreaSC2 := SC2->( getArea() )
