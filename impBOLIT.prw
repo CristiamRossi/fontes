@@ -2,7 +2,7 @@
 #include "TBICONN.CH"
 #define   DMPAPER_A4 9
 /*/{Protheus.doc} impBOLIT
-Rotina - impress�o boletos
+Rotina - impressao boletos
 @type function
 @author Cristiam Rossi
 @since 02/01/2020
@@ -20,12 +20,12 @@ local   aDatSacado := {}
 local   nVlrBol    := 0
 local   nAcrescimo := 0
 local   nVlrAbat   := 0
-local   aBolText   := { "PAG�VEL EM QUALQUER BANCO AT� O VENCIMENTO", "", "", "", "", "", "", "" }
+local   aBolText   := { "PAGAVEL EM QUALQUER BANCO ATE O VENCIMENTO", "", "", "", "", "", "", "" }
 local   nMulta     := 0
 local   nMora      := 0
 local   nPosText   := 2
 
-private cTitulo    := "Impressao de Boleto ITA�"
+private cTitulo    := "Impressao de Boleto ITAU"
 private lJob       := .F.
 private cPrefixo   := ""
 private cNumero    := ""
@@ -34,6 +34,7 @@ private cParcAte   := "Z"
 private cPasta     := ""
 private _cConvenio := ""
 private dVencto
+private	cNroDoc
 
 default cParPref   := ""
 default cParNum    := ""
@@ -41,7 +42,7 @@ default lQuiet     := .F.
 
 	if select("SX2") == 0			// Se via JOB
 		lJob := .T.
-		ConOut( "Inicio emiss�o de boletos... - "+DtoC(date())+" "+time() )
+		ConOut( "Inicio emissao de boletos... - "+DtoC(date())+" "+time() )
 		PREPARE ENVIRONMENT EMPRESA "01" FILIAL "01" TABLES "SA3","SED","SEE","SE1","SEA"
 	endif
 
@@ -62,7 +63,7 @@ default lQuiet     := .F.
 
 	if empty( cParNum )		// perguntar p/ usu�rio
 		if lJob
-			ConOut( "Para JOB precisa informar Prefixo e N�mero, encerrando. - "+DtoC(date())+" "+time() )
+			ConOut( "Para JOB precisa informar Prefixo e Numero, encerrando. - "+DtoC(date())+" "+time() )
 			return nil
 		endif
 
@@ -74,7 +75,7 @@ default lQuiet     := .F.
 
 	SE1->( dbSetOrder(1) )
 	if ! SE1->( dbSeek( xFilial("SE1")+ cPrefixo + cNumero + cParcDe ) )
-		msgStop( "T�tulo(s) n�o encontrado(s), verifique!", cTitulo)
+		msgStop( "Titulo(s) nao encontrado(s), verifique!", cTitulo)
 	else
 
 		aDadosEmp := {	SM0->M0_NOMECOM																,; //[1]Nome da Empresa
@@ -114,19 +115,19 @@ default lQuiet     := .F.
 			end
 
 			if ! SA6->( dbSeek(xFilial("SA6")+SE1->(E1_PORTADO+E1_AGEDEP+E1_CONTA) ) )
-				Aviso("ATEN��O","Banco do T�tulo ("+Alltrim(SE1->E1_PORTADO)+" - "+Alltrim(SE1->E1_AGEDEP)+" - "+Alltrim(SE1->E1_CONTA)+") nao localizado no cadastro de Bancos.",{"OK"})
+				Aviso("ATENCAO","Banco do Titulo ("+Alltrim(SE1->E1_PORTADO)+" - "+Alltrim(SE1->E1_AGEDEP)+" - "+Alltrim(SE1->E1_CONTA)+") nao localizado no cadastro de Bancos.",{"OK"})
 				SE1->( dbSkip() )
 				loop
 			endif		
 
 			if ! SEE->( dbSeek(xFilial("SEE")+SE1->(E1_PORTADO+E1_AGEDEP+E1_CONTA) ) )
-				Aviso("ATEN��O","Par�metros Banc�rios n�o encontrados ("+Alltrim(SE1->E1_PORTADO)+" - "+Alltrim(SE1->E1_AGEDEP)+" - "+Alltrim(SE1->E1_CONTA)+").",{"OK"})
+				Aviso("ATENCAO","Parametros Bancarios nao encontrados ("+Alltrim(SE1->E1_PORTADO)+" - "+Alltrim(SE1->E1_AGEDEP)+" - "+Alltrim(SE1->E1_CONTA)+").",{"OK"})
 				SE1->( dbSkip() )
 				loop
 			endif		
 
 			if alltrim(SA6->A6_NUMBCO) != "341"
-				Aviso("ATEN��O","Esta rotina s� imprime o Boleto para o banco ITA�. Banco do T�tulo: ["+SE1->E1_PORTADO+"].",{"OK"})
+				Aviso("ATENCAO","Esta rotina so imprime o Boleto para o banco ITAU. Banco do Titulo: ["+SE1->E1_PORTADO+"].",{"OK"})
 				SE1->( dbSkip() )
 				loop
 			endif
@@ -135,7 +136,7 @@ default lQuiet     := .F.
 
 			aDadosBanco  := {alltrim(SA6->A6_NUMBCO)								,;	// [1]Numero do Banco
 							 SA6->A6_NOME											,;	// [2]Nome do Banco
-							 SUBSTR(SA6->A6_AGENCIA, 1, 4)							,;	// [3]Ag�ncia
+							 SUBSTR(SA6->A6_AGENCIA, 1, 4)							,;	// [3]Agencia
 		  					 AllTrim(SA6->A6_NUMCON)								,;	// [4]Conta Corrente
 		  					 AllTrim(SA6->A6_DVCTA)									,;	// [5]D�gito da conta corrente
 							 AllTrim(SEE->EE_CODCART)								,;	// [6]Codigo da Carteira
@@ -190,14 +191,15 @@ default lQuiet     := .F.
 
 			cNroDoc := alltrim(SE1->E1_NUMBCO)
 
-			CB_RN_NN	:= Ret_cBarra(Subs(aDadosBanco[1],1,3)+"9",aDadosBanco[3],aDadosBanco[4],aDadosBanco[5],AllTrim(SE1->E1_NUM),(SE1->E1_VALOR-nVlrAbat),SE1->E1_VENCTO)
+			//CB_RN_NN	:= Ret_cBarra(Subs(aDadosBanco[1],1,3)+"9",aDadosBanco[3],aDadosBanco[4],aDadosBanco[5],AllTrim(SE1->E1_NUM),(SE1->E1_VALOR-nVlrAbat),SE1->E1_VENCTO)
+			CB_RN_NN	:= U_Ret_cBarra(Subs(aDadosBanco[1],1,3)+"9",aDadosBanco[3],aDadosBanco[4],aDadosBanco[5],cNroDoc,(SE1->E1_VALOR-nVlrAbat),SE1->E1_VENCTO)
 
 			aDadosTit	:= {AllTrim(SE1->E1_NUM)+AllTrim(SE1->E1_PARCELA)						,;  // [1] N�mero do t�tulo
 							SE1->E1_EMISSAO                              						,;  // [2] Data da emiss�o do t�tulo
 							Date()                                  							,;  // [3] Data da emiss�o do boleto
 							SE1->E1_VENCTO                         	      						,;  // [4] Data do vencimento
 							(SE1->E1_SALDO - nVlrAbat)                  						,;  // [5] Valor do t�tulo
-							CB_RN_NN[3]                             							,;  // [6] Nosso n�mero (Ver f�rmula para calculo)
+							CB_RN_NN[3]                             							,;  // [6] Nosso numero (Ver formula para calculo)
 							SE1->E1_PREFIXO                               						,;  // [7] Prefixo da NF
 							SE1->E1_TIPO	                               						,;  // [8] Tipo do Titulo
 							nVlrBol * (SE1->E1_DESCFIN/100) }										// [9] Desconto financeiro
@@ -207,18 +209,18 @@ default lQuiet     := .F.
 
 				if GetMV("MV_LJMULTA") > 0 .OR. nMulta > 0
 					IF GetMV("MV_LJMULTA") > 0
-						aBolText[nPosText] := "Ap�s Vencimento, Multa de "+ Transform(GetMV("MV_LJMULTA"),"@R 99.99%") +" no Valor de R$ "+AllTrim(Transform(((nVlrBol - nVlrAbat + nAcrescimo)*(GetMV("MV_LJMULTA")/100)),"@E 99,999.99"))
+						aBolText[nPosText] := "Apos Vencimento, Multa de "+ Transform(GetMV("MV_LJMULTA"),"@R 99.99%") +" no Valor de R$ "+AllTrim(Transform(((nVlrBol - nVlrAbat + nAcrescimo)*(GetMV("MV_LJMULTA")/100)),"@E 99,999.99"))
 					ELSE
-						aBolText[nPosText] := "Ap�s Vencimento, Multa de "+ Transform(nMulta,"@R 99.99%") +" no Valor de R$ "+AllTrim(Transform(((nVlrBol - nVlrAbat + nAcrescimo)*(nMulta/100)),"@E 99,999.99"))
+						aBolText[nPosText] := "Apos Vencimento, Multa de "+ Transform(nMulta,"@R 99.99%") +" no Valor de R$ "+AllTrim(Transform(((nVlrBol - nVlrAbat + nAcrescimo)*(nMulta/100)),"@E 99,999.99"))
 					EndIf	
 					nPosText++
 				endif
 
 				if GetMV("MV_TXPER") > 0  .OR. nMora > 0
 					If GetMV("MV_TXPER") > 0
-						aBolText[nPosText] := "Ap�s Vencimento, Mora Di�ria de "+ Transform(GetMV("MV_TXPER"),"@R 99.99%") +" no valor de R$ "+AllTrim(Transform(( ( (nVlrBol - nVlrAbat + nAcrescimo)*GetMV("MV_TXPER") )/100),"@E 99,999.99"))+"."
+						aBolText[nPosText] := "Apos Vencimento, Mora Diaria de "+ Transform(GetMV("MV_TXPER"),"@R 99.99%") +" no valor de R$ "+AllTrim(Transform(( ( (nVlrBol - nVlrAbat + nAcrescimo)*GetMV("MV_TXPER") )/100),"@E 99,999.99"))+"."
 					Else
-						aBolText[nPosText] := "Ap�s Vencimento, Mora Di�ria de "+ Transform(nMora,"@R 99.99%") +" no valor de R$ "+AllTrim(Transform(( ( (nVlrBol - nVlrAbat + nAcrescimo)*nMora )/100),"@E 99,999.99"))+"."
+						aBolText[nPosText] := "Apos Vencimento, Mora Diaria de "+ Transform(nMora,"@R 99.99%") +" no valor de R$ "+AllTrim(Transform(( ( (nVlrBol - nVlrAbat + nAcrescimo)*nMora )/100),"@E 99,999.99"))+"."
 					EndIf
 					nPosText++
 				endif
@@ -229,14 +231,14 @@ default lQuiet     := .F.
 				endif
 
 				if left(cFilAnt, 2) == "01"		// NAYUMI
-					aBolText[nPosText] := "N�o receber ap�s 30 dias do vencimento"
+					aBolText[nPosText] := "Nao receber apos 30 dias do vencimento"
 					nPosText++
-					aBolText[nPosText] := "**PROTESTAR AP�S 5 DIAS DO VENCIMENTO**"
+					aBolText[nPosText] := "**PROTESTAR APOS 5 DIAS DO VENCIMENTO**"
 					nPosText++
-					aBolText[nPosText] := "*O n�o pagamento causara suspens�o das entregas*"
+					aBolText[nPosText] := "*O nao pagamento causara suspensao das entregas*"
 					nPosText++
 				else							// DDS
-					aBolText[nPosText] := "PROTESTAR AP�S 5 DIAS DO VENCIMENTO."
+					aBolText[nPosText] := "PROTESTAR APOS 5 DIAS DO VENCIMENTO."
 					nPosText++					
 				endif
 
@@ -343,7 +345,7 @@ LOCAL nI := 0
 	oPrint:Say(nRowSay+0150,100 ,"Cedente",oFont8)
 	oPrint:Say(nRowSay+0200,100 ,aDadosEmp[1],oFont10n)				//Nome + CNPJ
 
-	oPrint:Say(nRowSay+0150,1060,"Ag�ncia\Codigo Cedente",oFont8)
+	oPrint:Say(nRowSay+0150,1060,"Agencia\Codigo Cedente",oFont8)
 	cString := Alltrim(aDadosBanco[3]+"/"+aDadosBanco[4]+"-"+aDadosBanco[5])
 	oPrint:Say(nRowSay+0200,1060,cString,oFont11c)
 
@@ -359,8 +361,8 @@ LOCAL nI := 0
 	oPrint:Say(nRowSay+0250,1510,"Valor do Documento",oFont8)
 	oPrint:Say(nRowSay+0300,1550,AllTrim(Transform(aDadosTit[5],"@E 999,999,999.99")),oFont10n)
 
-	oPrint:Say(nRowSay+0400,0100,"Recebi(emos) o bloqueto/t�tulo",oFont10)
-	oPrint:Say(nRowSay+0430,0100,"com as caracter�sticas acima.",oFont10)
+	oPrint:Say(nRowSay+0400,0100,"Recebi(emos) o bloqueto/titulo",oFont10)
+	oPrint:Say(nRowSay+0430,0100,"com as caracteristicas acima.",oFont10)
 
 	oPrint:Say(nRowSay+0350,1060,"Data",oFont8)
 	oPrint:Say(nRowSay+0350,1410,"Assinatura",oFont8)
@@ -379,10 +381,10 @@ LOCAL nI := 0
 
 	oPrint:Say(nRowSay+0165,1910,"(  )Mudou-se"               ,oFont10n)
 	oPrint:Say(nRowSay+0195,1910,"(  )Ausente"                ,oFont10n)
-	oPrint:Say(nRowSay+0225,1910,"(  )N�o existe n� indicado" ,oFont10n)
+	oPrint:Say(nRowSay+0225,1910,"(  )Nao existe numero indicado" ,oFont10n)
 	oPrint:Say(nRowSay+0255,1910,"(  )Recusado"               ,oFont10n)
-	oPrint:Say(nRowSay+0285,1910,"(  )N�o procurado"          ,oFont10n)
-	oPrint:Say(nRowSay+0315,1910,"(  )Endere�o insuficiente"  ,oFont10n)
+	oPrint:Say(nRowSay+0285,1910,"(  )Nao procurado"          ,oFont10n)
+	oPrint:Say(nRowSay+0315,1910,"(  )Endereco insuficiente"  ,oFont10n)
 	oPrint:Say(nRowSay+0345,1910,"(  )Desconhecido"           ,oFont10n)
 	oPrint:Say(nRowSay+0375,1910,"(  )Falecido"               ,oFont10n)
 	oPrint:Say(nRowSay+0405,1910,"(  )Outros(anotar no verso)",oFont10n)
@@ -421,7 +423,7 @@ LOCAL nI := 0
 	oPrint:Line (nRow2+0910,1480,nRow2+1050,1480)
 
 	oPrint:Say(nRowSay+0710,100 ,"Local de Pagamento",oFont8)
-	oPrint:Say(nRowSay+0750,100 ,"QUALQUER BANCO AT� A DATA DO VENCIMENTO",oFont10n)
+	oPrint:Say(nRowSay+0750,100 ,"QUALQUER BANCO ATE A DATA DO VENCIMENTO",oFont10n)
 
 	oPrint:Say(nRowSay+0710,1810,"Vencimento"                                     ,oFont8)
 	cString	:= StrZero(Day((aDadosTit[4])),2) +"/"+ StrZero(Month((aDadosTit[4])),2) +"/"+ Right(Str(Year((aDadosTit[4]))),4)
@@ -431,7 +433,7 @@ LOCAL nI := 0
 
 	oPrint:Say(nRowSay+0835,100 ,aDadosEmp[1]+" - "+aDadosEmp[6]	,oFont10n) //Nome + CNPJ
 
-	oPrint:Say(nRowSay+0810,1810,"Ag�ncia\Codigo Cedente",oFont8)
+	oPrint:Say(nRowSay+0810,1810,"Agencia\Codigo Cedente",oFont8)
 	cString := aDadosBanco[3]+"/"+aDadosBanco[4]+"-"+aDadosBanco[5]
 	oPrint:SayAlign(nRowSay+0830,1800, cString,oFont11c, 500, , , 1, 1)
 
@@ -441,7 +443,7 @@ LOCAL nI := 0
 	oPrint:Say(nRowSay+0905,505 ,"Nro.Documento"                                  ,oFont8)
 	oPrint:Say(nRowSay+0935,505 ,aDadosTit[7]+aDadosTit[1]						,oFont10n) //Prefixo +Numero+Parcela
 
-	oPrint:Say(nRowSay+0905,1005,"Esp�cie Doc."                                   ,oFont8)
+	oPrint:Say(nRowSay+0905,1005,"Especie Doc."                                   ,oFont8)
 	oPrint:Say(nRowSay+0935,1005,aDadosTit[8]										,oFont10n) //Tipo do Titulo
 
 	oPrint:Say(nRowSay+0905,1305,"Aceite"                                         ,oFont8)
@@ -450,7 +452,7 @@ LOCAL nI := 0
 	oPrint:Say(nRowSay+0905,1485,"Data do Processamento"                          ,oFont8)
 	oPrint:Say(nRowSay+0935,1485,DTOC(aDadosTit[3]),oFont10n) // Data impressao
 
-	oPrint:Say(nRowSay+0905,1810,"Nosso N�mero"                                   ,oFont8)
+	oPrint:Say(nRowSay+0905,1810,"Nosso Numero"                                   ,oFont8)
 	cString := Substr(aDadosTit[6],1,3)+"/"+Substr(aDadosTit[6],4)
 	oPrint:SayAlign(nRowSay+0900,1800, cString,oFont11c, 500, , , 1, 1)
 
@@ -461,7 +463,7 @@ LOCAL nI := 0
 	oPrint:Say(nRowSay+0970,505 ,"Carteira"                                       ,oFont8)
 	oPrint:Say(nRowSay+1000,505 ,aDadosBanco[6]                                   ,oFont10n)
 
-	oPrint:Say(nRowSay+0970,755 ,"Esp�cie"                                        ,oFont8) 
+	oPrint:Say(nRowSay+0970,755 ,"Especie"                                        ,oFont8) 
 	oPrint:Say(nRowSay+1000,755 ,"R$"                                             ,oFont10n)
 
 
@@ -472,8 +474,8 @@ LOCAL nI := 0
 	cString := Alltrim(Transform(aDadosTit[5],"@E 99,999,999.99"))
 	oPrint:SayAlign(nRowSay+0970,1800, cString,oFont11c, 500, , , 1, 1)
 
-	oPrint:Say(nRowSay+1035,100 ,"Instru��es (Todas informa��es deste bloqueto s�o de exclusiva responsabilidade do Benefici�rio)",oFont8)
-	oPrint:Say(nRowSay+1080,100 ,"ATEN��O SR. CAIXA:",oFont10n)
+	oPrint:Say(nRowSay+1035,100 ,"Instrucoes (Todas informacoes deste bloqueto sao de exclusiva responsabilidade do Beneficiario)",oFont8)
+	oPrint:Say(nRowSay+1080,100 ,"ATENCAO SR. CAIXA:",oFont10n)
 	oPrint:Say(nRowSay+1110,100 ,aBolText[1],oFont10n)
 	oPrint:Say(nRowSay+1140,100 ,aBolText[2],oFont10n)
 	oPrint:Say(nRowSay+1170,100 ,aBolText[3],oFont10n)
@@ -483,11 +485,11 @@ LOCAL nI := 0
 	oPrint:Say(nRowSay+1300,100 ,aBolText[8],oFont10n)
 
 	oPrint:Say(nRowSay+1050,1810,"(-)Desconto/Abatimento"                         ,oFont8)
-	oPrint:Say(nRowSay+1120,1810,"(-)Outras Dedu��es"                             ,oFont8)
+	oPrint:Say(nRowSay+1120,1810,"(-)Outras Deducoes"                             ,oFont8)
 
 	oPrint:Say(nRowSay+1190,1810,"(+)Mora/Multa"                                  ,oFont8)
 
-	oPrint:Say(nRowSay+1260,1810,"(+)Outros Acr�scimos"                           ,oFont8)
+	oPrint:Say(nRowSay+1260,1810,"(+)Outros Acrescimos"                           ,oFont8)
 	oPrint:Say(nRowSay+1330,1810,"(=)Valor Cobrado"                               ,oFont8)
 
 	oPrint:Say(nRowSay+1400,100 ,"Sacado",oFont8)
@@ -508,7 +510,7 @@ LOCAL nI := 0
 		EndIf
 	EndIf
 
-	oPrint:Say(nRowSay+1620,1550,"Autentica��o Mec�nica",oFont8)
+	oPrint:Say(nRowSay+1620,1550,"Autenticacao Mecanica",oFont8)
 
 	oPrint:Line (nRow2+0710,1800,nRow2+1400,1800 )
 	oPrint:Line (nRow2+1120,1800,nRow2+1120,2300 )
@@ -554,7 +556,7 @@ LOCAL nI := 0
 	oPrint:Line (nRow3+2200,1480,nRow3+2340,1480)
 
 	oPrint:Say(nRowSay+2000,100 ,"Local de Pagamento",oFont8)
-	oPrint:Say(nRowSay+2045,100 ,"QUALQUER BANCO AT� A DATA DO VENCIMENTO",oFont10n)
+	oPrint:Say(nRowSay+2045,100 ,"QUALQUER BANCO ATE A DATA DO VENCIMENTO",oFont10n)
 
 	oPrint:Say(nRowSay+2000,1810,"Vencimento",oFont8)
 
@@ -565,7 +567,7 @@ LOCAL nI := 0
 	oPrint:Say(nRowSay+2100,100 ,"Cedente",oFont8)
 	oPrint:Say(nRowSay+2150,100 ,aDadosEmp[1]+" - "+aDadosEmp[6]	,oFont10n) //Nome + CNPJ
 
-	oPrint:Say(nRowSay+2100,1810,"Ag�ncia\Codigo do Benefici�rio",oFont8)
+	oPrint:Say(nRowSay+2100,1810,"Agencia\Codigo do Benefici�rio",oFont8)
 	cString := aDadosBanco[3]+"/"+aDadosBanco[4]+"-"+aDadosBanco[5]
 	oPrint:SayAlign(nRowSay+2115,1800, cString,oFont11c, 500, , , 1, 1)
 
@@ -575,7 +577,7 @@ LOCAL nI := 0
 	oPrint:Say(nRowSay+2200,505 ,"Nro.Documento"                                  ,oFont8)
 	oPrint:Say(nRowSay+2230,505 ,aDadosTit[7]+aDadosTit[1]						,oFont10n) //Prefixo +Numero+Parcela
 
-	oPrint:Say(nRowSay+2200,1005,"Esp�cie Doc."                                   ,oFont8)
+	oPrint:Say(nRowSay+2200,1005,"Especie Doc."                                   ,oFont8)
 	oPrint:Say(nRowSay+2230,1005,aDadosTit[8]										,oFont10n) //Tipo do Titulo
 
 	oPrint:Say(nRowSay+2200,1305,"Aceite"                                         ,oFont8)
@@ -584,7 +586,7 @@ LOCAL nI := 0
 	oPrint:Say(nRowSay+2200,1485,"Data do Processamento"                          ,oFont8)
 	oPrint:Say(nRowSay+2230,1485,DTOC(aDadosTit[3])                               ,oFont10n) // Data impressao
 
-	oPrint:Say(nRowSay+2200,1810,"Nosso N�mero"                                   ,oFont8)
+	oPrint:Say(nRowSay+2200,1810,"Nosso Numero"                                   ,oFont8)
 	cString := Alltrim(Substr(aDadosTit[6],1,3)+"/"+Substr(aDadosTit[6],4))
 	oPrint:SayAlign(nRowSay+2195,1800, cString,oFont11c, 500, , , 1, 1)
 
@@ -593,7 +595,7 @@ LOCAL nI := 0
 	oPrint:Say(nRowSay+2270,505 ,"Carteira"                                       ,oFont8)
 	oPrint:Say(nRowSay+2300,505 ,aDadosBanco[6]                                   ,oFont10n)
 
-	oPrint:Say(nRowSay+2270,755 ,"Esp�cie"                                        ,oFont8)
+	oPrint:Say(nRowSay+2270,755 ,"Especie"                                        ,oFont8)
 	oPrint:Say(nRowSay+2300,755 ,"R$"                                             ,oFont10n)
 
 	oPrint:Say(nRowSay+2270,1005,"Quantidade"                                     ,oFont8)
@@ -604,8 +606,8 @@ LOCAL nI := 0
 	cString := Alltrim(Transform(aDadosTit[5],"@E 99,999,999.99"))
 	oPrint:SayAlign(nRowSay+2265,1800, cString,oFont11c, 500, , , 1, 1)
 
-	oPrint:Say(nRowSay+2340,100 ,"Instru��es (Todas informa��es deste bloqueto s�o de exclusiva responsabilidade do Benefici�rio)",oFont8)
-	oPrint:Say(nRowSay+2380,100 ,"ATEN��O SR. CAIXA:",oFont10n)
+	oPrint:Say(nRowSay+2340,100 ,"Instrucoes (Todas informacoes deste bloqueto sao de exclusiva responsabilidade do Beneficiario)",oFont8)
+	oPrint:Say(nRowSay+2380,100 ,"ATENCAO SR. CAIXA:",oFont10n)
 	oPrint:Say(nRowSay+2410,100 ,aBolText[1],oFont10n)
 	oPrint:Say(nRowSay+2440,100 ,aBolText[2],oFont10n)
 	oPrint:Say(nRowSay+2470,100 ,aBolText[3],oFont10n)
@@ -615,11 +617,11 @@ LOCAL nI := 0
 	oPrint:Say(nRowSay+2590,100 ,aBolText[8],oFont10n)
 
 	oPrint:Say(nRowSay+2340,1810,"(-)Desconto/Abatimento"                         ,oFont8)
-	oPrint:Say(nRowSay+2410,1810,"(-)Outras Dedu��es"                             ,oFont8)
+	oPrint:Say(nRowSay+2410,1810,"(-)Outras Deducoes"                             ,oFont8)
 
 	oPrint:Say(nRowSay+2480,1810,"(+)Mora/Multa"                                  ,oFont8)
 
-	oPrint:Say(nRowSay+2550,1810,"(+)Outros Acr�scimos"                           ,oFont8)
+	oPrint:Say(nRowSay+2550,1810,"(+)Outros Acrescimos"                           ,oFont8)
 	oPrint:Say(nRowSay+2620,1810,"(=)Valor Cobrado"                               ,oFont8)
 
 	oPrint:Say(nRowSay+2690,100 ,"Sacado",oFont8)
@@ -646,7 +648,7 @@ LOCAL nI := 0
 	oPrint:Line (nRow3+2690,100 ,nRow3+2690,2300 )
 	oPrint:Line (nRow3+2920,100,nRow3+2920,2300  )
 
-	oPrint:Say(nRowSay+2915,1820,"Autentica��o Mec�nica - Ficha de Compensa��o"   ,oFont8)
+	oPrint:Say(nRowSay+2915,1820,"Autenticacao Mecanica - Ficha de Compensacao"   ,oFont8)
 
 	oPrint:FwMsBar("INT25" /*cTypeBar*/, 66 /*nRow*/, 2.40 /*nCol*/,;
 	aCB_RN_NN[1] /*cCode*/, oPrint, .F. /*Calc6. Digito Verif*/,;
@@ -678,7 +680,7 @@ Return .T.
 �����������������������������������������������������������������������������
 �����������������������������������������������������������������������������
 /*/
-Static Function Ret_cBarra(cBanco,cAgencia,cConta,cDacCC,cNroDoc,nValor,dVencto)
+User Function Ret_cBarra(cBanco,cAgencia,cConta,cDacCC,cNroDoc,nValor,dVencto)
 //LOCAL bldocnufinal := strzero(val(cNroDoc),8)
 LOCAL bldocnufinal := right("00000000"+alltrim(cNroDoc),8)
 LOCAL blvalorfinal := strzero(int(nValor*100),10)
