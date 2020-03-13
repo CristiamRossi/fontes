@@ -162,17 +162,17 @@ cTXT += "2" 	//1=cancelar, 2=incluir, 9=original
 cTXT += TMP->F2_DOC																									
 cTXT += TMP->F2_SERIE																								
 cTXT += TMP->F2_EMISSAO+SubStr(Time(),1,2)+SubStr(Time(),4,2)
-cTXT += Replicate(" ",12)
-cTXT += Replicate(" ",12)
+cTXT += Replicate("0",12)
+cTXT += Replicate("0",12)
 cTXT += PadL(AllTrim(SD2->D2_CF),04,"0")
 cTXT += PadL(AllTrim(SubStr(SC5->C5_XPEDCLI,1,11)+SubStr(TMP->A1_NREDUZ,1,4)),15,"0") 
-cTXT += Replicate(" ",15)
-cTXT += Replicate(" ",15)
+cTXT += Replicate("0",15)
+cTXT += Replicate("0",15)
 cTXT += Replicate("0",13)	//101-113 
 cTXT += "1003190900005"	//114-126
 cTXT += PadL(AllTrim(SM0->M0_CGC),15,"0")//Replicate("0",15) //????//cgc 15
-cTXT += Replicate(" ",20)
-cTXT += Replicate(" ",02)    
+cTXT += PadL(AllTrim(SM0->M0_INSC),20," ") 
+cTXT += PadR(SM0->M0_ESTCOB,2," ")
 cTXT += PadL(AllTrim(TMP->A1_XEANPAO),13,"0") // 164-176     loc entrega-EAN COMPRADOR
 cTXT += Replicate("0",13)//177-189 loc cobra - no arquivo modelo esta mandando zeros
 cTXT += Replicate(" ",04)
@@ -197,7 +197,7 @@ else
      cTXT += "050"
 EndIf     
 cTXT += Replicate("0",08) //24-31
-cTXT += Replicate(" ",06)
+cTXT += Replicate("0",06) //32-37
 cTXT += "10000"       
 cTXT += Replicate(" ",238)
 
@@ -208,7 +208,7 @@ cTXT := "03"                                                                   	
 cTXT += TMP->F2_DOC																									
 cTXT += TMP->F2_SERIE																								
 cTXT += Replicate(" ",04)
-cTXT += Replicate(" ",15)
+cTXT += Replicate("0",15)
 cTXT += Replicate(" ",03)
 cTXT += Replicate(" ",25)
 cTXT += Replicate(" ",12)  
@@ -217,9 +217,9 @@ If SC5->C5_TPFRETE == "F"
 Else                      
 	cTXT += "CIF"  //74-76
 EndIf
-cTXT += Replicate(" ",13)  
-cTXT += Replicate(" ",05)  
-cTXT += Replicate(" ",05)  
+cTXT += Replicate("0",13)  
+cTXT += Replicate("0",05)  
+cTXT += Replicate("0",05)  
 cTXT += Replicate(" ",181)
 
 fWrite(nHandle,cTXT+cEol)       
@@ -261,30 +261,30 @@ If Empty(SB1->B1_CODBAR)
 Else
 	cTXT +=	PadL(SubStr(AllTrim(SB1->B1_CODBAR),1,14),14,"0")
 EndIf	
-cTXT += Replicate(" ",10)
+cTXT += Replicate(" ",10)//29-38
 cTXT += PadL(AllTrim(TransForm(SD2->D2_QUANT*1000  		,"@E 9999999999")),10,"0")				//38-48  //???ELVIS TRATAR OS DECIMAIS
 cTXT += PadR(AllTrim(SD2->D2_UM),03," ")
-cTXT += Replicate(" ",10)
-cTXT += Replicate(" ",03)
-cTXT += Replicate(" ",08)
+cTXT += PadL(AllTrim(TransForm(SD2->D2_QUANT*1000  		,"@E 9999999999")),10,"0")	 //52-61
+cTXT += PadR(AllTrim(SD2->D2_UM),03," ")
+cTXT += Replicate("0",08)
 cTXT += PadL(AllTrim(TransForm(SD2->D2_TOTAL*100	,"@E 99999999999")),15,"0") 			//73-87
 cTXT += PadL(AllTrim(TransForm(SD2->D2_TOTAL*100	,"@E 99999999999")),15,"0") 
 cTXT += PadL(AllTrim(TransForm(SD2->D2_PRCVEN*100	,"@E 99999999999")),13,"0") 
 cTXT += PadL(AllTrim(TransForm(SD2->D2_PRCVEN*100	,"@E 99999999999")),13,"0")
 cTXT += PadL(AllTrim(SF4->F4_SITTRIB),02,"0") //   129-130
-cTXT += Replicate(" ",05)
-cTXT += Replicate(" ",05)
-cTXT += Replicate(" ",05)
-cTXT += Replicate(" ",05)
-cTXT += Replicate(" ",13)
-cTXT += Replicate(" ",05) 
+cTXT += Replicate("0",05)
+cTXT += Replicate("0",05)
+cTXT += Replicate("0",05)
+cTXT += Replicate("0",05)
+cTXT += Replicate("0",13)
+cTXT += Replicate("0",05) 
 
 cTXT += Replicate("0",15) 
 cTXT += Replicate("0",15) 
 cTXT += Replicate("0",15) 
 cTXT += Replicate("0",15) 
 cTXT += PadL(AllTrim(SB1->B1_POSIPI),08,"0")
-cTXT += Replicate(" ",02)
+cTXT += Replicate("0",02)
 cTXT += Replicate("9",02) 
 cTXT += Replicate("9",02) 
 cTXT += Replicate("9",02) 
@@ -305,9 +305,9 @@ cTXT += PadL(AllTrim(SF4->F4_CSTCOF),02,"0")
 cTXT += PadL(AllTrim(SF4->F4_CTIPI),02,"0") 
 cTXT += PadL(AllTrim(SF4->F4_SITTRIB),02,"0") 
 */
-cTXT += Space(5)
-cTXT += Space(5)
-cTXT += Space(5)
+cTXT += Replicate("0",05)
+cTXT += Replicate("0",05)
+cTXT += Replicate("0",05)
 cTXT += Space(19)
 
 cTXT := Ponto(cTXT)
@@ -336,28 +336,28 @@ Static Function FimNF()
 cTXT := "09"																			//tipo do registro    
 cTXT += TMP->F2_DOC																									
 cTXT += TMP->F2_SERIE         
-cTXT += Space(04)
-cTXT += Space(04)
-cTXT += Space(15)         
+cTXT += Replicate("0",04)
+cTXT += Replicate("0",04)
+cTXT += Replicate("0",15)     
 cTXT += PadL(AllTrim(TMP->F2_PBRUTO),09,"0") //38-46
-cTXT += Space(08)         
+cTXT += Replicate("0",08)    
 //cTXT += PadL(AllTrim(TransForm(TMP->F2_BASEICM*100	,"@E 99999999999")),16,"0") 		//base de calculo do ICMS
 //cTXT += PadL(AllTrim(TransForm(TMP->F2_VALICM*100	,"@E 99999999999")),15,"0") 		//valor do ICMS
 cTXT += Replicate("0",16)
 cTXT += Replicate("0",15)
-cTXT += Space(16)         
-cTXT += Space(15)   
+cTXT += Replicate("0",16)      
+cTXT += Replicate("0",15)
 cTXT += PadL(AllTrim(TransForm(TMP->F2_VALMERC*100	,"@E 99999999999")),15,"0") 	 	//valor total da nota 117-131      
-cTXT += Space(13)         
-cTXT += Space(13)         
-cTXT += Space(13)
+cTXT += Replicate("0",13)         
+cTXT += Replicate("0",13)        
+cTXT += Replicate("0",13)
 //cTXT += PadL(AllTrim(TransForm(TMP->F2_BASEIPI*100	,"@E 99999999999")),16,"0") 	 	//valor total do IPI
 //cTXT += PadL(AllTrim(TransForm(TMP->F2_VALIPI*100	,"@E 99999999999")),15,"0") 	 	//valor total do IPI
 cTXT += Replicate("0",16)
 cTXT += Replicate("0",15)
-cTXT += Space(15)
+cTXT += Replicate("0",15)
 cTXT += PadL(AllTrim(TransForm(TMP->F2_VALBRUT*100	,"@E 99999999999")),15,"0")
-cTXT += Space(13)        
+cTXT += Replicate("0",13)        
 cTXT += Space(36)
 /*
 cTXT += PadL(AllTrim(TransForm(SF2->F2_BRICMS	,"@E 999999999.99")),12,"0") 		//base de calculo do ICMS de Substituicao
