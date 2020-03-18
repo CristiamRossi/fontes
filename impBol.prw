@@ -821,9 +821,12 @@ local nVez  := 2
 		nAcm  += nTemp
 	next
 
-	nMultiplo := ( val( left( strZero(nAcm,2), 1 ) ) + 1 ) * 10
-
-	nRet := nMultiplo - nAcm
+	if nAcm % 10 == 0
+		nRet := 0
+	else
+		nMultiplo := ( val( left( strZero(nAcm,2), 1 ) ) + 1 ) * 10
+		nRet      := nMultiplo - nAcm
+	endif
 
 return cValToChar(nRet)
 
