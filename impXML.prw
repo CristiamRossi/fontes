@@ -7,7 +7,7 @@ carga de arquivos XML
 @version 1.0
 @type function
 /*/
-user function impXML()
+user function impXML2()
 local   aArea   := getArea()
 local   cFolder := ""
 local   aXmlTmp := {}
