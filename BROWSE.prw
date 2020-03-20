@@ -26,7 +26,7 @@ If FunName() $ 'MATA460A'
 	Endif
 Endif
 
-If FunName() $ 'MATA103'
+If FunName() $ 'MATA103' .Or. (FunName() $ 'SPEDNFE' .And. Substr(MV_PAR01,1,1)$"2"/*Entrada*/)
 	If AllTrim(SF1->F1_TIPO) $'D/B'
 	    _cRetorno := Posicione("SA1",1,Substr(SF1->F1_FILIAL,1,2)+Space(4)+SF1->F1_FORNECE+SF1->F1_LOJA,"SA1->A1_NREDUZ")     
 	Else
@@ -34,11 +34,11 @@ If FunName() $ 'MATA103'
 	Endif
 Endif
 
-If FunName() $ 'SPEDNFE'
+If FunName() $ 'SPEDNFE' .And. Substr(MV_PAR01,1,1)$"1"/*Saida*/
 	If AllTrim(SF2->F2_TIPO) $'D/B'
-	    _cRetorno := Posicione("SA1",1,Substr(SF2->F2_FILIAL,1,2)+Space(4)+SF2->F2_FORNECE+SF2->F2_LOJA,"A1_NREDUZ")     
+	    _cRetorno := Posicione("SA2",1,Substr(SF2->F2_FILIAL,1,2)+Space(4)+SF2->F2_CLIENTE+SF2->F2_LOJA,"A2_NREDUZ")     
 	Else
-    	_cRetorno := Posicione("SA2",1,Substr(SF2->F2_FILIAL,1,2)+Space(4)+SF2->F2_FORNECE+SF2->F2_LOJA,"A2_NREDUZ")
+    	_cRetorno := Posicione("SA1",1,Substr(SF2->F2_FILIAL,1,2)+Space(4)+SF2->F2_CLIENTE+SF2->F2_LOJA,"A1_NREDUZ")
 	Endif
 Endif
 
