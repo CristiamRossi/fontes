@@ -34,4 +34,12 @@ If FunName() $ 'MATA103'
 	Endif
 Endif
 
+If FunName() $ 'SPEDNFE'
+	If AllTrim(SF2->F2_TIPO) $'D/B'
+	    _cRetorno := Posicione("SA1",1,Substr(SF2->F2_FILIAL,1,2)+Space(4)+SF2->F2_FORNECE+SF2->F2_LOJA,"A1_NREDUZ")     
+	Else
+    	_cRetorno := Posicione("SA2",1,Substr(SF2->F2_FILIAL,1,2)+Space(4)+SF2->F2_FORNECE+SF2->F2_LOJA,"A2_NREDUZ")
+	Endif
+Endif
+
 Return _cRetorno
