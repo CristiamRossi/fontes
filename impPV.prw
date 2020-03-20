@@ -11,7 +11,18 @@ Importação Pedido de Vendas por planilha em .CSV, layout Padrão de Açúcar e
 (examples)
 @see (links_or_references)
 /*/
+
 user function impPV()
+local lContinua := .T.
+
+	while lContinua		// loop criado para ficar com a rotina em execução sem sair
+		RodaImpPv()
+		lContinua := msgYesNo( "Deseja Continuar na rotina?", "Rotina de Importação dos Pedidos de Vendas" )
+	end
+
+return nil
+
+Static function RodaImpPv()
 local   aArea    := getArea()
 local   oWizard
 local   oPanel
