@@ -54,6 +54,8 @@ oReport:SetTotalInLine(.F.)
 oReport:lParamPage := .F.
 oReport:oPage:SetPaperSize(9) //Folha A4
 oReport:SetPortrait()
+oReport:nFontBody := 7
+
 
 //Criando a seção de dados
 oSectDad := TRSection():New(    oReport,;        //Objeto TReport que a seção pertence
