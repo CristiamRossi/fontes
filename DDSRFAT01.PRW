@@ -5,16 +5,23 @@
 //Constantes
 #Define STR_PULA        Chr(13)+Chr(10)
 
+// Relatório de Separacao de Pedidos de Vendas
 
 User Function DDSRFAT01()
-Local aArea   := GetArea()
+Local aArea     := GetArea()
 Local oReport
-Local lEmail  := .F.
-Local cPara   := ""
-Private cPerg := "DDSRFAT01"
+Local lEmail    := .F.
+Local cPara     := ""
+Private cPerg   := "DDSRFAT01"
+Private cGrupos := ""
 
 CriaSx1(cPerg)
-Pergunte(cPerg,.T.)
+if ! Pergunte(cPerg,.T.)
+	restArea( aArea )
+	return nil
+endif
+
+fSelGrupos()	// seleção dos grupos de produtos
 
 //Cria as definições do relatório
 oReport := fReportDef()
@@ -42,14 +49,13 @@ Return
 Static Function fReportDef()
 Local oReport
 Local oSectDad := Nil
-Local oBreak := Nil
 
 //Criação do componente de impressão
 oReport := TReport():New(    "DDSRFAT01",;        //Nome do Relatório
-"Relatorio",;        //Título
+"Relatorio de Separacao de Pedidos",;        //Título
 cPerg,;        //Pergunte ... Se eu defino a pergunta aqui, será impresso uma página com os parâmetros, conforme privilégio 101
 {|oReport| fRepPrint(oReport)},;        //Bloco de código que será executado na confirmação da impressão
-)        //Descrição
+"Exibe o relatorio de separacao de pedidos")        //Descrição
 oReport:SetTotalInLine(.F.)
 oReport:lParamPage := .F.
 oReport:oPage:SetPaperSize(9) //Folha A4
@@ -108,9 +114,15 @@ cQryAux += "AND BM_GRUPO = B1_GRUPO "       + STR_PULA
 cQryAux += "AND BM_FILIAL = B1_FILIAL"       + STR_PULA
 cQryAux += "AND C5_EMISSAO between '"+DtoS(mv_par01)+"' and '"+DtoS(mv_par02)+"' "       + STR_PULA
 //cQryAux += "AND C5_NUM between '"+mv_par03+"' and '"+mv_par04+"' "       + STR_PULA
-If ! Empty(mv_par03)
-	cQryAux += "AND B1_GRUPO  = '"+mv_par03+"' "       + STR_PULA
-EndIf
+
+//If ! Empty(mv_par03)
+//	cQryAux += "AND B1_GRUPO  = '"+mv_par03+"' "       + STR_PULA
+//EndIf
+
+if ! empty( cGrupos )
+	cQryAux += "and B1_GRUPO in ("+cGrupos+")"
+endif
+
 If ! Empty(mv_par04)
 	cQryAux += "AND A1_GRPVEN = '"+mv_par04+"' "       + STR_PULA
 EndIf
@@ -281,4 +293,50 @@ Endif
 
 RestArea( aArea )
 
-Return
+Return nil
+
+
+//--------------------------------------------------------
+static function fSelGrupos()
+local aGrupos := {}
+local aArea   := getArea()
+local oDlg
+local oLst
+local nAt
+local nI
+local oOk  	:= LoadBitmap(GetResources(), 'LBOK')
+local oNo  	:= LoadBitmap(GetResources(), 'LBNO')
+
+	cGrupos := ""
+
+	SBM->( dbSetOrder(1))
+	SBM->( dbSeek( xFilial("SBM"), .T. ) )
+	while ! SBM->( eof() ) .and. SBM->BM_FILIAL == xFilial("SBM")
+		aadd( aGrupos, { alltrim(MV_PAR03)==alltrim(SBM->BM_GRUPO), SBM->BM_GRUPO, SBM->BM_DESC })
+		SBM->( dbSkip() )
+	end
+
+	define msDialog oDlg title "Selecao de Grupos de Produto" from 0,0 to 300,450 pixel
+	@ 1,1 listbox oLst var nAT fields header "", "Codigo", "Descricao" size 224, 128 pixel of oDlg
+
+	oLst:SetArray(aGrupos)
+	
+	oLst:bLine :=	{|| {;
+							iif(aGrupos[oLst:nAt,01], oOk, oNo ),;
+							aGrupos[oLst:nAt,02],;
+							aGrupos[oLst:nAt,03],;
+	}}
+
+	oLst:bLDbLClick	:= { || (aGrupos[oLst:nAt][1] := ! aGrupos[oLst:nAt][1], oLst:Refresh()) }
+
+	@ 135,184 button "Ok" size 40,12 of oDlg pixel action oDlg:end()
+	activate msDialog oDlg
+
+	for nI := 1 to len(aGrupos)
+		if aGrupos[nI,1]
+			cGrupos += iif(empty(cGrupos), "", ",") + "'" + aGrupos[nI,2] + "'"
+		endif
+	next
+
+	restArea( aArea )
+return nil
