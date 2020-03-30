@@ -1,6 +1,6 @@
 #include "totvs.ch"
 /*/{Protheus.doc} fRomaneio
-Impressão do Romaneio Compartilhado
+Impressao do Romaneio Compartilhado
 @author Cristiam Rossi
 @since 22/01/2020
 @version 1.0
@@ -11,13 +11,13 @@ user function fRomaneio()
 Local   aArea     := GetArea()
 Local   oReport
 private cAliasQry := getNextAlias()
-private cTitulo   := "Romaneio de Expedição"
+private cTitulo   := "Romaneio de Expedicao"
 private cPerg     := "FROMANEIO"
 
 	AjustaSX1()
 
 	if ! Pergunte(cPerg,.T.)
-		MsgAlert("Operação cancelada pelo usuário", cTitulo)
+		MsgAlert("Operacao cancelada pelo usuario", cTitulo)
 		Return nil
 	endif
 
@@ -33,24 +33,24 @@ Local oReport
 Local oSection1
 Local oSection2
 
-	oReport := TReport():New(cPerg,cTitulo,cPerg,{|oReport| PrintReport(oReport)},"Este relatorio irá imprimir o Romaneio de Expedição.")
+	oReport := TReport():New(cPerg,cTitulo,cPerg,{|oReport| PrintReport(oReport)},"Este relatorio ira imprimir o Romaneio de Expedicao.")
 	oReport:nFontBody := 7
 
 	oSection1 := TRSection():New(oReport,"Cliente e NF"       ,{cAliasQry})
 	oSection2 := TRSection():New(oReport,"Itens a transportar",{cAliasQry})
 
-	TRCell():New(oSection1,'CODIGO'			,cAliasQry,"Código"			,			,06 /*Tamanho*/			,/*lPixel*/,/*{|| code-block de impressao }*/)
+	TRCell():New(oSection1,'CODIGO'			,cAliasQry,"Codigo"			,			,06 /*Tamanho*/			,/*lPixel*/,/*{|| code-block de impressao }*/)
 	TRCell():New(oSection1,'NOME'			,cAliasQry,"Nome Cliente"	,			,40						,/*lPixel*/,/*{|| code-block de impressao }*/)
 	TRCell():New(oSection1,'DOC'			,cAliasQry,"Nota Fiscal"	,			,10/*Tamanho*/			,/*lPixel*/,/*{|| code-block de impressao }*/)
-	TRCell():New(oSection1,'SERIE'			,cAliasQry,"Série"	 		,			,03						,/*lPixel*/,/*{|| code-block de impressao }*/)
+	TRCell():New(oSection1,'SERIE'			,cAliasQry,"Serie"	 		,			,03						,/*lPixel*/,/*{|| code-block de impressao }*/)
 
 	TRCell():New(oSection2,'QTD1'			,cAliasQry,"Qtde"			,			,08/*Tamanho*/			,/*lPixel*/,/*{|| code-block de impressao }*/)
-	TRCell():New(oSection2,'COD1'			,cAliasQry,"Código"			,			,15						,/*lPixel*/,/*{|| code-block de impressao }*/)
-	TRCell():New(oSection2,'DES1'			,cAliasQry,"Descrição"  	,			,40/*Tamanho*/			,/*lPixel*/,/*{|| code-block de impressao }*/)
+	TRCell():New(oSection2,'COD1'			,cAliasQry,"Codigo"			,			,15						,/*lPixel*/,/*{|| code-block de impressao }*/)
+	TRCell():New(oSection2,'DES1'			,cAliasQry,"Descricao"  	,			,40/*Tamanho*/			,/*lPixel*/,/*{|| code-block de impressao }*/)
 	TRCell():New(oSection2,'FILLER'			,         ,""				,			,10						,/*lPixel*/,/*{|| code-block de impressao }*/)
 	TRCell():New(oSection2,'QTD2'			,cAliasQry,"Qtde"			,			,08/*Tamanho*/			,/*lPixel*/,/*{|| code-block de impressao }*/)
-	TRCell():New(oSection2,'COD2'			,cAliasQry,"Código"			,			,15						,/*lPixel*/,/*{|| code-block de impressao }*/)
-	TRCell():New(oSection2,'DES2'			,cAliasQry,"Descrição"  	,			,40/*Tamanho*/			,/*lPixel*/,/*{|| code-block de impressao }*/)
+	TRCell():New(oSection2,'COD2'			,cAliasQry,"Codigo"			,			,15						,/*lPixel*/,/*{|| code-block de impressao }*/)
+	TRCell():New(oSection2,'DES2'			,cAliasQry,"Descricao"  	,			,40/*Tamanho*/			,/*lPixel*/,/*{|| code-block de impressao }*/)
 
 Return oReport
 
@@ -216,9 +216,9 @@ endif
 		oSection2:setHeaderSection(.T.)
 		oReport:skipLine(2)
 
-// Imprimir Embalagens Retornóveis
+// Imprimir Embalagens Retornaveis
 		if len( aEmb ) > 0
-			oReport:PrtLeft("Embalagens Retornáveis:")
+			oReport:PrtLeft("Embalagens Retornaveis:")
 			oReport:skipLine(1)
 			oReport:PrtLeft("=======================")
 			oReport:skipLine(1)
@@ -254,11 +254,11 @@ return nil
 
 //-----------------------------------------------------------------------------------
 static function criaCab(oReport)
-local cChar		:= chr(160)  // caracter dummy para alinhamento do cabeóalho     
+local cChar		:= chr(160)  // caracter dummy para alinhamento do cabecalho     
 local _linha0,_linha1,_linha2,_linha3,_linha4,_linha5
 
 	_linha0 := "__LOGOEMP__"
-	_linha1 := cChar + "         " + "ROMANEIO DE EXPEDIÇÃO" + "         "  + cChar + RptFolha + TRANSFORM(oReport:Page(),'999999')
+	_linha1 := cChar + "         " + "ROMANEIO DE EXPEDICAO" + "         "  + cChar + RptFolha + TRANSFORM(oReport:Page(),'999999')
 	_linha2 := "SIGA/FROMANEIO.prt/v." + cVersao + "         " + cChar + "Rota: " + cRota +  "         " + cChar
 	_linha3 := RptHora + " " + time() + "         " + cChar + RptEmiss + " " + Dtoc(dDataBase)
 	_linha4 := cChar + "    " + "Transportador: "+cTransp + " " 
@@ -270,7 +270,7 @@ return {_linha0,_linha1,_linha2,_linha3,_linha4,_linha5 }
 
 
 //-------------------------------------------
-// Cria o grupo de perguntas do relatório
+// Cria o grupo de perguntas do relatorio
 //-------------------------------------------
 static function AjustaSX1()
 	//    cGrupo,cOrdem ,cPergunt         	,cPergSpa   ,cPergEng      	,cVar     ,cTipo,nTamanho,nDecimal,nPreSel,cGSC ,cValid            	,cF3    	,cGrpSXG,cPyme,cVar01    ,cDef01        	,cDefSpa1      		,cDefEng1      		,cDef02       	,cDefSpa2     		,cDefEng2     		,cDef03  		,cDefSpa3		,cDefEng3 	,cDef04  	,cDefSpa4		,cDefEng4		,cDef05 	 		,cDefSpa5		,cDefEng5		,aHelpPor		,aHelpEng		,aHelpSpa		,cHelp)
