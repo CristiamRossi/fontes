@@ -11,13 +11,13 @@ user function fRomaneio()
 Local   aArea     := GetArea()
 Local   oReport
 private cAliasQry := getNextAlias()
-private cTitulo   := "Romaneio de Expedição"
+private cTitulo   := "Romaneio de Expedicao"
 private cPerg     := "FROMANEIO"
 
 	AjustaSX1()
 
 	if ! Pergunte(cPerg,.T.)
-		MsgAlert("Operação cancelada pelo usuário", cTitulo)
+		MsgAlert("Operacao cancelada pelo usuario", cTitulo)
 		Return nil
 	endif
 
@@ -33,24 +33,30 @@ Local oReport
 Local oSection1
 Local oSection2
 
-	oReport := TReport():New(cPerg,cTitulo,cPerg,{|oReport| PrintReport(oReport)},"Este relatorio irá imprimir o Romaneio de Expedição.")
-	oReport:nFontBody := 7
+	oReport := TReport():New(cPerg,cTitulo,cPerg,{|oReport| PrintReport(oReport)},"Este relatorio ira imprimir o Romaneio de Expedicao.")
+	oReport:setLandScape()
+	oReport:lParamPage := .F.
+	oReport:oPage:SetPaperSize(9) //Folha A4
+	oReport:nFontBody := 12
+	oReport:nLineHeight := oReport:nFontBody * 4
 
 	oSection1 := TRSection():New(oReport,"Cliente e NF"       ,{cAliasQry})
 	oSection2 := TRSection():New(oReport,"Itens a transportar",{cAliasQry})
 
-	TRCell():New(oSection1,'CODIGO'			,cAliasQry,"Código"			,			,06 /*Tamanho*/			,/*lPixel*/,/*{|| code-block de impressao }*/)
+	TRCell():New(oSection1,'CODIGO'			,cAliasQry,"Codigo"			,			,06 /*Tamanho*/			,/*lPixel*/,/*{|| code-block de impressao }*/)
 	TRCell():New(oSection1,'NOME'			,cAliasQry,"Nome Cliente"	,			,40						,/*lPixel*/,/*{|| code-block de impressao }*/)
+	TRCell():New(oSection1,'PEDIDO'			,cAliasQry,"Pedido"			,			,06/*Tamanho*/			,/*lPixel*/,/*{|| code-block de impressao }*/)
 	TRCell():New(oSection1,'DOC'			,cAliasQry,"Nota Fiscal"	,			,10/*Tamanho*/			,/*lPixel*/,/*{|| code-block de impressao }*/)
-	TRCell():New(oSection1,'SERIE'			,cAliasQry,"Série"	 		,			,03						,/*lPixel*/,/*{|| code-block de impressao }*/)
+	TRCell():New(oSection1,'SERIE'			,cAliasQry,"Serie"	 		,			,03						,/*lPixel*/,/*{|| code-block de impressao }*/)
+	TRCell():New(oSection1,'VALNF'			,cAliasQry,"Valor NF" 		,"@E 999,999,999.99",12				,/*lPixel*/,/*{|| code-block de impressao }*/)
 
-	TRCell():New(oSection2,'QTD1'			,cAliasQry,"Qtde"			,			,08/*Tamanho*/			,/*lPixel*/,/*{|| code-block de impressao }*/)
-	TRCell():New(oSection2,'COD1'			,cAliasQry,"Código"			,			,15						,/*lPixel*/,/*{|| code-block de impressao }*/)
-	TRCell():New(oSection2,'DES1'			,cAliasQry,"Descrição"  	,			,40/*Tamanho*/			,/*lPixel*/,/*{|| code-block de impressao }*/)
+	TRCell():New(oSection2,'QTD1'			,cAliasQry,"Qtde"			,			,05/*Tamanho*/			,/*lPixel*/,/*{|| code-block de impressao }*/)
+	TRCell():New(oSection2,'COD1'			,cAliasQry,"Codigo"			,			,06						,/*lPixel*/,/*{|| code-block de impressao }*/)
+	TRCell():New(oSection2,'DES1'			,cAliasQry,"Descricao"  	,			,40/*Tamanho*/			,/*lPixel*/,/*{|| code-block de impressao }*/)
 	TRCell():New(oSection2,'FILLER'			,         ,""				,			,10						,/*lPixel*/,/*{|| code-block de impressao }*/)
-	TRCell():New(oSection2,'QTD2'			,cAliasQry,"Qtde"			,			,08/*Tamanho*/			,/*lPixel*/,/*{|| code-block de impressao }*/)
-	TRCell():New(oSection2,'COD2'			,cAliasQry,"Código"			,			,15						,/*lPixel*/,/*{|| code-block de impressao }*/)
-	TRCell():New(oSection2,'DES2'			,cAliasQry,"Descrição"  	,			,40/*Tamanho*/			,/*lPixel*/,/*{|| code-block de impressao }*/)
+	TRCell():New(oSection2,'QTD2'			,cAliasQry,"Qtde"			,			,05/*Tamanho*/			,/*lPixel*/,/*{|| code-block de impressao }*/)
+	TRCell():New(oSection2,'COD2'			,cAliasQry,"Codigo"			,			,06						,/*lPixel*/,/*{|| code-block de impressao }*/)
+	TRCell():New(oSection2,'DES2'			,cAliasQry,"Descricao"  	,			,40/*Tamanho*/			,/*lPixel*/,/*{|| code-block de impressao }*/)
 
 Return oReport
 
@@ -68,7 +74,7 @@ local aEmb      := {}
 	SZC->( dbSetOrder(2) )		// Filial + Transp + Doc + Serie + Modelo
 
 	cQuery := "select C5_XROTA, F2_TRANSP, A4_NOME, A1_CEP, A1_COD, A1_LOJA, A1_NREDUZ, F2_DOC, F2_SERIE,"
-	cQuery += " D2_QUANT, D2_COD, B1_DESC, ZR_DESCR"
+	cQuery += " D2_QUANT, D2_COD, B1_DESC, ZR_DESCR, C5_NUM, F2_VALBRUT"
 	cQuery += " from "+retSqlName("SF2")+" SF2 "
 	cQuery += " join "+retSqlName("SD2")+" SD2 on D2_FILIAL=F2_FILIAL and D2_DOC=F2_DOC and D2_SERIE=F2_SERIE and D2_CLIENTE=F2_CLIENTE and SD2.D_E_L_E_T_=' '"
 	cQuery += " join "+retSqlName("SC5")+" SC5 on C5_FILIAL=D2_FILIAL and C5_NUM=D2_PEDIDO and SC5.D_E_L_E_T_=' '"
@@ -162,6 +168,8 @@ endif
 				oSection1:Cell("NOME"  ):SetValue( aItens[nI,7] )
 				oSection1:Cell("DOC"   ):SetValue( aItens[nI,8] )
 				oSection1:Cell("SERIE" ):SetValue( aItens[nI,9] )
+				oSection1:Cell("PEDIDO"):SetValue( aItens[nI,14] )
+				oSection1:Cell("VALNF" ):SetValue( aItens[nI,15] )
 				oSection1:printline()
 				oSection2:init()
 				cChave := aItens[nI,4] + aItens[nI,5] + aItens[nI,6]
@@ -218,7 +226,7 @@ endif
 
 // Imprimir Embalagens Retornóveis
 		if len( aEmb ) > 0
-			oReport:PrtLeft("Embalagens Retornáveis:")
+			oReport:PrtLeft("Embalagens Retornaveis:")
 			oReport:skipLine(1)
 			oReport:PrtLeft("=======================")
 			oReport:skipLine(1)
@@ -239,10 +247,14 @@ endif
 
 			oReport:skipLine(2)
 		endif
-
+/*
 		oReport:PrtLeft(Space(25)+replicate("-",40)+space(40)+replicate("-",40))
 		oReport:skipLine(1)
 		oReport:PrtLeft(space(40)+"SEPARADOR"+space(70)+"TRANSPORTADOR")
+*/
+		oReport:prtCenter( replicate("-",40)+space(40)+replicate("-",40) ) 
+		oReport:skipLine(1)
+		oReport:prtCenter( "SEPARADOR"+space(70)+"TRANSPORTADOR" ) 
 
 		oSection1:Finish()
 		oReport:endPage()
@@ -258,7 +270,7 @@ local cChar		:= chr(160)  // caracter dummy para alinhamento do cabeóalho
 local _linha0,_linha1,_linha2,_linha3,_linha4,_linha5
 
 	_linha0 := "__LOGOEMP__"
-	_linha1 := cChar + "         " + "ROMANEIO DE EXPEDIÇÃO" + "         "  + cChar + RptFolha + TRANSFORM(oReport:Page(),'999999')
+	_linha1 := cChar + "         " + "ROMANEIO DE EXPEDICAO" + "         "  + cChar + RptFolha + TRANSFORM(oReport:Page(),'999999')
 	_linha2 := "SIGA/FROMANEIO.prt/v." + cVersao + "         " + cChar + "Rota: " + cRota +  "         " + cChar
 	_linha3 := RptHora + " " + time() + "         " + cChar + RptEmiss + " " + Dtoc(dDataBase)
 	_linha4 := cChar + "    " + "Transportador: "+cTransp + " " 
