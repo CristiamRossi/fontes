@@ -1,7 +1,7 @@
 #include "totvs.ch"
 #include "apwizard.ch"
 /*/{Protheus.doc} impPV
-Importação Pedido de Vendas por planilha em .CSV, layout Padrão de Açúcar e layout Neogrid
+Importaco Pedido de Vendas por planilha em .CSV, layout Padrao de Acucar e layout Neogrid
 @type function
 @author Cristiam Rossi
 @since 29/11/2019
@@ -15,9 +15,9 @@ Importação Pedido de Vendas por planilha em .CSV, layout Padrão de Açúcar e
 user function impPV()
 local lContinua := .T.
 
-	while lContinua		// loop criado para ficar com a rotina em execução sem sair
+	while lContinua		// loop criado para ficar com a rotina em execuco sem sair
 		RodaImpPv()
-		lContinua := msgYesNo( "Deseja Continuar na rotina?", "Rotina de Importação dos Pedidos de Vendas" )
+		lContinua := msgYesNo( "Deseja Continuar na rotina?", "Rotina de Importaco dos Pedidos de Vendas" )
 	end
 
 return nil
@@ -31,15 +31,15 @@ private nMAXLIN  := 1500							// total de linhas a serem consideradas no CSV
 private nMAXCOL  := 200								// total de colunas a serem consideradas no CSV
 private oArquivo
 private cArquivo := space(100)
-private cTitulo  := "Importação de Pedidos de Vendas"
+private cTitulo  := "Importaco de Pedidos de Vendas"
 private nHdl     := 0
 private cPath    := GetTempPath()
 private cLOG     := criaTrab(,.F.)+".htm"
 //private oTIBrowser
 private oSE
 
-//---------- Parâmetros ----------//
-private AT_CONDPV  := ""	// condição de pagto
+//---------- Parametros ----------//
+private AT_CONDPV  := ""	// condico de pagto
 private AT_PVTES   := ""	// TES
 
 //	chkParam()
@@ -47,14 +47,14 @@ private AT_PVTES   := ""	// TES
 	DEFINE WIZARD oWizard TITLE cTitulo ;
 		HEADER "Gerar novos pedidos de vendas" ;
 		MESSAGE "" ;
-		TEXT "Esta rotina irá carregar um arquivo no formato .TXT (layout NEOGRID), .SCP (layout Pão de Açúcar) ou .CSV (layout Planilha), fazer as devidas consistências e importar os Pedidos de Vendas." ;
+		TEXT "Esta rotina ira carregar um arquivo no formato .TXT (layout NEOGRID), .SCP (layout Pao de Acucar) ou .CSV (layout Planilha), fazer as devidas consistencias e importar os Pedidos de Vendas." ;
 		NEXT {||.T.} ;
 		FINISH {|| .T. } ;
 		PANEL
 
 	CREATE PANEL oWizard ;
 		HEADER "Informe o arquivo a ser importado" ;
-		MESSAGE "A rotina irá carregar o arquivo, fazer as devidas consistênciass e gerar os Pedidos de Vendas" ;
+		MESSAGE "A rotina ira carregar o arquivo, fazer as devidas consistenciass e gerar os Pedidos de Vendas" ;
 		BACK {|| .T. } ;
 		NEXT {|| ! empty( cArquivo ) .and. fDistrib() } ;
 		FINISH {|| .T. } ;
@@ -65,8 +65,8 @@ private AT_PVTES   := ""	// TES
 		@ 30,15 MSGET oArquivo Var cArquivo SIZE 240,10 PIXEL OF oPanel when .F.
 
 	CREATE PANEL oWizard ;
-		HEADER "Finalização" ;
-		MESSAGE "Importação finalizada!" ;
+		HEADER "Finalizaco" ;
+		MESSAGE "Importaco finalizada!" ;
 		BACK {|| .F. } ;
 		NEXT {|| .F. } ;
 		FINISH {|| .T. } ;
@@ -121,7 +121,7 @@ local lRet      := .F.
 		case cExtensao == "CSV"
 			lRet := impCSV()
 		otherwise
-			msgStop( "Extensão não reconhecida", "Seleção do arquivo" )
+			msgStop( "Extensao nao reconhecida", "Seleco do arquivo" )
 			lRet := .F.
 	end case
 return lRet
@@ -151,13 +151,13 @@ private aProcOK  := {}
 private aProcERR := {}
 
 	if FT_FUSE( cArquivo ) == -1
-		msgAlert("Não foi possível abrir o arquivo "+cArquivo, cTitulo)
+		msgAlert("Nao foi possi�vel abrir o arquivo "+cArquivo, cTitulo)
 		return .F.
 	endif
 
 	nHdl := fCreate(cLOG, 0)
 	if nHdl == -1
-		msgAlert( "Problema na criação do arquivo de log: "+cLOG, cTitulo)
+		msgAlert( "Problema na criaco do arquivo de log: "+cLOG, cTitulo)
 		return .F.
 	else
 		cTXT := "<html>"
@@ -174,7 +174,7 @@ private aProcERR := {}
 		cTXT += "<body>"
 		cTXT += "<h4>Problemas encontrados:</h4>"
 		cTXT += "<table border='0' width='100%'>"
-		cTXT += "<tr"+iif(lBack," style='background-color: #CCCCCC'","")+"><th>Linha</th><th>Inconsistência</th><th>Descrição</th></tr>"
+		cTXT += "<tr"+iif(lBack," style='background-color: #CCCCCC'","")+"><th>Linha</th><th>Inconsistencia</th><th>Descrico</th></tr>"
 		lBack := !lBack
 		fWrite(nHdl, cTXT, Len(cTXT))
 	endif
@@ -184,11 +184,11 @@ private aProcERR := {}
 		nLin++
 		lPedExis := .F.
 
-// registro 01 - CABEÇALHO
+// registro 01 - CABECALHO
 		if nLin == 1
 			if left(cLinha, 2) != "01"
-				// não é o cabeçalho NEOGRID
-				cTXT := "<tr"+iif(lBack," style='background-color: #CCCCCC'","")+"><td>#"+cValTochar(nLin)+"</td><td>Arquivo inválido</td><td>Este arquivo não é layout NEOGRID</td></tr>"
+				// nao e o cabeCalho NEOGRID
+				cTXT := "<tr"+iif(lBack," style='background-color: #CCCCCC'","")+"><td>#"+cValTochar(nLin)+"</td><td>Arquivo invalido</td><td>Este arquivo nao e layout NEOGRID</td></tr>"
 				lBack := !lBack
 				fWrite(nHdl, cTXT, Len(cTXT))
 				lOk := .F.
@@ -196,8 +196,8 @@ private aProcERR := {}
 			endif
 
 			if substr(cLinha,3,3) != "9  "
-				// só será tratada INCLUSÃO
-				cTXT := "<tr"+iif(lBack," style='background-color: #CCCCCC'","")+"><td>#"+cValTochar(nLin)+"</td><td>Tipo de Pedido Inválido</td><td>Esta rotina efetua apenas INCLUSÃO ["+substr(cLinha,3,3)+"]</td></tr>"
+				// so sera tratada INCLUSAO
+				cTXT := "<tr"+iif(lBack," style='background-color: #CCCCCC'","")+"><td>#"+cValTochar(nLin)+"</td><td>Tipo de Pedido Invalido</td><td>Esta rotina efetua apenas INCLUSAO ["+substr(cLinha,3,3)+"]</td></tr>"
 				lBack := !lBack
 				fWrite(nHdl, cTXT, Len(cTXT))
 				lOk := .F.
@@ -210,9 +210,9 @@ private aProcERR := {}
 			
 			If lPedExis
 				If MsgYesNo("Pedido de venda com o codigo pedido do cliente "+cPedCli+" ja existe, deseja criar assim mesmo?","PEDIDO JA EXISTE")			
-					lPedExis := .F.    // .F. pedido será criado
+					lPedExis := .F.    // .F. pedido sera criado
 				Else	
-					cTXT := "<tr"+iif(lBack," style='background-color: #CCCCCC'","")+"><td>#"+cValTochar(nLin)+"</td><td>PV já existente</td><td>Este PV já foi lançado. Pedido cliente: ["+cPedCli+"], pedido protheus: ["+SC5->C5_NUM+"]</td></tr>"
+					cTXT := "<tr"+iif(lBack," style='background-color: #CCCCCC'","")+"><td>#"+cValTochar(nLin)+"</td><td>PV ja existente</td><td>Este PV ja foi lancado. Pedido cliente: ["+cPedCli+"], pedido protheus: ["+SC5->C5_NUM+"]</td></tr>"
 					lBack := !lBack
 					fWrite(nHdl, cTXT, Len(cTXT))
 					lOk := .F.
@@ -227,7 +227,7 @@ private aProcERR := {}
 				cCNPJEnt := substr(cLinha,209,14)
 	/*
 				if empty( cCNPJfor ) .or. cCNPJfor != SM0->M0_CGC
-					cTXT := "<tr"+iif(lBack," style='background-color: #CCCCCC'","")+"><td>#"+cValTochar(nLin)+"</td><td>PV p/ outro CNPJ</td><td>Este PV não é pra este CNPJ ["+cCNPJfor+"]</td></tr>"
+					cTXT := "<tr"+iif(lBack," style='background-color: #CCCCCC'","")+"><td>#"+cValTochar(nLin)+"</td><td>PV p/ outro CNPJ</td><td>Este PV nao e pra este CNPJ ["+cCNPJfor+"]</td></tr>"
 					lBack := !lBack
 					fWrite(nHdl, cTXT, Len(cTXT))
 					lOk := .F.
@@ -240,7 +240,7 @@ private aProcERR := {}
 	
 				SA1->( dbSetOrder(3) )
 				if empty( cCNPJEnt ) .or. ! SA1->( dbSeek( xFilial("SA1") + cCNPJEnt ) )
-					cTXT := "<tr"+iif(lBack," style='background-color: #CCCCCC'","")+"><td>#"+cValTochar(nLin)+"</td><td>CNPJ cliente</td><td>O cliente com CNPJ ["+cCNPJFat+"] não foi encontrado</td></tr>"
+					cTXT := "<tr"+iif(lBack," style='background-color: #CCCCCC'","")+"><td>#"+cValTochar(nLin)+"</td><td>CNPJ cliente</td><td>O cliente com CNPJ ["+cCNPJFat+"] nao foi encontrado</td></tr>"
 					lBack := !lBack
 					fWrite(nHdl, cTXT, Len(cTXT))
 					lOk := .F.
@@ -256,7 +256,7 @@ private aProcERR := {}
 				if cCNPJEnt != cCNPJCli
 					SA1->( dbSetOrder(3) )
 					if empty( cCNPJEnt ) .or. ! SA1->( dbSeek( xFilial("SA1") + cCNPJEnt ) )
-						cTXT := "<tr"+iif(lBack," style='background-color: #CCCCCC'","")+"><td>#"+cValTochar(nLin)+"</td><td>CNPJ cliente Entrega</td><td>O cliente de Entrega com CNPJ ["+cCNPJEnt+"] não foi encontrado</td></tr>"
+						cTXT := "<tr"+iif(lBack," style='background-color: #CCCCCC'","")+"><td>#"+cValTochar(nLin)+"</td><td>CNPJ cliente Entrega</td><td>O cliente de Entrega com CNPJ ["+cCNPJEnt+"] nao foi encontrado</td></tr>"
 						lBack := !lBack
 						fWrite(nHdl, cTXT, Len(cTXT))
 						lOk := .F.
@@ -278,10 +278,10 @@ private aProcERR := {}
 			EndIf	
 		endif
 
-// registro 02 - Condição de Pagamento
+// registro 02 - Condico de Pagamento
 		if left(cLinha, 2) == "02"				// podem ser N registros
 //			if substr(cLinha,3,3) != "1  "
-//				cTXT := "<tr"+iif(lBack," style='background-color: #CCCCCC'","")+"><td>#"+cValTochar(nLin)+"</td><td>Cond.Pagto</td><td>A condição de pagamento está ["+substr(cLinha,3,3)+"] no arquivo, apenas verifique</td></tr>"
+//				cTXT := "<tr"+iif(lBack," style='background-color: #CCCCCC'","")+"><td>#"+cValTochar(nLin)+"</td><td>Cond.Pagto</td><td>A condico de pagamento esta ["+substr(cLinha,3,3)+"] no arquivo, apenas verifique</td></tr>"
 //				lBack := !lBack
 //				fWrite(nHdl, cTXT, Len(cTXT))
 //			endif
@@ -293,7 +293,7 @@ private aProcERR := {}
 		if left(cLinha, 2) == "04"				// podem ser N registros
 			//NEOGRID  Len = 13 (B1_CODBAR), se Len = 14 (B1_XCODDUN)
 			cCodArq	:=  AllTrim(SubStr(cLinha,18,14))
-			cTpCod   := substr(cLinha,15,3)		// nos modelos que recebi são EN = EAN
+			cTpCod   := substr(cLinha,15,3)		// nos modelos que recebi sao EN = EAN
 			cDescri  := alltrim( substr(cLinha,32,40) )
 			cTipo	 := AllTrim( substr(cLinha,18,13) )                               
 			
@@ -306,7 +306,7 @@ private aProcERR := {}
 			EndIf	
 			
 			if ! SB1->( dbSeek( xFilial("SB1") + cCodPrd) )
-				cTXT := "<tr"+iif(lBack," style='background-color: #CCCCCC'","")+"><td>#"+cValTochar(nLin)+"</td><td>Produto não encontrado</td><td>O produto código ["+cCodPrd+"] e descrição ["+cDescri+"] não foi encontrado</td></tr>"
+				cTXT := "<tr"+iif(lBack," style='background-color: #CCCCCC'","")+"><td>#"+cValTochar(nLin)+"</td><td>Produto nao encontrado</td><td>O produto codigo ["+cCodPrd+"] e descrico ["+cDescri+"] nao foi encontrado</td></tr>"
 				lBack := !lBack
 				fWrite(nHdl, cTXT, Len(cTXT))
 				lOK := .F.
@@ -329,7 +329,7 @@ private aProcERR := {}
 			cItem := soma1( cItem )
 		endif
 
-// registro 09 - Sumário
+// registro 09 - Sumario
 		if left(cLinha, 2) == "09"
 			lReg09 := .T.
 		endif
@@ -344,7 +344,7 @@ private aProcERR := {}
 	end
 
 	if ! lReg09		// Arquivo corrompido, tem que ter o registro TRAILLER
-		cTXT  := "<tr"+iif(lBack," style='background-color: #CCCCCC'","")+"><td>#"+cValTochar(nLin)+"</td><td>Arquivo corrompido</td><td>ausência do registro 09 - Sumário</td></tr>"
+		cTXT  := "<tr"+iif(lBack," style='background-color: #CCCCCC'","")+"><td>#"+cValTochar(nLin)+"</td><td>Arquivo corrompido</td><td>ausencia do registro 09 - Sumario</td></tr>"
 		lBack := !lBack
 		lOk   := .F.
 		fWrite(nHdl, cTXT, Len(cTXT))
@@ -369,7 +369,7 @@ private aProcERR := {}
 		lBack := .T.
 		cTXT := "<h4>Pedidos gerados:</h4>"
 		cTXT += "<table border='0' width='50%'>"
-		cTXT += "<tr"+iif(lBack," style='background-color: #CCCCCC'","")+"><th>Filial</th><th>Número</th></tr>"
+		cTXT += "<tr"+iif(lBack," style='background-color: #CCCCCC'","")+"><th>Filial</th><th>Numero</th></tr>"
 		fWrite(nHdl, cTXT, Len(cTXT))
 	
 		for nI := 1 to len( aProcOK )
@@ -382,7 +382,7 @@ private aProcERR := {}
 
 		if len( aProcERR ) > 0
 			cTXT := "</table><br />"
-			cTXT += "<h4>Erros na inclusão:</h4>"
+			cTXT += "<h4>Erros na inclusao:</h4>"
 			cTXT += "<table border='0' width='100%'>"
 			cTXT += "<tr"+iif(lBack," style='background-color: #CCCCCC'","")+"><th>Filial</th><th>Erro</th></tr>"
 			fWrite(nHdl, cTXT, Len(cTXT))
@@ -413,7 +413,7 @@ return .T.
 
 
 //---------------------------------------------------
-Static Function impPAO()	// layout Pão de Açúcar
+Static Function impPAO()	// layout Pao de Acucar
 local   cLinha
 local   nOK      := 0
 local   nERR     := 0
@@ -430,13 +430,13 @@ private aProcOK  := {}
 private aProcERR := {}
 
 	if FT_FUSE( cArquivo ) == -1
-		msgAlert("Não foi possível abrir o arquivo "+cArquivo, cTitulo)
+		msgAlert("Nao foi possi�vel abrir o arquivo "+cArquivo, cTitulo)
 		return .F.
 	endif
 
 	nHdl := fCreate(cLOG, 0)
 	if nHdl == -1
-		msgAlert( "Problema na criação do arquivo de log: "+cLOG, cTitulo)
+		msgAlert( "Problema na criaco do arquivo de log: "+cLOG, cTitulo)
 		return .F.
 	else
 		cTXT := "<html>"
@@ -453,7 +453,7 @@ private aProcERR := {}
 		cTXT += "<body>"
 		cTXT += "<h4>Problemas encontrados:</h4>"
 		cTXT += "<table border='0' width='100%'>"
-		cTXT += "<tr"+iif(lBack," style='background-color: #CCCCCC'","")+"><th>Linha</th><th>Inconsistência</th><th>Descrição</th></tr>"
+		cTXT += "<tr"+iif(lBack," style='background-color: #CCCCCC'","")+"><th>Linha</th><th>Inconsistencia</th><th>Descrico</th></tr>"
 		lBack := !lBack
 		fWrite(nHdl, cTXT, Len(cTXT))
 	endif
@@ -463,7 +463,7 @@ private aProcERR := {}
 		nLin++         
 		lPedExis := .F.
 
-// registro 01 - CABEÇALHO
+// registro 01 - CABECALHO
 		if left(cLinha, 2) == "01"
 			cPedCli := substr(cLinha,3,15)
 			aSize(aCabec,0)
@@ -477,9 +477,9 @@ private aProcERR := {}
 			
 			If lPedExis
 				If MsgYesNo("Pedido de venda com o codigo pedido do cliente "+cPedCli+" ja existe, deseja criar assim mesmo?","PEDIDO JA EXISTE")			
-					lPedExis := .F.    // .F. pedido será criado
+					lPedExis := .F.    // .F. pedido sera criado
 				Else	
-					cTXT := "<tr"+iif(lBack," style='background-color: #CCCCCC'","")+"><td>#"+cValTochar(nLin)+"</td><td>PV já existente</td><td>Este PV já foi lançado. Pedido cliente: ["+cPedCli+"], pedido protheus: ["+SC5->C5_NUM+"]</td></tr>"
+					cTXT := "<tr"+iif(lBack," style='background-color: #CCCCCC'","")+"><td>#"+cValTochar(nLin)+"</td><td>PV ja existente</td><td>Este PV ja foi lanCado. Pedido cliente: ["+cPedCli+"], pedido protheus: ["+SC5->C5_NUM+"]</td></tr>"
 					lBack := !lBack
 					fWrite(nHdl, cTXT, Len(cTXT))
 					lOk := .F.
@@ -501,7 +501,7 @@ private aProcERR := {}
 
 				SA1->(dbOrderNickname("A1XEANPAO"))
 				if ! SA1->( dbSeek( xFilial("SA1") + cEANentr) )		// nao encontrou endereco de Entrega
-					cTXT := "<tr"+iif(lBack," style='background-color: #CCCCCC'","")+"><td>#"+cValTochar(nLin)+"</td><td>Local Pão de Açúcar</td><td>Não encontrou Endereço de Entrega p/ EAN: ["+cEANentr+"], pedido cliente: ["+cPedCli+"]</td></tr>"
+					cTXT := "<tr"+iif(lBack," style='background-color: #CCCCCC'","")+"><td>#"+cValTochar(nLin)+"</td><td>Local Pao de Acucar</td><td>Nao encontrou EndereCo de Entrega p/ EAN: ["+cEANentr+"], pedido cliente: ["+cPedCli+"]</td></tr>"
 					lBack := !lBack
 					fWrite(nHdl, cTXT, Len(cTXT))
 					lOk := .F.
@@ -509,12 +509,12 @@ private aProcERR := {}
 					cCodEnt := SA1->A1_COD
 					cLojEnt := SA1->A1_LOJA
 
-					cCodCli := SA1->A1_COD		// mesmo cliente cobrança e entrega
-					cLojCli := SA1->A1_LOJA		// mesmo cliente cobrança e entrega
+					cCodCli := SA1->A1_COD		// mesmo cliente cobranCa e entrega
+					cLojCli := SA1->A1_LOJA		// mesmo cliente cobranCa e entrega
 				endif
 /*
-				if ! SA1->( dbSeek( xFilial("SA1") + cEANcobr) )		// nao encontrou Cliente de Cobrança
-					cTXT := "<tr"+iif(lBack," style='background-color: #CCCCCC'","")+"><td>#"+cValTochar(nLin)+"</td><td>Local Pão de Açúcar</td><td>Não encontrou Endereço de Cobrança p/ EAN: ["+cEANcobr+"], pedido cliente: ["+cPedCli+"]</td></tr>"
+				if ! SA1->( dbSeek( xFilial("SA1") + cEANcobr) )		// nao encontrou Cliente de CobranCa
+					cTXT := "<tr"+iif(lBack," style='background-color: #CCCCCC'","")+"><td>#"+cValTochar(nLin)+"</td><td>Local Pao de Acucar</td><td>Nao encontrou EndereCo de CobranCa p/ EAN: ["+cEANcobr+"], pedido cliente: ["+cPedCli+"]</td></tr>"
 					lBack := !lBack
 					fWrite(nHdl, cTXT, Len(cTXT))
 					lOk := .F.
@@ -538,7 +538,7 @@ private aProcERR := {}
 		endif
 
 
-		if lOK		// tá com cabeçalho
+		if lOK		// ta com cabeCalho
 			if left(cLinha, 2) == "11"				// mensagem
 /*
 11011840495562380
@@ -548,10 +548,10 @@ private aProcERR := {}
 */
 
 				cTemp := alltrim( substr(cLinha,18,140) )
-//				aAdd(aCabec,{"C5_"		,cTemp, Nil})		// não tem campo padrão, Cria?
+//				aAdd(aCabec,{"C5_"		,cTemp, Nil})		// nao tem campo padrao, Cria?
 			endif
 
-			if left(cLinha, 2) == "02"				// condição de pagto
+			if left(cLinha, 2) == "02"				// condico de pagto
 /*
 020118404955623800012FS0450000000000210010000000000000000000                                                     0000000000000000000000   000000000000
   011840495562380
@@ -564,7 +564,7 @@ private aProcERR := {}
                                         10000
 */
 //				cTemp := substr(cLinha,24,3) + "-" + substr(cLinha,22,2)
-//				cTXT := "<tr"+iif(lBack," style='background-color: #CCCCCC'","")+"><td>#"+cValTochar(nLin)+"</td><td>Condição de Pagamento</td><td>A condição de pagamento está ["+cTemp+"] no arquivo, apenas verifique</td></tr>"
+//				cTXT := "<tr"+iif(lBack," style='background-color: #CCCCCC'","")+"><td>#"+cValTochar(nLin)+"</td><td>Condico de Pagamento</td><td>A condico de pagamento esta ["+cTemp+"] no arquivo, apenas verifique</td></tr>"
 //				lBack := !lBack
 //				fWrite(nHdl, cTXT, Len(cTXT))
 			endif
@@ -583,7 +583,7 @@ private aProcERR := {}
                                                                                        00000000006980000
                                                                                                         00000000000000000000000000000000000000000000000000000000000000000000000               000000000000000000000  000000000000000000000000                         0000000000000                         000000000000000000000000000000                    
 */              
-				//PAO DE AÇUCAR - Se posição 18 = EAN (B1_CODBAR), se 18 = DUN (B1_XCODDUN)
+				//PAO DE ACUCAR - Se posico 18 = EAN (B1_CODBAR), se 18 = DUN (B1_XCODDUN)
 				
 				cTpCod   := substr(cLinha,18,3)		// Tipo EAN - DUN (GTIN)
 				cDescri  := alltrim( substr(cLinha,41,35) )
@@ -598,7 +598,7 @@ private aProcERR := {}
 									
 				if ! SB1->( dbSeek( xFilial("SB1") + cCodPrd) )
 
-					cTXT := "<tr"+iif(lBack," style='background-color: #CCCCCC'","")+"><td>#"+cValTochar(nLin)+"</td><td>Produto não encontrado</td><td>O produto código ["+cCodPrd+"] e descrição ["+cDescri+"] não foi encontrado</td></tr>"
+					cTXT := "<tr"+iif(lBack," style='background-color: #CCCCCC'","")+"><td>#"+cValTochar(nLin)+"</td><td>Produto nao encontrado</td><td>O produto codigo ["+cCodPrd+"] e descrico ["+cDescri+"] nao foi encontrado</td></tr>"
 					lBack := !lBack
 					fWrite(nHdl, cTXT, Len(cTXT))
 					lOK := .F.
@@ -654,7 +654,7 @@ msUnlock()
 	cTXT := "</table><br />"
 	cTXT += "<h4>Pedidos gerados:</h4>"
 	cTXT += "<table border='0' width='50%'>"
-	cTXT += "<tr"+iif(lBack," style='background-color: #CCCCCC'","")+"><th>Filial</th><th>Número</th></tr>"
+	cTXT += "<tr"+iif(lBack," style='background-color: #CCCCCC'","")+"><th>Filial</th><th>Numero</th></tr>"
 	fWrite(nHdl, cTXT, Len(cTXT))
 
 	for nI := 1 to len( aProcOK )
@@ -667,7 +667,7 @@ msUnlock()
 
 	if len( aProcERR ) > 0
 		cTXT := "</table><br />"
-		cTXT += "<h4>Erros na inclusão:</h4>"
+		cTXT += "<h4>Erros na inclusao:</h4>"
 		cTXT += "<table border='0' width='100%'>"
 		cTXT += "<tr"+iif(lBack," style='background-color: #CCCCCC'","")+"><th>Filial</th><th>Erro</th></tr>"
 		fWrite(nHdl, cTXT, Len(cTXT))
@@ -725,13 +725,13 @@ private aProcOK  := {}
 private aProcERR := {}
 
 	if FT_FUSE( cArquivo ) == -1
-		msgAlert("Não foi possível abrir o arquivo "+cArquivo, cTitulo)
+		msgAlert("Nao foi possi�vel abrir o arquivo "+cArquivo, cTitulo)
 		return .F.
 	endif
 
 	nHdl := fCreate(cLOG, 0)
 	if nHdl == -1
-		msgAlert( "Problema na criação do arquivo de log: "+cLOG, cTitulo)
+		msgAlert( "Problema na criaco do arquivo de log: "+cLOG, cTitulo)
 		return .F.
 	else
 		cTXT := "<html>"
@@ -748,7 +748,7 @@ private aProcERR := {}
 		cTXT += "<body>"
 		cTXT += "<h4>Problemas encontrados:</h4>"
 		cTXT += "<table border='0' width='100%'>"
-		cTXT += "<tr"+iif(lBack," style='background-color: #CCCCCC'","")+"><th>Linha</th><th>Inconsistência</th><th>Descrição</th></tr>"
+		cTXT += "<tr"+iif(lBack," style='background-color: #CCCCCC'","")+"><th>Linha</th><th>Inconsistencia</th><th>Descrico</th></tr>"
 		lBack := !lBack
 		fWrite(nHdl, cTXT, Len(cTXT))
 	endif
@@ -768,8 +768,8 @@ private aProcERR := {}
 
 		if nLin == 2	// clientes
 			if len( aCol ) < 7 .or. ! "CLIENTE" $ upper(aCol[4])
-				// não é a Planilha padrão
-				cTXT := "<tr"+iif(lBack," style='background-color: #CCCCCC'","")+"><td>#"+cValTochar(nLin)+"</td><td>Arquivo inválido</td><td>Este arquivo não é layout padrão da planilha</td></tr>"
+				// nao e a Planilha padrao
+				cTXT := "<tr"+iif(lBack," style='background-color: #CCCCCC'","")+"><td>#"+cValTochar(nLin)+"</td><td>Arquivo invalido</td><td>Este arquivo nao e layout padrao da planilha</td></tr>"
 				lBack := !lBack
 				fWrite(nHdl, cTXT, Len(cTXT))
 				lOk := .F.
@@ -779,7 +779,7 @@ private aProcERR := {}
 
 			SA1->( dbSetOrder(1) )
 			for nI := 7 to nMAXCOL
-				if empty( aCol[nI] )		// término dos clientes
+				if empty( aCol[nI] )		// termino dos clientes
 					nMAXCOL := nI
 					exit
 				endif
@@ -787,7 +787,7 @@ private aProcERR := {}
 				xTmp := alltrim( aCol[nI] )
 
 				if ! SA1->( dbSeek( xFilial("SA1") + padR( xTmp, nTamCli) ) .or. dbSeek( xFilial("SA1") + right( "000000"+xTmp, nTamCli) ) )
-					cTXT := "<tr"+iif(lBack," style='background-color: #CCCCCC'","")+"><td>#"+cValTochar(nLin)+"</td><td>Cliente não encontrado</td><td>Verifique o código do cliente ["+xTmp+"], não foi encontrado!</td></tr>"
+					cTXT := "<tr"+iif(lBack," style='background-color: #CCCCCC'","")+"><td>#"+cValTochar(nLin)+"</td><td>Cliente nao encontrado</td><td>Verifique o codigo do cliente ["+xTmp+"], nao foi encontrado!</td></tr>"
 					lBack := !lBack
 					fWrite(nHdl, cTXT, Len(cTXT))
 					lOk := .F.
@@ -803,7 +803,7 @@ private aProcERR := {}
 		endif
 
 		if nLin > nMAXLIN
-			cTXT := "<tr"+iif(lBack," style='background-color: #CCCCCC'","")+"><td>#"+cValTochar(nLin)+"</td><td>Interompido por excesso de linhas</td><td>Verifique se o arquivo está com a linha dos TOTAIS</td></tr>"
+			cTXT := "<tr"+iif(lBack," style='background-color: #CCCCCC'","")+"><td>#"+cValTochar(nLin)+"</td><td>Interompido por excesso de linhas</td><td>Verifique se o arquivo esta com a linha dos TOTAIS</td></tr>"
 			lBack := !lBack
 			fWrite(nHdl, cTXT, Len(cTXT))
 			lOk := .F.
@@ -811,15 +811,15 @@ private aProcERR := {}
 			exit
 		endif
 
-		if "TOTA" $ upper(aCol[1])		// término dos itens
-			cTXT := "<tr"+iif(lBack," style='background-color: #CCCCCC'","")+"><td>#"+cValTochar(nLin)+"</td><td>Término dos itens</td><td>Encontrada linha dos TOTAIS</td></tr>"
+		if "TOTA" $ upper(aCol[1])		// termino dos itens
+			cTXT := "<tr"+iif(lBack," style='background-color: #CCCCCC'","")+"><td>#"+cValTochar(nLin)+"</td><td>Termino dos itens</td><td>Encontrada linha dos TOTAIS</td></tr>"
 			lBack := !lBack
 			fWrite(nHdl, cTXT, Len(cTXT))
 			exit
 		endif
 
-		if empty( aCol[3] )		// produto não informado
-			cTXT := "<tr"+iif(lBack," style='background-color: #CCCCCC'","")+"><td>#"+cValTochar(nLin)+"</td><td>sem código do produto</td><td>linha sem o código do produto, ignorada</td></tr>"
+		if empty( aCol[3] )		// produto nao informado
+			cTXT := "<tr"+iif(lBack," style='background-color: #CCCCCC'","")+"><td>#"+cValTochar(nLin)+"</td><td>sem codigo do produto</td><td>linha sem o codigo do produto, ignorada</td></tr>"
 			lBack := !lBack
 			fWrite(nHdl, cTXT, Len(cTXT))
 			FT_FSKIP()
@@ -829,7 +829,7 @@ private aProcERR := {}
 		xTmp := alltrim( aCol[3] )
 		SB1->( dbSetOrder(1) )
 		if ! SB1->( dbSeek( xFilial("SB1") + padR(xTmp,nTamPrd) ) .or. dbSeek( xFilial("SB1") + padR( right("000000"+xTmp,6) ,nTamPrd) ) )
-			cTXT := "<tr"+iif(lBack," style='background-color: #CCCCCC'","")+"><td>#"+cValTochar(nLin)+"</td><td>Código do Produto ["+xTmp+"] não foi encontrado, verificar!</td></tr>"
+			cTXT := "<tr"+iif(lBack," style='background-color: #CCCCCC'","")+"><td>#"+cValTochar(nLin)+"</td><td>Codigo do Produto ["+xTmp+"] nao foi encontrado, verificar!</td></tr>"
 			lBack := !lBack
 			fWrite(nHdl, cTXT, Len(cTXT))
 			lOk := .F.
@@ -847,7 +847,7 @@ private aProcERR := {}
 	end
 	FT_FUSE()
 
-	if ! lOk		// problemas encontrados que impedem a inclusão dos pedidos
+	if ! lOk		// problemas encontrados que impedem a inclusao dos pedidos
 		cTXT  := "<tr"+iif(lBack," style='background-color: #CCCCCC'","")+"><td>#"+cValTochar(nLin)+"</td><td>Arquivo corrompido</td><td>Problemas graves encontrados que impedem o processamento, verifique o arquivo!</td></tr>"
 		lBack := !lBack
 		fWrite(nHdl, cTXT, Len(cTXT))
@@ -891,7 +891,7 @@ private aProcERR := {}
 		lBack := .T.
 		cTXT := "<h4>Pedidos gerados:</h4>"
 		cTXT += "<table border='0' width='50%'>"
-		cTXT += "<tr"+iif(lBack," style='background-color: #CCCCCC'","")+"><th>Filial</th><th>Número</th></tr>"
+		cTXT += "<tr"+iif(lBack," style='background-color: #CCCCCC'","")+"><th>Filial</th><th>Numero</th></tr>"
 		fWrite(nHdl, cTXT, Len(cTXT))
 
 		for nI := 1 to len( aProcOK )
@@ -904,7 +904,7 @@ private aProcERR := {}
 
 		if len( aProcERR ) > 0
 			cTXT := "</table><br />"
-			cTXT += "<h4>Erros na inclusão:</h4>"
+			cTXT += "<h4>Erros na inclusao:</h4>"
 			cTXT += "<table border='0' width='100%'>"
 			cTXT += "<tr"+iif(lBack," style='background-color: #CCCCCC'","")+"><th>Filial</th><th>Erro</th></tr>"
 			fWrite(nHdl, cTXT, Len(cTXT))
@@ -952,7 +952,7 @@ return nil
 
 //---------------------------------------------------------
 static function geraPV( aCabec, aItens )
-local   nOpc           := 3		// inclusão
+local   nOpc           := 3		// inclusao
 local   oErro          := ErrorBlock({|e| FilterErro(e)})
 local   nI
 local   aLogAuto       := {}

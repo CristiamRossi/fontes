@@ -1,6 +1,6 @@
 #include "totvs.ch"
 /*/{Protheus.doc} fRomaneio
-Impressão do Romaneio Compartilhado
+Impressao do Romaneio Compartilhado
 @author Cristiam Rossi
 @since 22/01/2020
 @version 1.0
@@ -224,7 +224,7 @@ endif
 		oSection2:setHeaderSection(.T.)
 		oReport:skipLine(2)
 
-// Imprimir Embalagens Retornóveis
+// Imprimir Embalagens Retornaveis
 		if len( aEmb ) > 0
 			oReport:PrtLeft("Embalagens Retornaveis:")
 			oReport:skipLine(1)
@@ -266,7 +266,7 @@ return nil
 
 //-----------------------------------------------------------------------------------
 static function criaCab(oReport)
-local cChar		:= chr(160)  // caracter dummy para alinhamento do cabeóalho     
+local cChar		:= chr(160)  // caracter dummy para alinhamento do cabecalho     
 local _linha0,_linha1,_linha2,_linha3,_linha4,_linha5
 
 	_linha0 := "__LOGOEMP__"
@@ -282,7 +282,7 @@ return {_linha0,_linha1,_linha2,_linha3,_linha4,_linha5 }
 
 
 //-------------------------------------------
-// Cria o grupo de perguntas do relatório
+// Cria o grupo de perguntas do relatorio
 //-------------------------------------------
 static function AjustaSX1()
 	//    cGrupo,cOrdem ,cPergunt         	,cPergSpa   ,cPergEng      	,cVar     ,cTipo,nTamanho,nDecimal,nPreSel,cGSC ,cValid            	,cF3    	,cGrpSXG,cPyme,cVar01    ,cDef01        	,cDefSpa1      		,cDefEng1      		,cDef02       	,cDefSpa2     		,cDefEng2     		,cDef03  		,cDefSpa3		,cDefEng3 	,cDef04  	,cDefSpa4		,cDefEng4		,cDef05 	 		,cDefSpa5		,cDefEng5		,aHelpPor		,aHelpEng		,aHelpSpa		,cHelp)
