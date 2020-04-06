@@ -39,11 +39,12 @@ Local oSection2
 	oReport:oPage:SetPaperSize(9) //Folha A4
 	oReport:nFontBody := 12
 	oReport:nLineHeight := oReport:nFontBody * 4
+	oReport:border( 0, .T. )
 
 	oSection1 := TRSection():New(oReport,"Cliente e NF"       ,{cAliasQry})
 	oSection2 := TRSection():New(oReport,"Itens a transportar",{cAliasQry})
 
-	TRCell():New(oSection1,'CODIGO'			,cAliasQry,"Codigo"			,			,06 /*Tamanho*/			,/*lPixel*/,/*{|| code-block de impressao }*/)
+	TRCell():New(oSection1,'CODIGO'			,cAliasQry,"Codigo"			,			,06 /*Tamanho*/			,/*lPixel*/,/*{|| code-block de impressao }*/,,,,,,,,, /* .T. Bold*/)
 	TRCell():New(oSection1,'NOME'			,cAliasQry,"Nome Cliente"	,			,40						,/*lPixel*/,/*{|| code-block de impressao }*/)
 	TRCell():New(oSection1,'PEDIDO'			,cAliasQry,"Pedido"			,			,06/*Tamanho*/			,/*lPixel*/,/*{|| code-block de impressao }*/)
 	TRCell():New(oSection1,'DOC'			,cAliasQry,"Nota Fiscal"	,			,10/*Tamanho*/			,/*lPixel*/,/*{|| code-block de impressao }*/)
@@ -57,7 +58,6 @@ Local oSection2
 	TRCell():New(oSection2,'QTD2'			,cAliasQry,"Qtde"			,			,05/*Tamanho*/			,/*lPixel*/,/*{|| code-block de impressao }*/)
 	TRCell():New(oSection2,'COD2'			,cAliasQry,"Codigo"			,			,06						,/*lPixel*/,/*{|| code-block de impressao }*/)
 	TRCell():New(oSection2,'DES2'			,cAliasQry,"Descricao"  	,			,40/*Tamanho*/			,/*lPixel*/,/*{|| code-block de impressao }*/)
-
 Return oReport
 
 
@@ -67,6 +67,7 @@ local oSection1 := oReport:Section(1)
 local oSection2 := oReport:Section(2)
 local cQuery
 local aTotal    := {}
+local aTotGer   := {}
 local nI
 local aEmb      := {}
 
@@ -78,15 +79,9 @@ local aEmb      := {}
 	cQuery += " from "+retSqlName("SF2")+" SF2 "
 	cQuery += " join "+retSqlName("SD2")+" SD2 on D2_FILIAL=F2_FILIAL and D2_DOC=F2_DOC and D2_SERIE=F2_SERIE and D2_CLIENTE=F2_CLIENTE and SD2.D_E_L_E_T_=' '"
 	cQuery += " join "+retSqlName("SC5")+" SC5 on C5_FILIAL=D2_FILIAL and C5_NUM=D2_PEDIDO and SC5.D_E_L_E_T_=' '"
-if .T.	// Cliente
 	cQuery += " join "+retSqlName("SA1")+" SA1 on A1_FILIAL=LEFT(C5_FILIAL,2) and A1_COD=C5_CLIENT and A1_LOJA=C5_LOJAENT and SA1.D_E_L_E_T_=' '"
 	cQuery += " join "+retSqlName("SA4")+" SA4 on A4_FILIAL=LEFT(C5_FILIAL,2) and A4_COD=F2_TRANSP and SA4.D_E_L_E_T_=' '"
 	cQuery += " join "+retSqlName("SB1")+" SB1 on B1_FILIAL=LEFT(C5_FILIAL,2) and B1_COD=D2_COD and SB1.D_E_L_E_T_=' '"
-else
-	cQuery += " join "+retSqlName("SA1")+" SA1 on A1_FILIAL='' and A1_COD=C5_CLIENT and A1_LOJA=C5_LOJAENT and SA1.D_E_L_E_T_=' '"
-	cQuery += " LEFT join "+retSqlName("SA4")+" SA4 on A4_FILIAL='' and A4_COD=F2_TRANSP and SA4.D_E_L_E_T_=' '"
-	cQuery += " join "+retSqlName("SB1")+" SB1 on B1_FILIAL='' and B1_COD=D2_COD and SB1.D_E_L_E_T_=' '"
-endif
 	cQuery += " left join "+retSqlName("SZR")+" SZR on ZR_FILIAL=' ' and ZR_CODIGO=C5_XROTA and SZR.D_E_L_E_T_=' '"
 	cQuery += " left join "+retSqlName("SZF")+" SZF on ZF_FIL=F2_FILIAL and SZF.D_E_L_E_T_=' '"
 	cQuery += " where F2_EMISSAO between '"+DtoS(mv_par01)+"' and '"+DtoS(mv_par02)+"'"
@@ -127,11 +122,19 @@ endif
 			next
 			aadd( aItens, aClone(aTemp) )
 
+// total por transportadora
 			if ( nPos := aScan(aTotal, {|it| it[2] == (cAliasQry)->D2_COD}) ) == 0
 				aadd(aTotal, { 0, (cAliasQry)->D2_COD, (cAliasQry)->B1_DESC})
 				nPos := len(aTotal)
 			endif
 			aTotal[nPos,1] += (cAliasQry)->D2_QUANT
+
+// total geral
+			if ( nPos := aScan(aTotGer, {|it| it[2] == (cAliasQry)->D2_COD}) ) == 0
+				aadd(aTotGer, { 0, (cAliasQry)->D2_COD, (cAliasQry)->B1_DESC})
+				nPos := len(aTotGer)
+			endif
+			aTotGer[nPos,1] += (cAliasQry)->D2_QUANT
 
 			(cAliasQry)->( dbSkip() )
 		end
@@ -171,6 +174,7 @@ endif
 				oSection1:Cell("PEDIDO"):SetValue( aItens[nI,14] )
 				oSection1:Cell("VALNF" ):SetValue( aItens[nI,15] )
 				oSection1:printline()
+
 				oSection2:init()
 				cChave := aItens[nI,4] + aItens[nI,5] + aItens[nI,6]
 			endif
@@ -247,11 +251,7 @@ endif
 
 			oReport:skipLine(2)
 		endif
-/*
-		oReport:PrtLeft(Space(25)+replicate("-",40)+space(40)+replicate("-",40))
-		oReport:skipLine(1)
-		oReport:PrtLeft(space(40)+"SEPARADOR"+space(70)+"TRANSPORTADOR")
-*/
+
 		oReport:prtCenter( replicate("-",40)+space(40)+replicate("-",40) ) 
 		oReport:skipLine(1)
 		oReport:prtCenter( "SEPARADOR"+space(70)+"TRANSPORTADOR" ) 
@@ -260,20 +260,58 @@ endif
 		oReport:endPage()
 	end
 
+
+if len( aTotGer ) > 0
+	oReport:SetCustomText( {|| criaCab(oReport, .T.)} )
+	oReport:startPage()
+
+	oSection2:init()
+	for nI := 1 to len( aTotGer )
+		oSection2:Cell("QTD1"):SetValue( aTotGer[nI,1] )
+		oSection2:Cell("COD1"):SetValue( aTotGer[nI,2] )
+		oSection2:Cell("DES1"):SetValue( aTotGer[nI,3] )
+
+		if nI + 1 <= len( aTotGer )
+			oSection2:Cell("QTD2"):SetValue( aTotGer[nI+1,1] )
+			oSection2:Cell("COD2"):SetValue( aTotGer[nI+1,2] )
+			oSection2:Cell("DES2"):SetValue( aTotGer[nI+1,3] )
+			nI++
+		else
+			oSection2:Cell("QTD2"):SetValue( "" )
+			oSection2:Cell("COD2"):SetValue( "" )
+			oSection2:Cell("DES2"):SetValue( "" )
+		endif
+
+		oSection2:printline()
+	next
+	oSection2:Finish()
+	oReport:endPage()
+endif
+
+
+
 	(cAliasQry)->( dbCloseArea() )
 return nil
 
 
 //-----------------------------------------------------------------------------------
-static function criaCab(oReport)
-local cChar		:= chr(160)  // caracter dummy para alinhamento do cabecalho     
+static function criaCab(oReport, lTotal)
+local cChar		:= chr(160)  // caracter dummy para alinhamento do cabeóalho     
 local _linha0,_linha1,_linha2,_linha3,_linha4,_linha5
+default lTotal := .F.
 
 	_linha0 := "__LOGOEMP__"
 	_linha1 := cChar + "         " + "ROMANEIO DE EXPEDICAO" + "         "  + cChar + RptFolha + TRANSFORM(oReport:Page(),'999999')
-	_linha2 := "SIGA/FROMANEIO.prt/v." + cVersao + "         " + cChar + "Rota: " + cRota +  "         " + cChar
-	_linha3 := RptHora + " " + time() + "         " + cChar + RptEmiss + " " + Dtoc(dDataBase)
-	_linha4 := cChar + "    " + "Transportador: "+cTransp + " " 
+
+	if lTotal
+		_linha2 := "SIGA/FROMANEIO.prt/v." + cVersao + "         " + cChar + "" +  "         " + cChar
+		_linha3 := RptHora + " " + time() + "         "  + cChar + RptEmiss + " " + Dtoc(dDataBase)
+		_linha4 := cChar + "         "  + "T O T A L   G E R A L" + "         "  + cChar
+	else
+		_linha2 := "SIGA/FROMANEIO.prt/v." + cVersao + "         " + cChar + "Rota: " + cRota +  "         " + cChar
+		_linha3 := RptHora + " " + time() + "         " + cChar + RptEmiss + " " + Dtoc(dDataBase)
+		_linha4 := cChar + "    " + "Transportador: "+cTransp + " "
+	endif
 	_linha5 := Trim(SM0->M0_NOME)
 
 	aRet := {_linha0,_linha1,_linha2,_linha3,_linha4,_linha5 }
