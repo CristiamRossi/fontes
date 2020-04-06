@@ -593,8 +593,10 @@ local aArea := getArea()
 	TEMP->( dbGotop() )
 	while ! TEMP->( eof() )
 
-		SC6->( dbSeek( xFilial("SC6") + TEMP->( C6_NUM + C6_PRODUTO ) ) )
-		while ! SC6->( eof() ) .and. SC6->( C6_FILIAL + C6_NUM + C6_PRODUTO ) == xFilial("SC6") + TEMP->( C6_NUM + C6_PRODUTO )
+//		SC6->( dbSeek( xFilial("SC6") + TEMP->( C6_NUM + C6_PRODUTO ) ) )
+//		while ! SC6->( eof() ) .and. SC6->( C6_FILIAL + C6_NUM + C6_PRODUTO ) == xFilial("SC6") + TEMP->( C6_NUM + C6_PRODUTO )
+		SC6->( dbSeek( TEMP->( FILIAL + C6_NUM + C6_PRODUTO ) ) )
+		while ! SC6->( eof() ) .and. SC6->( C6_FILIAL + C6_NUM + C6_PRODUTO ) == TEMP->( FILIAL + C6_NUM + C6_PRODUTO )
 			recLock("SC6", .F.)
 			if TEMP->C6_QTDVEN == 0
 				SC6->C6_BLQ    := "R"
