@@ -298,10 +298,11 @@ return aProds
 
 
 //-------------------------------------------
-static function fTemSel( aProds )
-local nItens := 0
+static function fTemSel( aProds, lResiduo )
+local   nItens   := 0
+default lResiduo := .F.
 
-	aEval(aProds, {|it| iif(it[1], nItens++, nil)})
+	aEval(aProds, {|it| iif(it[1] .and. (lResiduo .or. it[6]==0), nItens++, nil)})
 
 	if nItens == 0
 		msgStop("Favor selecione os itens antes", "Resíduo em Pedidos de Vendas")
@@ -318,7 +319,7 @@ local cProduto
 local cPedido
 local nPos
 
-	if ! fTemSel( aProds )
+	if ! fTemSel( aProds, .T. )
 		return nil
 	endif
 
@@ -351,14 +352,18 @@ local nPos
 			endif
 
 			for nJ := 1 to len( aProds[nI][9] )
-				cPedido  := padR( aProds[nI][9][nJ], len(SC5->C5_NUM)     )
+//				cPedido  := padR( aProds[nI][9][nJ], len(SC5->C5_NUM)     )
+				cPedido  := aProds[nI][9][nJ]
 
 				begin transaction
 
-				SC5->( dbSeek( xFilial("SC5") + cPedido ) )
+//				SC5->( dbSeek( xFilial("SC5") + cPedido ) )
+				SC5->( dbSeek( cPedido ) )
 
-				SC6->( dbSeek( xFilial("SC6") + cPedido + cProduto ) )
-				while ! SC6->( eof() ) .and. SC6->( C6_FILIAL + C6_NUM + C6_PRODUTO ) == xFilial("SC6") + cPedido + cProduto
+//				SC6->( dbSeek( xFilial("SC6") + cPedido + cProduto ) )
+				SC6->( dbSeek( cPedido + cProduto ) )
+//				while ! SC6->( eof() ) .and. SC6->( C6_FILIAL + C6_NUM + C6_PRODUTO ) == xFilial("SC6") + cPedido + cProduto
+				while ! SC6->( eof() ) .and. SC6->( C6_FILIAL + C6_NUM + C6_PRODUTO ) == cPedido + cProduto
 					recLock("SC6", .F.)
 					SC6->C6_BLQ := iif( nResp==1, " ", "R" )
 					msUnlock()
@@ -369,8 +374,10 @@ local nPos
 				nResiduo := 0
 				nFat     := 0
 
-				SC6->( dbSeek( xFilial("SC6") + cPedido ) )
-				while ! SC6->( eof() ) .and. SC6->( C6_FILIAL + C6_NUM ) == xFilial("SC6") + cPedido
+//				SC6->( dbSeek( xFilial("SC6") + cPedido ) )
+				SC6->( dbSeek( cPedido ) )
+//				while ! SC6->( eof() ) .and. SC6->( C6_FILIAL + C6_NUM ) == xFilial("SC6") + cPedido
+				while ! SC6->( eof() ) .and. SC6->( C6_FILIAL + C6_NUM ) == cPedido
 					nItem++
 
 					if alltrim(SC6->C6_BLQ) == "R"	// é resíduo
@@ -466,7 +473,7 @@ private oNGetD1
 	oTabTemp:Create()
 
 	for nI := 1 to len( aAllPrd )
-		if aAllPrd[nI][1]
+		if aAllPrd[nI][1] .and. aAllPrd[nI][6]==0
 			aadd( aProds, aClone(aAllPrd[nI]) )
 			nPos := len( aProds )
 			aProds[nPos][8] := aProds[nPos][10] - aProds[nPos][5]
