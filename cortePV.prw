@@ -357,10 +357,10 @@ static function fTemSel( aProds, lResiduo )
 local   nItens   := 0
 default lResiduo := .F.
 
-	aEval(aProds, {|it| iif(it[1] .and. (lResiduo .or. it[6]==0), nItens++, nil)})
+	aEval(aProds, {|it| iif(it[1] .and. (lResiduo .or. it[6]==0) .and. it[4]>0, nItens++, nil)})
 
 	if nItens == 0
-		msgStop("Favor selecione os itens antes", "Resíduo em Pedidos de Vendas")
+		msgStop("Favor selecione itens com quantidade antes", "Resíduo em Pedidos de Vendas")
 	endif
 return nItens > 0
 
@@ -529,9 +529,11 @@ private oNGetD1
 
 	for nI := 1 to len( aAllPrd )
 		if aAllPrd[nI][1] .and. aAllPrd[nI][6]==0
-			aadd( aProds, aClone(aAllPrd[nI]) )
-			nPos := len( aProds )
-			aProds[nPos][8] := aProds[nPos][10] - aProds[nPos][5]
+			If aAllPrd[nI][4] > 0
+				aadd( aProds, aClone(aAllPrd[nI]) )
+				nPos := len( aProds )
+				aProds[nPos][8] := aProds[nPos][10] - aProds[nPos][5]
+			EndIf
 		endif
 	next
 
