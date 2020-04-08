@@ -161,17 +161,68 @@ return nil
 //------------------------------------------
 static function fFilACY( aProds, cGrupo )
 local nI
+Local aAreaC5	:= SC5->(GetArea())
+Local aAreaC6	:= SC6->(GetArea())
+Local aAreaA1	:= SA1->(GetArea())
+Local nQtdOrig  := 0
+Local nQtdDist  := 0
+Local nQtdResi  := 0
+Local cRedCli	:= ""
+Local nk		:= 0
+
+SC5->(DbSetOrder(1))  //C5_FILIAL+C5_NUM                                                                                                                                                
+SC6->(DbSetOrder(1))  //C6_FILIAL+C6_NUM+C6_ITEM+C6_PRODUTO                                                                                                                             
+SA1->(DbSetOrder(1))  //A1_FILIAL+A1_COD+A1_LOJA                                                                                                                                        
+ACY->(DbSetOrder(1) ) //ACY_FILIAL+ACY_GRPVEN                                                                                                                                           
 
 	aSize( aProds, 0 )
-
+	
 	for nI := 1 to len( aAllPrd )
+		nQtdOrig  := 0
+		nQtdDist  := 0
+		nQtdResi  := 0
+		For nk := 1 To Len(aAllPrd[nI][9]) //for pedido
+			cRedCli := ""
+			If SC5->(DbSeek(aAllPrd[nI][9][nk])) //filial + num 
+				If SA1->(DbSeek(xFilial("SA1")+SC5->(C5_CLIENTE+C5_LOJACLI)))
+					If ACY->(DbSeek(xFilial("ACY")+SA1->A1_GRPVEN))
+						cRedCli	:= 	AllTrim(ACY->ACY_DESCRI)	
+					EndIf
+				EndIf	
+				If (Alltrim(aAllPrd[nI][7]) == cGrupo .or. cGrupo == "TODOS") .and. (cRedCli == cRede .or. cRede == "TODAS")
+					If SC6->(DbSeek(aAllPrd[nI][9][nk])) //filial + num
+						While SC6->(!Eof()) .and. aAllPrd[nI][9][nk] == SC6->(C6_FILIAL+C6_NUM)
+							nQtdOrig += SC6->C6_XQTDORI
+							If Empty(SC6->C6_BLQ )
+								nQtdDist += SC6->C6_QTDVEN
+							Else
+								nQtdResi += SC6->C6_XQTDORI
+							EndIf
+
+							SC6->(DbSkip())
+						EndDo
+					EndIf  
+				EndIf	
+			EndIf	
+		Next nk
+
+		aAllPrd[nI][4] := nQtdOrig 
+		aAllPrd[nI][5] := nQtdDist 
+		aAllPrd[nI][6] := nQtdResi 
+		
+		aadd( aProds, aAllPrd[nI])
+		/*
 		if ( alltrim(aAllPrd[nI][7]) == cGrupo .or. cGrupo == "TODOS" ) .and. ( alltrim(aAllPrd[nI][12]) == cRede .or. cRede == "TODAS" )
 			aadd( aProds, aAllPrd[nI])
 		endif
-	next
+		*/
+	next nI
 
 	oLst1:GoPosition(1)
 	oLst1:refresh()
+	RestArea(aAreaC5)
+	RestArea(aAreaC6)
+	RestArea(aAreaA1)
 return nil
 
 
@@ -276,6 +327,7 @@ local cFilSC7   := iif( cContexto=="Filial", "='"+xFilial("SC7") +"'", "like '"+
 //			aadd(aProds[nPos][9], (cAliasQry)->C6_NUM )
 		if aScan(aProds[nPos][9], (cAliasQry)->( C6_FILIAL + C6_NUM ) ) == 0
 			aadd(aProds[nPos][9], (cAliasQry)->( C6_FILIAL + C6_NUM ) )
+			//aadd(aPedUn,{(cAliasQry)->(C6_FILIAL+C6_NUM),(cAliasQry)->C6_QTDVEN,})
 		endif
 
 		if aScan(aRede, (cAliasQry)->ACY_DESCRI) == 0
@@ -292,6 +344,9 @@ local cFilSC7   := iif( cContexto=="Filial", "='"+xFilial("SC7") +"'", "like '"+
 		endif
 		aProds[nI,8] := len( aProds[nI,9] )
 	next
+
+	//aadd(aProds[nPos][12], (cAliasQry)->(C6_FILIAL+C6_NUM)+ )
+	//aadd(aProds[nPos][12], {(cAliasQry)->(C6_FILIAL+C6_NUM),(cAliasQry)->C6_QTDVEN} )
 
 	restArea( aArea )
 return aProds
