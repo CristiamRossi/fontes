@@ -171,7 +171,7 @@ Local cRedCli	:= ""
 Local nk		:= 0
 
 SC5->(DbSetOrder(1))  //C5_FILIAL+C5_NUM                                                                                                                                                
-SC6->(DbSetOrder(1))  //C6_FILIAL+C6_NUM+C6_ITEM+C6_PRODUTO                                                                                                                             
+SC6->(DbSetOrder(12))  //C6_FILIAL+C6_NUM+C6_PRODUTO+C6_SOLCOM                                                                                                                                                                                                                                                        
 SA1->(DbSetOrder(1))  //A1_FILIAL+A1_COD+A1_LOJA                                                                                                                                        
 ACY->(DbSetOrder(1) ) //ACY_FILIAL+ACY_GRPVEN                                                                                                                                           
 
@@ -190,8 +190,8 @@ ACY->(DbSetOrder(1) ) //ACY_FILIAL+ACY_GRPVEN
 					EndIf
 				EndIf	
 				If (Alltrim(aAllPrd[nI][7]) == cGrupo .or. cGrupo == "TODOS") .and. (cRedCli == cRede .or. cRede == "TODAS")
-					If SC6->(DbSeek(aAllPrd[nI][9][nk])) //filial + num
-						While SC6->(!Eof()) .and. aAllPrd[nI][9][nk] == SC6->(C6_FILIAL+C6_NUM)
+					If SC6->(DbSeek(aAllPrd[nI][9][nk] + aAllPrd[nI][2])) //filial + num+PROD
+						While SC6->(!Eof()) .and. aAllPrd[nI][9][nk] == SC6->(C6_FILIAL+C6_NUM) .and. aAllPrd[nI][2] == SC6->C6_PRODUTO
 							nQtdOrig += SC6->C6_XQTDORI
 							If Empty(SC6->C6_BLQ )
 								nQtdDist += SC6->C6_QTDVEN
