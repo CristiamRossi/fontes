@@ -1,4 +1,6 @@
 #include "totvs.ch"
+#include "FWMVCDEF.CH"
+
 /*/{Protheus.doc} cortePV
 Rotina de Corte de Pedidos de Vendas
 @author Cristiam Rossi
@@ -41,6 +43,7 @@ private aAllPrd   := {}
 private dCorte    := dDatabase
 private cRede     := "TODAS"
 private cContexto := "Filial"
+private aCliRep   := {}
 
 	if ! getDtCorte()
 		return nil
@@ -509,6 +512,8 @@ private aProds    := {}
 private oLst2
 private oLst3
 private oNGetD1
+
+aCliRep := {}
 
 	aadd( aEstru, {"A1_NOME"   ,"C",len(SA1->A1_NOME)   ,0} )
 	aadd( aEstru, {"C6_XQTDORI","N",12                  ,2} )
@@ -1077,6 +1082,7 @@ local nJ
 local cProduto
 local cPedido
 
+
 	SC6->( dbSetOrder(12) )
 	SA1->( dbSetOrder(1)  )
 
@@ -1117,7 +1123,9 @@ local cPedido
 					TEMP->FILIAL     := SC6->C6_FILIAL
 					TEMP->C6_BLQ     := SC6->C6_BLQ
 					msUnlock()
-				
+					If ! ASCAN(aCliRep, { |x| x[1] == TEMP->A1_COD+TEMP->A1_LOJA+TEMP->A1_NOME }) > 0
+						aAdd(aCliRep,{TEMP->A1_COD+TEMP->A1_LOJA+TEMP->A1_NOME})
+					EndIf	
 				else
 					recLock("TEMP", .T.)
 					TEMP->A1_NOME    := SA1->A1_NREDUZ	// SA1->A1_NOME
@@ -1227,10 +1235,13 @@ local lTransf  := .f.
 local lAvCred  := .f.
 local lAvEst   := GetMv("MV_ESTNEG") != "S"
 local xFilAnt  := cFilAnt
+Private aCliSel  := {}
 
 	if ! msgYesNo( "Confirma a liberação destes Itens?", cTitulo)
 		return nil
 	endif
+
+	FILCLI() // markbrowse
 
 	SC6->( dbSetOrder(1) )
 
@@ -1244,15 +1255,17 @@ local xFilAnt  := cFilAnt
 				cFilAnt := TEMP->FILIAL
 
 				if SC6->( dbSeek( xFilial("SC6") + TEMP->C6_NUM + TEMP->C6_ITEM + TEMP->C6_PRODUTO) )
-					recLock("SC6", .F.)
-					SC6->C6_QTDVEN := TEMP->C6_QTDVEN
-					SC6->C6_VALOR  := SC6->C6_PRCVEN * SC6->C6_QTDVEN
-					msUnlock()
+					If ASCAN(aCliSel, { |x| x[1] == TEMP->A1_COD+TEMP->A1_LOJA }) > 0
+						recLock("SC6", .F.)
+						SC6->C6_QTDVEN := TEMP->C6_QTDVEN
+						SC6->C6_VALOR  := SC6->C6_PRCVEN * SC6->C6_QTDVEN
+						msUnlock()
 
-					dbSelectArea("SC6")
-					nQtdLib := MaLibDoFat(SC6->(RecNo()),TEMP->C6_QTDVEN,@lCredito,@lEstoque,lAvCred,lAvEst,lLiber,lTransf)
+						dbSelectArea("SC6")
+						nQtdLib := MaLibDoFat(SC6->(RecNo()),TEMP->C6_QTDVEN,@lCredito,@lEstoque,lAvCred,lAvEst,lLiber,lTransf)
 
-					X := 1
+						X := 1
+					EndIf	
 				endif
 			endif
 		//EndIf	
@@ -1262,3 +1275,129 @@ local xFilAnt  := cFilAnt
 	cFilAnt := xFilAnt
 	oDlg:end()
 return nil
+
+Static function FILCLI()
+//Local cVar     := ""
+Local cTitk  := "Seleciona Clientes"
+Local oOk      := LoadBitmap( GetResources(), "CHECKED" )   //CHECKED    //LBOK  //LBTIK
+//Local oNok      := LoadBitmap( GetResources(), "UNCHECKED" ) //UNCHECKED  //LBNO
+Local oChk1
+Local oChk2
+
+Private oDlgk
+Private lMark    := .F.
+Private lChk1 := .F.
+Private lChk2 := .F.
+Private oLbx
+Private aVetor := {}
+
+//local aCampos		:= { {"A1_SEL","C",2,0}, {"A1_COD","C",6,0}, {"A1_LOJA","C",6,0}, {"A1_NOME","C",40,0} } //ELVIS VER SE FICA NO A1 OU C6
+
+aCliSel := {}
+
+fCarga()
+
+If Len( aVetor ) == 0
+   Aviso( cTitk, "Nao existe dados a consultar", {"Ok"} )
+   Return
+Endif
+
+DEFINE MSDIALOG oDlgk TITLE cTitk FROM 0,0 TO 240,500 PIXEL
+
+   // Primeira opção para montar o listbox.
+   @ 10,10 LISTBOX oLbx FIELDS HEADER ;
+   " ", "Codigo", "Loja", "Nome" ;
+	SIZE 230,095 OF oDlgk PIXEL ON dblClick(aVetor[oLbx:nAt,1] := !aVetor[oLbx:nAt,1])	
+
+   oLbx:SetArray( aVetor )
+   oLbx:bLine := {|| {Iif(aVetor[oLbx:nAt,1],oOk,oNo),;
+                      aVetor[oLbx:nAt,2],;       
+					  aVetor[oLbx:nAt,3],;                                 
+                      aVetor[oLbx:nAt,4]}}
+                            
+//+----------------------------------------------------------------
+//| Para marcar e desmarcar todos existem duas opçoes, acompanhe...
+//+----------------------------------------------------------------
+//| Chamando uma funcao própria
+//+----------------------------------------------------------------
+@ 110,10 CHECKBOX oChk1 VAR lChk1 PROMPT "Marca/Desmarca" SIZE 60,7 PIXEL OF oDlgk;
+         ON CLICK( Marca(lChk1) )
+
+//+------------------------------------------------------------------
+//| Para inverter a seleção marcada existem duas opçoes, acompanhe...
+//+------------------------------------------------------------------
+//| Chamando uma funcao própria
+//+----------------------------------------------------------------
+@ 110,10 CHECKBOX oChk1 VAR lChk1 PROMPT "Marca/Desmarca" SIZE 60,7 PIXEL OF oDlgk;
+         ON CLICK( Inverte() )
+
+//+----------------------------------------------------------------
+//| ... ou utilizando a função aEval()
+//+----------------------------------------------------------------
+@ 110,10 CHECKBOX oChk1 VAR lChk1 PROMPT "Marca/Desmarca Todos" SIZE 70,7 PIXEL OF oDlgk ;
+         ON CLICK( aEval( aVetor, {|x| x[1] := lChk1 } ),oLbx:Refresh() )
+
+//+----------------------------------------------------------------
+//| ... ou utilizando a função aEval()
+//+----------------------------------------------------------------
+@ 110,95 CHECKBOX oChk2 VAR lChk2 PROMPT "Iverter a seleção" SIZE 70,7 PIXEL OF oDlgk ;
+         ON CLICK( aEval( aVetor, {|x| x[1] := !x[1] } ), oLbx:Refresh() )
+
+DEFINE SBUTTON FROM 107,213 TYPE 1 ACTION markk2() ENABLE OF oDlgk
+ACTIVATE MSDIALOG oDlgk CENTER
+
+Return
+//-----------------------------
+static function fCarga()
+//Local aAreaTEMP	:= TEMP->(GetArea())
+//Local aCliRep   := {}
+//Local cCliK1	 := ""
+Local k6	     := 0
+
+For k6 := 1 To Len(aCliRep)
+	aAdd( aVetor, { lMark,SubStr(aCliRep[k6][1],1,6), SubStr(aCliRep[k6][1],7,2), SubStr(aCliRep[k6][1],9)} )
+Next k6
+/*
+TEMP->( dbSetOrder(3) )		// Cliente
+TEMP->( dbGotop() )
+	While ! TEMP->( eof() ) //.and. nSALDO > 0
+		//If ! ASCAN(aCliRep, { |x| x[1] == TEMP->A1_COD+TEMP->A1_LOJA }) > 0
+		If cCliK1 <> TEMP->A1_COD+TEMP->A1_LOJA
+			aAdd( aVetor, { lMark,TEMP->A1_COD, TEMP->A1_LOJA, TEMP->A1_NOME} )
+			//aAdd(aCliRep,{TEMP->A1_COD+TEMP->A1_LOJA})
+		EndIf
+		cCliK1 := TEMP->A1_COD+TEMP->A1_LOJA
+		TEMP->( dbSkip() )
+	EndDo
+
+RestArea(aAreaTEMP)				
+*/
+return nil
+
+Static Function Marca(lMarca)
+Local i := 0
+For i := 1 To Len(aVetor)
+   aVetor[i][1] := lMarca
+Next i
+oLbx:Refresh()
+Return
+
+Static Function Inverte()
+Local i := 0
+For i := 1 To Len(aVetor)
+   aVetor[i][1] := !aVetor[i][1]
+Next i
+oLbx:Refresh()
+Return
+
+Static Function markk2()
+Local k3 := 0
+
+For k3 := 1 To Len(aVetor)
+	If aVetor[k3][1]
+		aAdd(aCliSel,{aVetor[k3][2]+aVetor[k3][3]})
+	EndIf	
+Next k3
+
+oDlgk:End()
+Return()
