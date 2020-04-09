@@ -357,7 +357,10 @@ static function fTemSel( aProds, lResiduo )
 local   nItens   := 0
 default lResiduo := .F.
 
-	aEval(aProds, {|it| iif(it[1] .and. (lResiduo .or. it[6]==0) .and. it[4]>0, nItens++, nil)})
+	aEval(aProds, {|it| iif(it[1] .and. it[5]>0, nItens++, nil)})
+	//aEval(aProds, {|it| iif(it[1] .and. (lResiduo .or. it[5] > it[6]) .and. it[5]>0, nItens++, nil)})
+
+	//aEval(aProds, {|it| iif(it[1] .and. (lResiduo .or. it[6]==0) .and. it[4]>0, nItens++, nil)})
 
 	if nItens == 0
 		msgStop("Favor selecione itens com quantidade antes", "Resíduo em Pedidos de Vendas")
@@ -518,6 +521,7 @@ private oNGetD1
 	aadd( aEstru, {"C6_ITEM"   ,"C", 2                  ,0} )
 	aadd( aEstru, {"C6_PRODUTO","C",len(SC6->C6_PRODUTO),0} )
 	aadd( aEstru, {"FILIAL"    ,"C",len(cFilAnt)        ,0} )
+	aadd( aEstru, {"C6_BLQ"    ,"C", 1                  ,0} )
 
 	oTabTemp := FWTemporaryTable():New( "TEMP" )  
 	oTabTemp:SetFields( aEstru )
@@ -528,7 +532,7 @@ private oNGetD1
 	oTabTemp:Create()
 
 	for nI := 1 to len( aAllPrd )
-		if aAllPrd[nI][1] .and. aAllPrd[nI][6]==0
+		if aAllPrd[nI][1] //.and. aAllPrd[nI][5] > aAllPrd[nI][6]
 			If aAllPrd[nI][4] > 0
 				aadd( aProds, aClone(aAllPrd[nI]) )
 				nPos := len( aProds )
@@ -661,14 +665,16 @@ local aArea := getArea()
 //		while ! SC6->( eof() ) .and. SC6->( C6_FILIAL + C6_NUM + C6_PRODUTO ) == xFilial("SC6") + TEMP->( C6_NUM + C6_PRODUTO )
 		SC6->( dbSeek( TEMP->( FILIAL + C6_NUM + C6_PRODUTO ) ) )
 		while ! SC6->( eof() ) .and. SC6->( C6_FILIAL + C6_NUM + C6_PRODUTO ) == TEMP->( FILIAL + C6_NUM + C6_PRODUTO )
-			recLock("SC6", .F.)
-			if TEMP->C6_QTDVEN == 0
-				SC6->C6_BLQ    := "R"
-			else
-				SC6->C6_QTDVEN := TEMP->C6_QTDVEN
-				SC6->C6_BLQ    := ""
-			endif
-			msUnlock()
+			//If TEMP->C6_BLQ <> "R"   
+				recLock("SC6", .F.)
+				if TEMP->C6_QTDVEN == 0
+					SC6->C6_BLQ    := "R"
+				else
+					SC6->C6_QTDVEN := TEMP->C6_QTDVEN
+					SC6->C6_BLQ    := ""
+				endif
+				msUnlock()
+			//EndIf	
 			SC6->( dbSkip() )
 		end
 		TEMP->( dbSkip() )
@@ -1096,20 +1102,39 @@ local cPedido
 
 			SC6->( dbSeek( SC5->C5_FILIAL + SC5->C5_NUM + cProduto ) )
 			while ! SC6->( eof() ) .and. SC6->( C6_FILIAL + C6_NUM + C6_PRODUTO ) == SC5->C5_FILIAL + SC5->C5_NUM + cProduto
-				recLock("TEMP", .T.)
-				TEMP->A1_NOME    := SA1->A1_NREDUZ	// SA1->A1_NOME
-				TEMP->C6_XQTDORI := SC6->C6_XQTDORI
-				TEMP->C6_QTDVEN  := SC6->C6_QTDVEN
-				TEMP->A1_PRIOR   := iif( empty(SA1->A1_PRIOR), "9", SA1->A1_PRIOR )
-				TEMP->ROTA       := SZR->ZR_CODIGO + "-" + SZR->ZR_DESCR
-				TEMP->A1_COD     := SA1->A1_COD
-				TEMP->A1_LOJA    := SA1->A1_LOJA
-				TEMP->C6_NUM     := SC6->C6_NUM
-				TEMP->C6_ITEM    := SC6->C6_ITEM
-				TEMP->C6_PRODUTO := SC6->C6_PRODUTO
-				TEMP->FILIAL     := SC6->C6_FILIAL
-				msUnlock()
-
+				If AllTrim(SC6->C6_BLQ) <> "R"
+					recLock("TEMP", .T.)
+					TEMP->A1_NOME    := SA1->A1_NREDUZ	// SA1->A1_NOME
+					TEMP->C6_XQTDORI := SC6->C6_XQTDORI
+					TEMP->C6_QTDVEN  := SC6->C6_QTDVEN
+					TEMP->A1_PRIOR   := iif( empty(SA1->A1_PRIOR), "9", SA1->A1_PRIOR )
+					TEMP->ROTA       := SZR->ZR_CODIGO + "-" + SZR->ZR_DESCR
+					TEMP->A1_COD     := SA1->A1_COD
+					TEMP->A1_LOJA    := SA1->A1_LOJA
+					TEMP->C6_NUM     := SC6->C6_NUM
+					TEMP->C6_ITEM    := SC6->C6_ITEM
+					TEMP->C6_PRODUTO := SC6->C6_PRODUTO
+					TEMP->FILIAL     := SC6->C6_FILIAL
+					TEMP->C6_BLQ     := SC6->C6_BLQ
+					msUnlock()
+				
+				else
+					recLock("TEMP", .T.)
+					TEMP->A1_NOME    := SA1->A1_NREDUZ	// SA1->A1_NOME
+					TEMP->C6_XQTDORI := SC6->C6_XQTDORI
+					TEMP->C6_QTDVEN  := 0
+					TEMP->A1_PRIOR   := iif( empty(SA1->A1_PRIOR), "9", SA1->A1_PRIOR )
+					TEMP->ROTA       := SZR->ZR_CODIGO + "-" + SZR->ZR_DESCR
+					TEMP->A1_COD     := SA1->A1_COD
+					TEMP->A1_LOJA    := SA1->A1_LOJA
+					TEMP->C6_NUM     := SC6->C6_NUM
+					TEMP->C6_ITEM    := SC6->C6_ITEM
+					TEMP->C6_PRODUTO := SC6->C6_PRODUTO
+					TEMP->FILIAL     := SC6->C6_FILIAL
+					TEMP->C6_BLQ     := SC6->C6_BLQ
+					msUnlock()
+				EndIf
+				
 				SC6->( dbSkip() )
 			end
 		next
@@ -1213,22 +1238,24 @@ local xFilAnt  := cFilAnt
 	TEMP->( dbGotop() )
 
 	while ! TEMP->(eof())
-		if TEMP->C6_QTDVEN > 0
+		//If TEMP->C6_BLQ <> "R"
+			if TEMP->C6_QTDVEN > 0
 
-			cFilAnt := TEMP->FILIAL
+				cFilAnt := TEMP->FILIAL
 
-			if SC6->( dbSeek( xFilial("SC6") + TEMP->C6_NUM + TEMP->C6_ITEM + TEMP->C6_PRODUTO) )
-				recLock("SC6", .F.)
-				SC6->C6_QTDVEN := TEMP->C6_QTDVEN
-				SC6->C6_VALOR  := SC6->C6_PRCVEN * SC6->C6_QTDVEN
-				msUnlock()
+				if SC6->( dbSeek( xFilial("SC6") + TEMP->C6_NUM + TEMP->C6_ITEM + TEMP->C6_PRODUTO) )
+					recLock("SC6", .F.)
+					SC6->C6_QTDVEN := TEMP->C6_QTDVEN
+					SC6->C6_VALOR  := SC6->C6_PRCVEN * SC6->C6_QTDVEN
+					msUnlock()
 
-				dbSelectArea("SC6")
-				nQtdLib := MaLibDoFat(SC6->(RecNo()),TEMP->C6_QTDVEN,@lCredito,@lEstoque,lAvCred,lAvEst,lLiber,lTransf)
+					dbSelectArea("SC6")
+					nQtdLib := MaLibDoFat(SC6->(RecNo()),TEMP->C6_QTDVEN,@lCredito,@lEstoque,lAvCred,lAvEst,lLiber,lTransf)
 
-				X := 1
+					X := 1
+				endif
 			endif
-		endif
+		//EndIf	
 		TEMP->( dbSkip())
 	end
 
