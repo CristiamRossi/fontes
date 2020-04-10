@@ -59,7 +59,7 @@ oReport:lParamPage := .F.
 oReport:oPage:SetPaperSize(9) //Folha A4
 oReport:SetPortrait()
 oReport:nFontBody := 15
-oReport:nLineHeight  := oReport:nFontBody * 3		// aumentando a altura da linha
+oReport:nLineHeight  := oReport:nFontBody * 3.5		// aumentando a altura da linha
 
 //Criando a seção de dados
 oSectDad := TRSection():New(    oReport,;        //Objeto TReport que a seção pertence
@@ -123,7 +123,12 @@ endif
 If ! Empty(mv_par04)
 	cQryAux += "AND A1_GRPVEN = '"+mv_par04+"' "       + STR_PULA
 EndIf
-cQryAux += "ORDER BY C5_NUM+C6_DESCRI "       + STR_PULA
+
+if MV_PAR05 == 1	// Quebra por Pedido
+	cQryAux += "ORDER BY C5_NUM+C6_DESCRI "       + STR_PULA
+Else				// Quebra por Grupo de Cliente
+	cQryAux += "ORDER BY ACY_DESCRI+C5_NUM+C6_DESCRI "       + STR_PULA
+endif
 
 cQryAux := ChangeQuery(cQryAux)
 
@@ -134,17 +139,24 @@ oReport:SetMeter(nTotal)
 
 QRY_AUX->(DbGoTop())
 
-cNumPed 	:= ""
+cQuebra 	:= ""
+cPedido     := ""
 While ! QRY_AUX->(Eof())
 
-    If cNumPed <> QRY_AUX->PEDIDO
-
+    If cQuebra <> iif( MV_PAR05==1, QRY_AUX->PEDIDO, QRY_AUX->GRUPO )
 		if nAtual > 0
 			oSectDad:Finish()
         	oReport:endPage()
 		endif
         oReport:startPage()
+	endif
 
+	if cPedido != QRY_AUX->PEDIDO
+		if nAtual > 0 .and. MV_PAR05==2 .and. cQuebra == QRY_AUX->GRUPO
+			oSectDad:Finish()
+			oReport:PrtLeft( replicate("-",300) )
+			oReport:skipLine()
+		endif
 		oSectH:Init()
 		oSectH:PrintLine()
 		oSectH:Finish()
@@ -152,13 +164,14 @@ While ! QRY_AUX->(Eof())
 		oSectDad:Init()
     EndIf
 
-    cNumPed := QRY_AUX->PEDIDO
-            
+    cQuebra := iif( MV_PAR05==1, QRY_AUX->PEDIDO, QRY_AUX->GRUPO )
+	cPedido := QRY_AUX->PEDIDO
+
 	//Incrementando a régua
 	nAtual++
 	oReport:SetMsgPrint("Imprimindo registro "+cValToChar(nAtual)+" de "+cValToChar(nTotal)+"...")
 	oReport:IncMeter()
-	
+
 	//Imprimindo a linha atual
 	oSectDad:PrintLine()
 
@@ -175,13 +188,9 @@ Return nil
 Static Function CriaSx1(cPerg)
 xPutSx1(cPerg,"01","Emissao de?"	 ,"","" ,"mv_ch1","D",8,0,0,"G","","","","","MV_PAR01","","","","","","","","","","","","","","","","",,,)
 xPutSx1(cPerg,"02","Emissao Ate?"	 ,"","" ,"mv_ch2","D",8,0,0,"G","","","","","MV_PAR02","","","","","","","","","","","","","","","","",,,)
-xPutSx1(cPerg,"03","GRP Produto?","",""     ,"mv_ch3","C",06,0,0,"G","","SBM","","","mv_par03","","","","","","","","","","","","","","","","","","","")
-xPutSx1(cPerg,"04","GRP Cliente?","",""     ,"mv_ch4","C",06,0,0,"G","","ACY","","","mv_par04","","","","","","","","","","","","","","","","","","","")
-//xPutSx1(cPerg,"03","Pedido de?" ,"",""      ,"mv_ch3","C",06,0,0,"G","","","","","mv_par03","","","","","","","","","","","","","","","","","","","")
-//xPutSx1(cPerg,"04","Pedido ate?","",""      ,"mv_ch4","C",06,0,0,"G","","","","","mv_par04","","","","","","","","","","","","","","","","","","","")
-
-//U_XPutSx1(cPerg,"01","?"  ,"Do Código Interno?" ,"Do Código Interno?" ,"mv_ch1","C",15,0,0,"G","","SB1","","","mv_par01")
-//U_XPutSx1(cPerg,"01","SUPERVISOR?"  ,"Do Código Interno?" ,"Do Código Interno?" ,"mv_ch1","C",06,0,0,"G","","SA3","","","mv_par01")
+xPutSx1(cPerg,"03","GRP Produto?","",""     ,"mv_ch3","C",6,0,0,"G","","SBM","","","mv_par03","","","","","","","","","","","","","","","","","","","")
+xPutSx1(cPerg,"04","GRP Cliente?","",""     ,"mv_ch4","C",6,0,0,"G","","ACY","","","mv_par04","","","","","","","","","","","","","","","","","","","")
+xPutSx1(cPerg,"05","Quebra Pagina?","",""   ,"mv_ch5","N",1,0,0,"C","","","","","mv_par05","por Pedido","por Pedido","por Pedido","","por Grp Cliente","por Grp Cliente","por Grp Cliente","","","","","","","","","","","","")
 Return
 
 Static Function xPutSx1(cGrupo,cOrdem,cPergunt,cPerSpa,cPerEng,cVar,;
