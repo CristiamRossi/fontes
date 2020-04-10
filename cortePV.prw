@@ -360,11 +360,15 @@ static function fTemSel( aProds, lResiduo )
 local   nItens   := 0
 default lResiduo := .F.
 
-	aEval(aProds, {|it| iif(it[1] .and. it[5]>0, nItens++, nil)})
-	//aEval(aProds, {|it| iif(it[1] .and. (lResiduo .or. it[5] > it[6]) .and. it[5]>0, nItens++, nil)})
+	if !IsInCallStack("fResiduo")
+		aEval(aProds, {|it| iif(it[1] .and. it[5]>0, nItens++, nil)})
+		//aEval(aProds, {|it| iif(it[1] .and. (lResiduo .or. it[5] > it[6]) .and. it[5]>0, nItens++, nil)})
 
-	//aEval(aProds, {|it| iif(it[1] .and. (lResiduo .or. it[6]==0) .and. it[4]>0, nItens++, nil)})
-
+		//aEval(aProds, {|it| iif(it[1] .and. (lResiduo .or. it[6]==0) .and. it[4]>0, nItens++, nil)})
+	else 
+		aEval(aProds, {|it| iif(it[1] , nItens++, nil)})
+	endif
+	
 	if nItens == 0
 		msgStop("Favor selecione itens com quantidade antes", "Resíduo em Pedidos de Vendas")
 	endif
