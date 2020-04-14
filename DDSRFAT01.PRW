@@ -5,7 +5,7 @@
 //Constantes
 #Define STR_PULA        Chr(13)+Chr(10)
 
-// RelatÛrio de Separacao de Pedidos de Vendas
+// Relat√≥rio de Separacao de Pedidos de Vendas
 
 User Function DDSRFAT01()
 Local aArea     := GetArea()
@@ -21,19 +21,19 @@ if ! Pergunte(cPerg,.T.)
 	return nil
 endif
 
-fSelGrupos()	// seleÁ„o dos grupos de produtos
+fSelGrupos()	// sele√ß√£o dos grupos de produtos
 
-//Cria as definiÁıes do relatÛrio
+//Cria as defini√ß√µes do relat√≥rio
 oReport := fReportDef()
 
-//Ser· enviado por e-Mail?
+//Ser√° enviado por e-Mail?
 If lEmail
 	oReport:nRemoteType := NO_REMOTE
 	oReport:cEmail := cPara
 	oReport:nDevice := 3 //1-Arquivo,2-Impressora,3-email,4-Planilha e 5-Html
 	oReport:SetPreview(.F.)
 	oReport:Print(.F., "", .T.)
-	//Sen„o, mostra a tela
+	//Sen√£o, mostra a tela
 Else
 	oReport:PrintDialog()
 EndIf
@@ -43,7 +43,7 @@ Return
 
 /*-------------------------------------------------------------------------------*
 | Func:  fReportDef                                                             |
-| Desc:  FunÁ„o que monta a definiÁ„o do relatÛrio                              |
+| Desc:  Fun√ß√£o que monta a defini√ß√£o do relat√≥rio                              |
 *-------------------------------------------------------------------------------*/
 
 Static Function fReportDef()
@@ -51,7 +51,6 @@ Local oReport
 Local oSectDad
 Local oSectH
 
-//CriaÁ„o do componente de impress„o
 oReport := TReport():New( "DDSRFAT01", "Relatorio de Separacao de Pedidos", cPerg, {|oReport| fRepPrint(oReport)}, "Exibe o relatorio de separacao de pedidos")
 
 oReport:SetTotalInLine(.F.)
@@ -61,53 +60,52 @@ oReport:SetPortrait()
 oReport:nFontBody := 15
 oReport:nLineHeight  := oReport:nFontBody * 3.5		// aumentando a altura da linha
 
-//Criando a seÁ„o de dados
-oSectDad := TRSection():New(    oReport,;        //Objeto TReport que a seÁ„o pertence
-"Dados",;        //DescriÁ„o da seÁ„o
-{"QRY_AUX"})        //Tabelas utilizadas, a primeira ser· considerada como principal da seÁ„o
-oSectDad:SetTotalInLine(.F.)  //Define se os totalizadores ser„o impressos em linha ou coluna. .F.=Coluna; .T.=Linha
+oSectDad := TRSection():New(    oReport,;        //Objeto TReport que a se√ß√£o pertence
+"Dados",;        //Descri√ß√£o da se√ß√£o
+{"QRY_AUX"})        //Tabelas utilizadas, a primeira ser√° considerada como principal da se√ß√£o
+oSectDad:SetTotalInLine(.F.)  //Define se os totalizadores ser√£o impressos em linha ou coluna. .F.=Coluna; .T.=Linha
 
 oSectH := TRSection():New(oReport, "Cabec", {"QRY_AUX"})
-oSectH:SetTotalInLine(.F.)  //Define se os totalizadores ser„o impressos em linha ou coluna. .F.=Coluna; .T.=Linha
+oSectH:SetTotalInLine(.F.)  //Define se os totalizadores ser√£o impressos em linha ou coluna. .F.=Coluna; .T.=Linha
+oSectH:lLineBreak := .F.
 
-//Colunas do relatÛrio
-TRCell():New(oSectH, "CLIENTE", "QRY_AUX", "Cliente", /*Picture*/, 29, /*lPixel*/,/*{|| code-block de impressao }*/,/*cAlign*/,/*lLineBreak*/,/*cHeaderAlign */,/*lCellBreak*/,/*nColSpace*/,/*lAutoSize*/,/*nClrBack*/,/*nClrFore*/,/*lBold*/)
-TRCell():New(oSectH, "PEDIDO", "QRY_AUX", "Pedido", /*Picture*/, 8, /*lPixel*/,/*{|| code-block de impressao }*/,/*cAlign*/,/*lLineBreak*/,/*cHeaderAlign */,/*lCellBreak*/,/*nColSpace*/,/*lAutoSize*/,/*nClrBack*/,/*nClrFore*/,/*lBold*/)
-TRCell():New(oSectH, "EMISSAO", "QRY_AUX", "Emissao", /*Picture*/, 10, /*lPixel*/,/*{|| code-block de impressao }*/,/*cAlign*/,/*lLineBreak*/,/*cHeaderAlign */,/*lCellBreak*/,/*nColSpace*/,/*lAutoSize*/,/*nClrBack*/,/*nClrFore*/,/*lBold*/)
-TRCell():New(oSectH, "GRUPO", "QRY_AUX", "Grupo", /*Picture*/, 30, /*lPixel*/,/*{|| code-block de impressao }*/,/*cAlign*/,/*lLineBreak*/,/*cHeaderAlign */,/*lCellBreak*/,/*nColSpace*/,/*lAutoSize*/,/*nClrBack*/,/*nClrFore*/,/*lBold*/)
+TRCell():New(oSectH, "CLIENTE"     , "QRY_AUX", "Cliente"   , /*Picture*/, 29, /*lPixel*/,/*{|| code-block de impressao }*/,/*cAlign*/,/*lLineBreak*/,/*cHeaderAlign */,/*lCellBreak*/,/*nColSpace*/,/*lAutoSize*/,/*nClrBack*/,/*nClrFore*/,/*lBold*/)
+TRCell():New(oSectH, "PEDIDO"      , "QRY_AUX", "Pedido"    , /*Picture*/, 8, /*lPixel*/,/*{|| code-block de impressao }*/,/*cAlign*/,/*lLineBreak*/,/*cHeaderAlign */,/*lCellBreak*/,/*nColSpace*/,/*lAutoSize*/,/*nClrBack*/,/*nClrFore*/,/*lBold*/)
+TRCell():New(oSectH, "EMISSAO"     , "QRY_AUX", "Emissao"   , /*Picture*/, 10, /*lPixel*/,/*{|| code-block de impressao }*/,/*cAlign*/,/*lLineBreak*/,/*cHeaderAlign */,/*lCellBreak*/,/*nColSpace*/,/*lAutoSize*/,/*nClrBack*/,/*nClrFore*/,/*lBold*/)
+TRCell():New(oSectH, "GRUPO"       , "QRY_AUX", "Grupo"     , /*Picture*/, 30, /*lPixel*/,/*{|| code-block de impressao }*/,/*cAlign*/,/*lLineBreak*/,/*cHeaderAlign */,/*lCellBreak*/,/*nColSpace*/,/*lAutoSize*/,/*nClrBack*/,/*nClrFore*/,/*lBold*/)
 
-TRCell():New(oSectDad, "PRODUTO", "QRY_AUX", "Produto", /*Picture*/, 10, /*lPixel*/,/*{|| code-block de impressao }*/,/*cAlign*/,/*lLineBreak*/,/*cHeaderAlign */,/*lCellBreak*/,/*nColSpace*/,/*lAutoSize*/,/*nClrBack*/,/*nClrFore*/,/*lBold*/)
-TRCell():New(oSectDad, "DESCRICAO", "QRY_AUX", "Descricao", /*Picture*/, 30, /*lPixel*/,/*{|| code-block de impressao }*/,/*cAlign*/,/*lLineBreak*/,/*cHeaderAlign */,/*lCellBreak*/,/*nColSpace*/,/*lAutoSize*/,/*nClrBack*/,/*nClrFore*/,/*lBold*/)
-TRCell():New(oSectDad, "QUANTIDADE", "QRY_AUX", "Quantidade", /*Picture*/, 5, /*lPixel*/,/*{|| code-block de impressao }*/,/*cAlign*/,/*lLineBreak*/,/*cHeaderAlign */,/*lCellBreak*/,/*nColSpace*/,/*lAutoSize*/,/*nClrBack*/,/*nClrFore*/,/*lBold*/)
-TRCell():New(oSectDad, "C6_UM", "QRY_AUX", "Unidade", /*Picture*/, 2, /*lPixel*/,/*{|| code-block de impressao }*/,/*cAlign*/,/*lLineBreak*/,/*cHeaderAlign */,/*lCellBreak*/,/*nColSpace*/,/*lAutoSize*/,/*nClrBack*/,/*nClrFore*/,/*lBold*/)
+TRCell():New(oSectDad, "PRODUTO"   , "QRY_AUX", "Produto"   , /*Picture*/, 10, /*lPixel*/,/*{|| code-block de impressao }*/,/*cAlign*/,/*lLineBreak*/,/*cHeaderAlign */,/*lCellBreak*/,/*nColSpace*/,/*lAutoSize*/,/*nClrBack*/,/*nClrFore*/,/*lBold*/)
+TRCell():New(oSectDad, "DESCRICAO" , "QRY_AUX", "Descricao" , /*Picture*/, 40, /*lPixel*/,/*{|| code-block de impressao }*/,/*cAlign*/,/*lLineBreak*/,/*cHeaderAlign */,/*lCellBreak*/,/*nColSpace*/,/*lAutoSize*/,/*nClrBack*/,/*nClrFore*/,/*lBold*/)
+TRCell():New(oSectDad, "QUANTIDADE", "QRY_AUX", "Quantidade", /*Picture*/, 13, /*lPixel*/,/*{|| code-block de impressao }*/,/*cAlign*/,/*lLineBreak*/,/*cHeaderAlign */,/*lCellBreak*/,/*nColSpace*/,/*lAutoSize*/,/*nClrBack*/,/*nClrFore*/,/*lBold*/)
+TRCell():New(oSectDad, "C6_UM"     , "QRY_AUX", "Unidade"   , /*Picture*/, 8, /*lPixel*/,/*{|| code-block de impressao }*/,/*cAlign*/,/*lLineBreak*/,/*cHeaderAlign */,/*lCellBreak*/,/*nColSpace*/,/*lAutoSize*/,/*nClrBack*/,/*nClrFore*/,/*lBold*/)
 Return oReport
 
 /*-------------------------------------------------------------------------------*
 | Func:  fRepPrint                                                              |
-| Desc:  FunÁ„o que imprime o relatÛrio                                         |
+| Desc:  Fun√ß√£o que imprime o relat√≥rio                                         |
 *-------------------------------------------------------------------------------*/
 
 Static Function fRepPrint(oReport)
 Local aArea    := GetArea()
 Local cQryAux  := ""
-Local oSectDad := Nil
+Local oSectDad := oReport:Section(1)
 Local oSectH   := oReport:Section(2)
 Local nAtual   := 0
 Local nTotal   := 0
+Local aTemp
+Local aDados   := {}
+Local nI
+Local cQuebra  := ""
+Local cPedido  := ""
 
-//Pegando as seÁıes do relatÛrio
-oSectDad := oReport:Section(1)
-
-//Montando consulta de dados
-cQryAux := ""
-cQryAux += "SELECT A1_NREDUZ CLIENTE,C5_NUM PEDIDO, SUBSTRING(C5_EMISSAO,7,2)+'/'+SUBSTRING(C5_EMISSAO,5,2)+'/'+SUBSTRING(C5_EMISSAO,1,4) EMISSAO,ACY_DESCRI GRUPO,C6_PRODUTO PRODUTO,C6_DESCRI DESCRICAO, C6_QTDVEN QUANTIDADE, C6_UM FROM "        + STR_PULA 
+cQryAux := "SELECT A1_NREDUZ CLIENTE,C5_NUM PEDIDO, SUBSTRING(C5_EMISSAO,7,2)+'/'+SUBSTRING(C5_EMISSAO,5,2)+'/'+SUBSTRING(C5_EMISSAO,1,4) EMISSAO,ACY_DESCRI GRUPO,C6_PRODUTO PRODUTO,C6_DESCRI DESCRICAO, C6_QTDVEN QUANTIDADE, C6_UM FROM "        + STR_PULA
 cQryAux += RetSQLName("SC6") +" A, "+RetSQLName("SC5") +" B, "+RetSQLName("SA1") +" E "
 cQryAux += " left join "+retSqlName("ACY")+" ACY on ACY_FILIAL='"+xFilial("ACY")+"' and ACY_GRPVEN=A1_GRPVEN and ACY.D_E_L_E_T_='' , "
 cQryAux += RetSQLName("SB1") +" C "+"join "+retSqlName("SBM")+" SBM on BM_FILIAL='"+xFilial("SBM")+"' and BM_GRUPO=B1_GRUPO and SBM.D_E_L_E_T_=' '"
 cQryAux += "WHERE A.D_E_L_E_T_ = ''AND B.D_E_L_E_T_ = '' AND C.D_E_L_E_T_ = ''  AND E.D_E_L_E_T_ = ''  "        + STR_PULA
 cQryAux += "AND SUBSTRING(C5_FILIAL,1,2) = '"+SubStr(cFilAnt,1,2)+"' "       + STR_PULA
 cQryAux += "AND SUBSTRING(A1_FILIAL,1,2) = '"+SubStr(cFilAnt,1,2)+"' "       + STR_PULA
-cQryAux += "AND C6_BLQ <> 'R' "        +STR_PULA  // AlteraÁ„o p/ retirada do produtos RESIDUO - vp 08/04/2020
+cQryAux += "AND C6_BLQ <> 'R' "        +STR_PULA  // Altera√ß√£o p/ retirada do produtos RESIDUO - vp 08/04/2020
 cQryAux += "AND C5_NUM = C6_NUM"        + STR_PULA
 cQryAux += "AND C5_FILIAL = C6_FILIAL"        + STR_PULA
 cQryAux += "AND C6_CLI+C6_LOJA = A1_COD+A1_LOJA"        + STR_PULA
@@ -115,6 +113,8 @@ cQryAux += "AND C6_PRODUTO = B1_COD"        + STR_PULA
 cQryAux += "AND BM_GRUPO = B1_GRUPO "       + STR_PULA
 cQryAux += "AND BM_FILIAL = B1_FILIAL"       + STR_PULA
 cQryAux += "AND C5_EMISSAO between '"+DtoS(mv_par01)+"' and '"+DtoS(mv_par02)+"' "       + STR_PULA
+
+cQryAux += "AND C6_QTDVEN > 0 AND C6_BLQ = ' ' "	// n√£o trazer item Cortado / Res√≠duo
 
 if ! empty( cGrupos )
 	cQryAux += "and B1_GRUPO in ("+cGrupos+")"
@@ -130,55 +130,80 @@ Else				// Quebra por Grupo de Cliente
 	cQryAux += "ORDER BY ACY_DESCRI+C5_NUM+C6_DESCRI "       + STR_PULA
 endif
 
-cQryAux := ChangeQuery(cQryAux)
+dbUseArea(.T.,"TOPCONN",tcGenQry(,,cQryAux),"QRY_AUX", .T., .T.)
 
-//Executando consulta e setando o total da rÈgua
-TCQuery cQryAux New Alias "QRY_AUX"
-Count to nTotal
-oReport:SetMeter(nTotal)
+While ! eof()
+	aTemp := {}
+	for nI := 1 to fCount()
+		aadd( aTemp, fieldGet(nI) )
+	next
+	aadd( aDados, aTemp)
+	dbSkip()
+end
+QRY_AUX->(DbCloseArea())
+nTotal := len(aDados)
 
-QRY_AUX->(DbGoTop())
+oReport:SetMeter( nTotal )
 
-cQuebra 	:= ""
-cPedido     := ""
-While ! QRY_AUX->(Eof())
+// 1          2       3           4           5           6          7           8
+// A1_NREDUZ, C5_NUM, C5_EMISSAO, ACY_DESCRI, C6_PRODUTO, C6_DESCRI, C6_QTDVEN , C6_UM
+// CLIENTE   ,PEDIDO, EMISSAO   , GRUPO     , PRODUTO   , DESCRICAO, QUANTIDADE, C6_UM
 
-    If cQuebra <> iif( MV_PAR05==1, QRY_AUX->PEDIDO, QRY_AUX->GRUPO )
+for nI := 1 to len(aDados)
+
+    If cQuebra <> iif( MV_PAR05==1, aDados[nI,2], aDados[nI,4] )
 		if nAtual > 0
 			oSectDad:Finish()
+			oReport:PrtLeft( replicate("-",300) )
+			oSectH:Finish()
         	oReport:endPage()
 		endif
         oReport:startPage()
 	endif
 
-	if cPedido != QRY_AUX->PEDIDO
-		if nAtual > 0 .and. MV_PAR05==2 .and. cQuebra == QRY_AUX->GRUPO
+	if cPedido != aDados[nI,2]
+		if nAtual > 0 .and. MV_PAR05==2 .and. cQuebra == aDados[nI,4]
 			oSectDad:Finish()
 			oReport:PrtLeft( replicate("-",300) )
+			oSectH:Finish()
 			oReport:skipLine()
 		endif
-		oSectH:Init()
-		oSectH:PrintLine()
-		oSectH:Finish()
 
+		if fQuebra( oReport, aDados[nI,2], aDados )
+			oReport:endPage()
+			oReport:startPage()
+		endif
+
+		oSectH:Init()
+		oSectH:Cell("CLIENTE"):SetValue( aDados[nI,1] )
+		oSectH:Cell("PEDIDO" ):SetValue( aDados[nI,2] )
+		oSectH:Cell("EMISSAO"):SetValue( aDados[nI,3] )
+		oSectH:Cell("GRUPO"  ):SetValue( aDados[nI,4] )
+		oSectH:PrintLine()
 		oSectDad:Init()
     EndIf
 
-    cQuebra := iif( MV_PAR05==1, QRY_AUX->PEDIDO, QRY_AUX->GRUPO )
-	cPedido := QRY_AUX->PEDIDO
+    cQuebra := iif( MV_PAR05==1, aDados[nI,2], aDados[nI,4] )
+	cPedido := aDados[nI,2]
 
-	//Incrementando a rÈgua
+	//Incrementando a r√©gua
 	nAtual++
 	oReport:SetMsgPrint("Imprimindo registro "+cValToChar(nAtual)+" de "+cValToChar(nTotal)+"...")
 	oReport:IncMeter()
 
 	//Imprimindo a linha atual
-	oSectDad:PrintLine()
 
-	QRY_AUX->(DbSkip())
-EndDo
+	oSectDad:Cell("PRODUTO"   ):SetValue( aDados[nI,5])
+	oSectDad:Cell("DESCRICAO" ):SetValue( aDados[nI,6])
+	oSectDad:Cell("QUANTIDADE"):SetValue( aDados[nI,7])
+	oSectDad:Cell("C6_UM"     ):SetValue( aDados[nI,8])
+	oSectDad:PrintLine()
+next
+
 oSectDad:Finish()
-QRY_AUX->(DbCloseArea())
+oReport:PrtLeft( replicate("-",300) )
+oSectH:Finish()
+oReport:endPage()
 
 RestArea(aArea)
 Return nil
@@ -220,7 +245,7 @@ cHelp      := Iif( cHelp          == Nil, "" , cHelp          )
 dbSelectArea( "SX1" )
 dbSetOrder( 1 )
 
-// Ajusta o tamanho do grupo. Ajuste emergencial para validaÁ„o dos fontes.
+// Ajusta o tamanho do grupo. Ajuste emergencial para valida√ß√£o dos fontes.
 // RFC - 15/03/2007
 cGrupo := PadR( cGrupo , Len( SX1->X1_GRUPO ) , " " )
 
@@ -354,3 +379,35 @@ local oNo  	:= LoadBitmap(GetResources(), 'LBNO')
 
 	restArea( aArea )
 return nil
+
+
+//-------------------------------------------------------
+// Fun√ß√£o para calcular o tamanho da se√ß√£o e retorna .T. p/ Quebrar
+// ou .F. p/ continuar a imprimir
+// Cristiam Rossi em 13/04/2019
+static function fQuebra( oReport, cPedido, aDados )
+local aArea     := getArea()
+local nItens    := 0
+local nTamLine  := oReport:nLineHeight+3
+local nTamCab   := nTamLine * 8
+local nTamItem  := 0
+local nTamPag   := 3320
+local nTamSecao := 0
+local nI
+
+// no come√ßa da p√°gina... n√£o precisa quebrar
+	if oReport:nRow < nTamLine * 8
+		return .F.
+	endif
+
+	for nI := 1 to len( aDados )
+		if cPedido == aDados[nI,2]
+			nItens++
+		endif
+	next
+
+	nTamItem  := nItens * nTamLine
+	nTamSecao := oReport:nRow + nTamCab + nTamItem
+
+	restArea( aArea )
+return nTamPag < nTamSecao		// se se√ß√£o for maior, ent√£o quebra a p√°gina
