@@ -5,7 +5,7 @@
 //Constantes
 #Define STR_PULA        Chr(13)+Chr(10)
 
-// RelatÛrio de Separacao de Pedidos de Vendas
+// Relat√≥rio de Separacao de Pedidos de Vendas
 
 User Function DDSRFAT01()
 Local aArea     := GetArea()
@@ -21,19 +21,19 @@ if ! Pergunte(cPerg,.T.)
 	return nil
 endif
 
-fSelGrupos()	// seleÁ„o dos grupos de produtos
+fSelGrupos()	// sele√ß√£o dos grupos de produtos
 
-//Cria as definiÁıes do relatÛrio
+//Cria as defini√ß√µes do relat√≥rio
 oReport := fReportDef()
 
-//Ser· enviado por e-Mail?
+//Ser√° enviado por e-Mail?
 If lEmail
 	oReport:nRemoteType := NO_REMOTE
 	oReport:cEmail := cPara
 	oReport:nDevice := 3 //1-Arquivo,2-Impressora,3-email,4-Planilha e 5-Html
 	oReport:SetPreview(.F.)
 	oReport:Print(.F., "", .T.)
-	//Sen„o, mostra a tela
+	//Sen√£o, mostra a tela
 Else
 	oReport:PrintDialog()
 EndIf
@@ -43,7 +43,7 @@ Return
 
 /*-------------------------------------------------------------------------------*
 | Func:  fReportDef                                                             |
-| Desc:  FunÁ„o que monta a definiÁ„o do relatÛrio                              |
+| Desc:  Fun√ß√£o que monta a defini√ß√£o do relat√≥rio                              |
 *-------------------------------------------------------------------------------*/
 
 Static Function fReportDef()
@@ -60,13 +60,13 @@ oReport:SetPortrait()
 oReport:nFontBody := 15
 oReport:nLineHeight  := oReport:nFontBody * 3.5		// aumentando a altura da linha
 
-oSectDad := TRSection():New(    oReport,;        //Objeto TReport que a seÁ„o pertence
-"Dados",;        //DescriÁ„o da seÁ„o
-{"QRY_AUX"})        //Tabelas utilizadas, a primeira ser· considerada como principal da seÁ„o
-oSectDad:SetTotalInLine(.F.)  //Define se os totalizadores ser„o impressos em linha ou coluna. .F.=Coluna; .T.=Linha
+oSectDad := TRSection():New(    oReport,;        //Objeto TReport que a se√ß√£o pertence
+"Dados",;        //Descri√ß√£o da se√ß√£o
+{"QRY_AUX"})        //Tabelas utilizadas, a primeira ser√° considerada como principal da se√ß√£o
+oSectDad:SetTotalInLine(.F.)  //Define se os totalizadores ser√£o impressos em linha ou coluna. .F.=Coluna; .T.=Linha
 
 oSectH := TRSection():New(oReport, "Cabec", {"QRY_AUX"})
-oSectH:SetTotalInLine(.F.)  //Define se os totalizadores ser„o impressos em linha ou coluna. .F.=Coluna; .T.=Linha
+oSectH:SetTotalInLine(.F.)  //Define se os totalizadores ser√£o impressos em linha ou coluna. .F.=Coluna; .T.=Linha
 oSectH:lLineBreak := .F.
 
 TRCell():New(oSectH, "CLIENTE"     , "QRY_AUX", "Cliente"   , /*Picture*/, 29, /*lPixel*/,/*{|| code-block de impressao }*/,/*cAlign*/,/*lLineBreak*/,/*cHeaderAlign */,/*lCellBreak*/,/*nColSpace*/,/*lAutoSize*/,/*nClrBack*/,/*nClrFore*/,/*lBold*/)
@@ -82,7 +82,7 @@ Return oReport
 
 /*-------------------------------------------------------------------------------*
 | Func:  fRepPrint                                                              |
-| Desc:  FunÁ„o que imprime o relatÛrio                                         |
+| Desc:  Fun√ß√£o que imprime o relat√≥rio                                         |
 *-------------------------------------------------------------------------------*/
 
 Static Function fRepPrint(oReport)
@@ -105,6 +105,7 @@ cQryAux += RetSQLName("SB1") +" C "+"join "+retSqlName("SBM")+" SBM on BM_FILIAL
 cQryAux += "WHERE A.D_E_L_E_T_ = ''AND B.D_E_L_E_T_ = '' AND C.D_E_L_E_T_ = ''  AND E.D_E_L_E_T_ = ''  "        + STR_PULA
 cQryAux += "AND SUBSTRING(C5_FILIAL,1,2) = '"+SubStr(cFilAnt,1,2)+"' "       + STR_PULA
 cQryAux += "AND SUBSTRING(A1_FILIAL,1,2) = '"+SubStr(cFilAnt,1,2)+"' "       + STR_PULA
+cQryAux += "AND C6_BLQ <> 'R' "        +STR_PULA  // Altera√ß√£o p/ retirada do produtos RESIDUO - vp 08/04/2020
 cQryAux += "AND C5_NUM = C6_NUM"        + STR_PULA
 cQryAux += "AND C5_FILIAL = C6_FILIAL"        + STR_PULA
 cQryAux += "AND C6_CLI+C6_LOJA = A1_COD+A1_LOJA"        + STR_PULA
@@ -113,7 +114,7 @@ cQryAux += "AND BM_GRUPO = B1_GRUPO "       + STR_PULA
 cQryAux += "AND BM_FILIAL = B1_FILIAL"       + STR_PULA
 cQryAux += "AND C5_EMISSAO between '"+DtoS(mv_par01)+"' and '"+DtoS(mv_par02)+"' "       + STR_PULA
 
-cQryAux += "AND C6_QTDVEN > 0 AND C6_BLQ = ' ' "	// n„o trazer item Cortado / ResÌduo
+cQryAux += "AND C6_QTDVEN > 0 AND C6_BLQ = ' ' "	// n√£o trazer item Cortado / Res√≠duo
 
 if ! empty( cGrupos )
 	cQryAux += "and B1_GRUPO in ("+cGrupos+")"
@@ -185,7 +186,7 @@ for nI := 1 to len(aDados)
     cQuebra := iif( MV_PAR05==1, aDados[nI,2], aDados[nI,4] )
 	cPedido := aDados[nI,2]
 
-	//Incrementando a rÈgua
+	//Incrementando a r√©gua
 	nAtual++
 	oReport:SetMsgPrint("Imprimindo registro "+cValToChar(nAtual)+" de "+cValToChar(nTotal)+"...")
 	oReport:IncMeter()
@@ -244,7 +245,7 @@ cHelp      := Iif( cHelp          == Nil, "" , cHelp          )
 dbSelectArea( "SX1" )
 dbSetOrder( 1 )
 
-// Ajusta o tamanho do grupo. Ajuste emergencial para validaÁ„o dos fontes.
+// Ajusta o tamanho do grupo. Ajuste emergencial para valida√ß√£o dos fontes.
 // RFC - 15/03/2007
 cGrupo := PadR( cGrupo , Len( SX1->X1_GRUPO ) , " " )
 
@@ -381,7 +382,7 @@ return nil
 
 
 //-------------------------------------------------------
-// FunÁ„o para calcular o tamanho da seÁ„o e retorna .T. p/ Quebrar
+// Fun√ß√£o para calcular o tamanho da se√ß√£o e retorna .T. p/ Quebrar
 // ou .F. p/ continuar a imprimir
 // Cristiam Rossi em 13/04/2019
 static function fQuebra( oReport, cPedido, aDados )
@@ -394,7 +395,7 @@ local nTamPag   := 3320
 local nTamSecao := 0
 local nI
 
-// no comeÁa da p·gina... n„o precisa quebrar
+// no come√ßa da p√°gina... n√£o precisa quebrar
 	if oReport:nRow < nTamLine * 8
 		return .F.
 	endif
@@ -409,4 +410,4 @@ local nI
 	nTamSecao := oReport:nRow + nTamCab + nTamItem
 
 	restArea( aArea )
-return nTamPag < nTamSecao		// se seÁ„o for maior, ent„o quebra a p·gina
+return nTamPag < nTamSecao		// se se√ß√£o for maior, ent√£o quebra a p√°gina

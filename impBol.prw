@@ -189,7 +189,7 @@ default lQuiet     := .F.
 				msUnlock()
 
 				recLock("SE1", .F.)
-				SE1->E1_NUMBCO := cFxAtu
+				SE1->E1_NUMBCO := cFxAtu + Substr(fNossoNum(cFxAtu),Len(fNossoNum(cFxAtu)),1)
 				msUnlock()
 			endif
 
@@ -200,7 +200,7 @@ default lQuiet     := .F.
 							dDataBase          							,;	// [3] Data da emissão do boleto
 							dVencto										,;	// [4] Data do vencimento
 							(nVlrBol - nVlrAbat + nAcrescimo)			,;	// [5] Valor do título
-							fNossoNum( cNroDoc )						,;	// [6] Nosso número (Ver fórmula para calculo) // de 3 coloquei 9
+							fNossoNum( Substr(cNroDoc,1,6) )			,;	// [6] Nosso número (Ver fórmula para calculo) // de 3 coloquei 9
 							SE1->E1_PREFIXO								,;	// [7] Prefixo da NF
 							iif(cEmpAnt$"010201;010301;020201","DR","DM"),;	// [8] Tipo do Titulo
 							nVlrBol * (SE1->E1_DESCFIN/100) }				// [9] Desconto financeiro
@@ -801,7 +801,6 @@ local cString := SA6->( alltrim( A6_AGENCIA ) + A6_XPOSTO + A6_NUMCON )
 	cRet += "-"
 	cRet += fMod11( cString )
 return cRet
-
 
 //-----------------------------
 static function fMod10( cParte )
