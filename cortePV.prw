@@ -41,6 +41,7 @@ private oLst1
 private cTitulo   := "Corte em Pedidos de Vendas"
 private aAllPrd   := {}
 private dCorte    := dDatabase
+private cQData    := "Entrega"
 private cRede     := "TODAS"
 private cContexto := "Filial"
 private aCliRep   := {}
@@ -275,7 +276,14 @@ local cFilSC7   := iif( cContexto=="Filial", "='"+xFilial("SC7") +"'", "like '"+
 	cQuery += " group by C7_PRODUTO ) tmp on C7_PRODUTO = C6_PRODUTO"
 
 	cQuery += " where C5_FILIAL "+cFilSC5
-	cQuery += " and C5_EMISSAO >= '"+DtoS( dCorte )+"'"
+//	cQuery += " and C5_EMISSAO >= '"+DtoS( dCorte )+"'"
+
+	if cQData == "Entrega"
+		cQuery += " and C5_FECENT = '"+DtoS( dCorte )+"'"
+	else
+		cQuery += " and C5_EMISSAO = '"+DtoS( dCorte )+"'"
+	endif
+
 	cQuery += " and C5_NOTA in (' ','"+replicate("X", len(SC5->C5_NOTA))+"')"
 
 	if SC5->( fieldPos("C5_XDTREPO") ) > 0		// Não considerar REPOSIÇÃO
@@ -488,14 +496,17 @@ static function getDtCorte()
 local lRet   := .F.
 local aParam := {}
 local aRet   := ""
+local aDatas := {"Entrega","Emissao"}
 local aItens := {"Filial","Grupo"}
 
 	aAdd(aParam,{ 1, "Data corte:", dCorte, "",, "", ".T.", 50, .F.} )
+	aAdd(aParam,{ 3, "Data:",1,aDatas,50,"",.F.} )
 	aAdd(aParam,{ 3, "Contexto:",1,aItens,50,"",.F.} )
 
 	if ParamBox(aParam,"Filtros...",@aRet,,,,,,,,.F.)
 		dCorte    := aRet[1]
-		cContexto := aItens[ aRet[2] ]
+		cQData    := aDatas[ aRet[2] ]
+		cContexto := aItens[ aRet[3] ]
 		lRet      := .T.
 	endif
 
