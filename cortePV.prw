@@ -496,8 +496,8 @@ static function getDtCorte()
 local lRet   := .F.
 local aParam := {}
 local aRet   := ""
-local aDatas := {"Entrega","Emissao"}
-local aItens := {"Filial","Grupo"}
+local aDatas := {"Emissao","Entrega"}
+local aItens := {"Grupo","Filial"}
 
 	aAdd(aParam,{ 1, "Data corte:", dCorte, "",, "", ".T.", 50, .F.} )
 	aAdd(aParam,{ 3, "Data:",1,aDatas,50,"",.F.} )
