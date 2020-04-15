@@ -302,7 +302,7 @@ local cFilSC7   := iif( cContexto=="Filial", "='"+xFilial("SC7") +"'", "like '"+
 		cQuery += " and A1_GRPVEN='"+ACY->ACY_GRPVEN+"'"
 	endif
 
-	cQuery += " order by C6_PRODUTO "
+	cQuery += " order by B1_DESC "
 	dbUseArea(.T.,"TOPCONN",tcGenQry(,,cQuery),cAliasQry,.F.,.F.)
 
 	while ! (cAliasQry)->( eof() )
