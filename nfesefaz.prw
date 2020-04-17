@@ -2122,7 +2122,7 @@ If cTipo == "1"
 							if Len( cMensCli ) > 0 
 								cMensCli += '  '
 							endif
-							cMensCli += "Pedido: " + alltrim(SC5->C5_XPEDCLI)
+							cMensCli += "Pedido Cliente: " + alltrim(SC5->C5_XPEDCLI)
 						endif
 						
 						//Obtem os dados do veiculo informado no pedido de venda
