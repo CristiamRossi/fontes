@@ -159,6 +159,7 @@ EndIf
 		for nI := 1 to len( aNFs )
 			u_envBol( aNFs[nI,1], aNFs[nI,2] )		// rotina que envia os boletos via e-mail - Cristiam Rossi em 28/01/2020
 		next
+		MostraErro()
 	endif
 
 RestArea(aArea)

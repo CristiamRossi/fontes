@@ -32,7 +32,8 @@ private cFilePrint := ""
 	endif
 
 	if empty( SE1->E1_PORTADO )
-		msgAlert("Boleto não poderá ser enviado por e-mail, Título ["+SE1->E1_PREFIXO+"-"+SE1->E1_NUM+"/"+SE1->E1_PARCELA+"] sem Portador")
+		AutoGrLog("Boleto não poderá ser enviado por e-mail, Título ["+SE1->E1_PREFIXO+"-"+SE1->E1_NUM+"/"+SE1->E1_PARCELA+"] sem Portador")
+		//msgAlert("Boleto não poderá ser enviado por e-mail, Título ["+SE1->E1_PREFIXO+"-"+SE1->E1_NUM+"/"+SE1->E1_PARCELA+"] sem Portador")
 		return nil
 	endif
 	
@@ -54,7 +55,8 @@ private cFilePrint := ""
 	endif
 
 	if empty( SA1->A1_EMAIL )
-		msgAlert("Boleto não poderá ser enviado por e-mail, E-mail do cliente em branco. Título: ["+SE1->E1_PREFIXO+"-"+SE1->E1_NUM+"/"+SE1->E1_PARCELA+"]")
+		//msgAlert("Boleto não poderá ser enviado por e-mail, E-mail do cliente em branco. Título: ["+SE1->E1_PREFIXO+"-"+SE1->E1_NUM+"/"+SE1->E1_PARCELA+"]")
+		AutoGrLog("Boleto não poderá ser enviado por e-mail, E-mail do cliente em branco. Título: ["+SE1->E1_PREFIXO+"-"+SE1->E1_NUM+"/"+SE1->E1_PARCELA+"]")
 		return nil
 	endif
 
@@ -77,17 +79,17 @@ private cFilePrint := ""
 		return nil
 	endif
 
-
+/*
 if ! msgYesNo("Será enviado boleto por e-mail p/ "+SA1->A1_EMAIL+CRLF+"Continua?", "Envio de Boleto")
 	restArea( aArea )
 	return nil
 endif
-
+*/
 
 	if U_sndMail( SA1->A1_EMAIL, "boleto(s) ref NF: "+cNumero, "Prezado cliente,<br />segue anexo os boletos da NF: "+cNumero+"<br /><br />atenciosamente<br />"+SM0->M0_FILIAL,  {cPasta + cFilePrint + ".pdf"} /*aAnexo*/, /*cCopia*/, /*cOculta*/, .T. /*lQuiet*/)
-		msgInfo("Boleto enviado com sucesso!")		
+		AutoGrLog("Boleto enviado com sucesso! Título: "+cPrefixo+"-"+cNumero+ "E-mail:"+SA1->A1_EMAIL)		
 	else
-		msgAlert("Falha ao enviar Boleto por e-mail")
+		msgAlert("Falha ao enviar Boleto por e-mail! Título: "+cPrefixo+"-"+cNumero+"E-mail:"+SA1->A1_EMAIL)		
 	endif
 
 	restArea( aArea )
