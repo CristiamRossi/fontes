@@ -37,7 +37,7 @@ Private cNumPV	:= aInfoItem[1][01]
 
 //Alimenta Retorno
 aadd(aRetorno,aProd)
-aadd(aRetorno,cMensCli+" Pedido: "+cNumPV)
+aadd(aRetorno,cMensCli+" PV: "+cNumPV)
 aadd(aRetorno,cMensFis)
 aadd(aRetorno,aDest)
 aadd(aRetorno,aNota)
