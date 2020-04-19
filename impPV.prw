@@ -531,6 +531,7 @@ private aProcERR := {}
 					aAdd(aCabec,{"C5_LOJAENT"	,cLojEnt				,Nil})
 					aAdd(aCabec,{"C5_FRETE"		,nVlFrete				,Nil})			// VALOR DO FRETE, VER ROTA
 					aAdd(aCabec,{"C5_XPEDCLI"	,cPedCli				,Nil})
+					aAdd(aCabec,{"C5_FECENT"	,StoD(dEntrega)			,Nil})	//Alteração VP 18/04/2020
 				endif
 			endif
 
