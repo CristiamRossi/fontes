@@ -14,6 +14,7 @@ local lContinua := .T.
 
 	while lContinua		// loop criado para ficar com a rotina em execução sem sair
 		RodaCorte()
+		msUnlockAll()
 		lContinua := msgYesNo( "Deseja Continuar na rotina?", "Rotina de Corte de Pedidos de Vendas" )
 	end
 
@@ -67,21 +68,24 @@ private aCliRep   := {}
 	oLayer:addCollumn('layBRW',100,.F.,'UP')
 	oPanelUp := oLayer:GetColPanel( 'layBRW', 'UP' )
 
-	@ 5,5 ListBox oLst1 Fields Header " ", "Código", "Descrição", "Grupo", "Qtd.Original", "Qtd.Distrib.", "Qtd.Residuo", "Saldo", "Trânsito","" Size 390 /*larg*/,150 of oPanelUp Pixel
+	@ 5,5 ListBox oLst1 Fields Header ;
+		" ", "Código", "Descrição", "Grupo", "Rede", "Qtd.Original", "Qtd.Distrib.", "Qtd.Residuo", "Saldo", "Trânsito" size 390 /*larg*/, 150 of oPanelUp Pixel
 	oLst1:align := CONTROL_ALIGN_ALLCLIENT
 	oLst1:SetArray( aProds )
 	oLst1:bLine   := {|| { iif(aProds[oLst1:nAT][1], oOK, oNo),;
 							aProds[oLst1:nAT][2],;
 							aProds[oLst1:nAT][3],;
 							aProds[oLst1:nAT][7],;
+							aProds[oLst1:nAT][12],;		// Rede
 							aProds[oLst1:nAT][4],;
 							aProds[oLst1:nAT][5],;
 							aProds[oLst1:nAT][6],;
 							aProds[oLst1:nAT][10],;
 							aProds[oLst1:nAT][11],;
-							"";
 	 } }
+
 	oLst1:bLDblClick := {|| fSelClick( aProds, oLst1:nAT ), oLst1:DrawSelect() }
+	oLst1:aColSizes  := {1, 15, 40, 30, 30}
 
 	oLayer:AddLine( 'DN', 15, .T. )
 	oLayer:addCollumn('layPAN',100,.F.,'DN')
@@ -99,9 +103,7 @@ private aCliRep   := {}
 	@ 12, 280 MSCOMBOBOX oComb1 VAR cGrupo ITEMS aGrps SIZE 080,011 OF oPanelDn Pixel ON CHANGE fFilGrp( @aProds, cGrupo )
 
 	@ 13, 375 Say "Redes: " of oPanelDn Pixel
-	@ 12, 395 MSCOMBOBOX oComb2 VAR cRede ITEMS aRede SIZE 080,011 OF oPanelDn Pixel ON CHANGE fFilACY( @aProds, cGrupo )
-
-
+	@ 12, 395 MSCOMBOBOX oComb2 VAR cRede ITEMS aRede SIZE 080,011 OF oPanelDn Pixel ON CHANGE fFilGrp( @aProds, cGrupo )
 	ACTIVATE MSDIALOG oDlg CENTERED
 
 	if lContinua
@@ -117,8 +119,13 @@ return nil
 //------------------------------------------
 static function fSelClick( aProds, nItem )
 local nPos
-local cProduto := aProds[nItem][2]
+local cProduto
 
+	if nItem == 0 .or. len( aProds ) == 0
+		return nil
+	endif
+
+	cProduto         :=   aProds[nItem][2]
 	aProds[nItem][1] := ! aProds[nItem][1]
 
 	if ( nPos := aScan(aAllPrd, {|aIt| aIt[2] == cProduto } ) ) > 0
@@ -159,74 +166,6 @@ local nI
 
 	oLst1:GoPosition(1)
 	oLst1:refresh()
-return nil
-
-
-//------------------------------------------
-static function fFilACY( aProds, cGrupo )
-local nI
-Local aAreaC5	:= SC5->(GetArea())
-Local aAreaC6	:= SC6->(GetArea())
-Local aAreaA1	:= SA1->(GetArea())
-Local nQtdOrig  := 0
-Local nQtdDist  := 0
-Local nQtdResi  := 0
-Local cRedCli	:= ""
-Local nk		:= 0
-
-SC5->(DbSetOrder(1))  //C5_FILIAL+C5_NUM                                                                                                                                                
-SC6->(DbSetOrder(12))  //C6_FILIAL+C6_NUM+C6_PRODUTO+C6_SOLCOM                                                                                                                                                                                                                                                        
-SA1->(DbSetOrder(1))  //A1_FILIAL+A1_COD+A1_LOJA                                                                                                                                        
-ACY->(DbSetOrder(1) ) //ACY_FILIAL+ACY_GRPVEN                                                                                                                                           
-
-	aSize( aProds, 0 )
-	
-	for nI := 1 to len( aAllPrd )
-		nQtdOrig  := 0
-		nQtdDist  := 0
-		nQtdResi  := 0
-		For nk := 1 To Len(aAllPrd[nI][9]) //for pedido
-			cRedCli := ""
-			If SC5->(DbSeek(aAllPrd[nI][9][nk])) //filial + num 
-				If SA1->(DbSeek(xFilial("SA1")+SC5->(C5_CLIENTE+C5_LOJACLI)))
-					If ACY->(DbSeek(xFilial("ACY")+SA1->A1_GRPVEN))
-						cRedCli	:= 	AllTrim(ACY->ACY_DESCRI)	
-					EndIf
-				EndIf	
-				If (Alltrim(aAllPrd[nI][7]) == cGrupo .or. cGrupo == "TODOS") .and. (cRedCli == cRede .or. cRede == "TODAS")
-					If SC6->(DbSeek(aAllPrd[nI][9][nk] + aAllPrd[nI][2])) //filial + num+PROD
-						While SC6->(!Eof()) .and. aAllPrd[nI][9][nk] == SC6->(C6_FILIAL+C6_NUM) .and. aAllPrd[nI][2] == SC6->C6_PRODUTO
-							nQtdOrig += SC6->C6_XQTDORI
-							If Empty(SC6->C6_BLQ )
-								nQtdDist += SC6->C6_QTDVEN
-							Else
-								nQtdResi += SC6->C6_XQTDORI
-							EndIf
-
-							SC6->(DbSkip())
-						EndDo
-					EndIf  
-				EndIf	
-			EndIf	
-		Next nk
-
-		aAllPrd[nI][4] := nQtdOrig 
-		aAllPrd[nI][5] := nQtdDist 
-		aAllPrd[nI][6] := nQtdResi 
-		
-		aadd( aProds, aAllPrd[nI])
-		/*
-		if ( alltrim(aAllPrd[nI][7]) == cGrupo .or. cGrupo == "TODOS" ) .and. ( alltrim(aAllPrd[nI][12]) == cRede .or. cRede == "TODAS" )
-			aadd( aProds, aAllPrd[nI])
-		endif
-		*/
-	next nI
-
-	oLst1:GoPosition(1)
-	oLst1:refresh()
-	RestArea(aAreaC5)
-	RestArea(aAreaC6)
-	RestArea(aAreaA1)
 return nil
 
 
@@ -276,7 +215,6 @@ local cFilSC7   := iif( cContexto=="Filial", "='"+xFilial("SC7") +"'", "like '"+
 	cQuery += " group by C7_PRODUTO ) tmp on C7_PRODUTO = C6_PRODUTO"
 
 	cQuery += " where C5_FILIAL "+cFilSC5
-//	cQuery += " and C5_EMISSAO >= '"+DtoS( dCorte )+"'"
 
 	if cQData == "Entrega"
 		cQuery += " and C5_FECENT = '"+DtoS( dCorte )+"'"
@@ -291,7 +229,10 @@ local cFilSC7   := iif( cContexto=="Filial", "='"+xFilial("SC7") +"'", "like '"+
 	endif
 
 	cQuery += " and C6_NOTA=' '"
+	cQuery += " and C6_QTDENT = 0"
 	cQuery += " and C6_QTDEMP = 0"
+	cQuery += " and C6_QTDLIB = 0"
+
 //	cQuery += " and B2_LOCAL = '01'"
 	cQuery += " and SC5.D_E_L_E_T_=' '"
 
@@ -307,7 +248,8 @@ local cFilSC7   := iif( cContexto=="Filial", "='"+xFilial("SC7") +"'", "like '"+
 
 	while ! (cAliasQry)->( eof() )
 
-		if ( nPos := aScan(aProds, {|it| it[2] == (cAliasQry)->C6_PRODUTO}) ) == 0
+//		if ( nPos := aScan(aProds, {|it| it[2] == (cAliasQry)->C6_PRODUTO}) ) == 0
+		if ( nPos := aScan(aProds, {|it| it[2]+it[12] == (cAliasQry)->(C6_PRODUTO+ACY_DESCRI) }) ) == 0
 			aadd( aProds, { .T.,;			// 1-SELEÇÃO
 							C6_PRODUTO,;	// 2-CÓDIGO PRODUTO
 							B1_DESC,;		// 3-DESCRIÇÃO PRODUTO
@@ -334,11 +276,8 @@ local cFilSC7   := iif( cContexto=="Filial", "='"+xFilial("SC7") +"'", "like '"+
 		else
 			aProds[nPos][6] += (cAliasQry)->C6_XQTDORI
 		endif
-//		if aScan(aProds[nPos][9], (cAliasQry)->C6_NUM ) == 0
-//			aadd(aProds[nPos][9], (cAliasQry)->C6_NUM )
 		if aScan(aProds[nPos][9], (cAliasQry)->( C6_FILIAL + C6_NUM ) ) == 0
 			aadd(aProds[nPos][9], (cAliasQry)->( C6_FILIAL + C6_NUM ) )
-			//aadd(aPedUn,{(cAliasQry)->(C6_FILIAL+C6_NUM),(cAliasQry)->C6_QTDVEN,})
 		endif
 
 		if aScan(aRede, (cAliasQry)->ACY_DESCRI) == 0
@@ -356,9 +295,6 @@ local cFilSC7   := iif( cContexto=="Filial", "='"+xFilial("SC7") +"'", "like '"+
 		aProds[nI,8] := len( aProds[nI,9] )
 	next
 
-	//aadd(aProds[nPos][12], (cAliasQry)->(C6_FILIAL+C6_NUM)+ )
-	//aadd(aProds[nPos][12], {(cAliasQry)->(C6_FILIAL+C6_NUM),(cAliasQry)->C6_QTDVEN} )
-
 	restArea( aArea )
 return aProds
 
@@ -368,11 +304,8 @@ static function fTemSel( aProds, lResiduo )
 local   nItens   := 0
 default lResiduo := .F.
 
-	if !IsInCallStack("fResiduo")
+	if ! IsInCallStack("fResiduo")
 		aEval(aProds, {|it| iif(it[1] .and. it[5]>0, nItens++, nil)})
-		//aEval(aProds, {|it| iif(it[1] .and. (lResiduo .or. it[5] > it[6]) .and. it[5]>0, nItens++, nil)})
-
-		//aEval(aProds, {|it| iif(it[1] .and. (lResiduo .or. it[6]==0) .and. it[4]>0, nItens++, nil)})
 	else 
 		aEval(aProds, {|it| iif(it[1] , nItens++, nil)})
 	endif
@@ -425,17 +358,13 @@ local nPos
 			endif
 
 			for nJ := 1 to len( aProds[nI][9] )
-//				cPedido  := padR( aProds[nI][9][nJ], len(SC5->C5_NUM)     )
 				cPedido  := aProds[nI][9][nJ]
 
 				begin transaction
 
-//				SC5->( dbSeek( xFilial("SC5") + cPedido ) )
 				SC5->( dbSeek( cPedido ) )
 
-//				SC6->( dbSeek( xFilial("SC6") + cPedido + cProduto ) )
 				SC6->( dbSeek( cPedido + cProduto ) )
-//				while ! SC6->( eof() ) .and. SC6->( C6_FILIAL + C6_NUM + C6_PRODUTO ) == xFilial("SC6") + cPedido + cProduto
 				while ! SC6->( eof() ) .and. SC6->( C6_FILIAL + C6_NUM + C6_PRODUTO ) == cPedido + cProduto
 					recLock("SC6", .F.)
 					SC6->C6_BLQ := iif( nResp==1, " ", "R" )
@@ -447,9 +376,7 @@ local nPos
 				nResiduo := 0
 				nFat     := 0
 
-//				SC6->( dbSeek( xFilial("SC6") + cPedido ) )
 				SC6->( dbSeek( cPedido ) )
-//				while ! SC6->( eof() ) .and. SC6->( C6_FILIAL + C6_NUM ) == xFilial("SC6") + cPedido
 				while ! SC6->( eof() ) .and. SC6->( C6_FILIAL + C6_NUM ) == cPedido
 					nItem++
 
@@ -522,13 +449,14 @@ local   oLayer    := FWLayer():new()
 local   oTabTemp
 local   oBrwTMP
 local   nI
+local   nJ
 local   aEstru    := {}
 private aProds    := {}
 private oLst2
 private oLst3
 private oNGetD1
 
-aCliRep := {}
+	aCliRep := {}
 
 	aadd( aEstru, {"A1_NOME"   ,"C",len(SA1->A1_NOME)   ,0} )
 	aadd( aEstru, {"C6_XQTDORI","N",12                  ,2} )
@@ -552,10 +480,21 @@ aCliRep := {}
 	oTabTemp:Create()
 
 	for nI := 1 to len( aAllPrd )
-		if aAllPrd[nI][1] //.and. aAllPrd[nI][5] > aAllPrd[nI][6]
-			If aAllPrd[nI][4] > 0
-				aadd( aProds, aClone(aAllPrd[nI]) )
-				nPos := len( aProds )
+		if aAllPrd[nI][1]					// marcado
+			If aAllPrd[nI][4] > 0			// qtd original
+
+				if ( nPos := aScan( aProds, {|it| it[2]==aAllPrd[nI][2] } ) ) == 0
+					aadd( aProds, aClone(aAllPrd[nI]) )
+					nPos := len( aProds )
+				else
+					aProds[nPos][4] += aAllPrd[nI][4]			// 4-QTD ORIG
+					aProds[nPos][5] += aAllPrd[nI][5]			// 5-QTD DISTRIB
+					aProds[nPos][6] += aAllPrd[nI][6]			// 6-QTD RESIDUO
+
+					for nJ := 1 to len( aAllPrd[nI][9] )
+						aadd( aProds[nPos][9], aAllPrd[nI][9][nJ] )		// 9-PEDIDOS
+					next
+				endif
 				aProds[nPos][8] := aProds[nPos][10] - aProds[nPos][5]
 			EndIf
 		endif
@@ -593,7 +532,6 @@ aCliRep := {}
 							aProds[oLst2:nAT][11],;
 							"";
 	 } }
-
 
 	oBrwTMP := FWMBrowse():New()
 	oBrwTMP:SetDataTable(.T.)
@@ -681,20 +619,16 @@ local aArea := getArea()
 	TEMP->( dbGotop() )
 	while ! TEMP->( eof() )
 
-//		SC6->( dbSeek( xFilial("SC6") + TEMP->( C6_NUM + C6_PRODUTO ) ) )
-//		while ! SC6->( eof() ) .and. SC6->( C6_FILIAL + C6_NUM + C6_PRODUTO ) == xFilial("SC6") + TEMP->( C6_NUM + C6_PRODUTO )
 		SC6->( dbSeek( TEMP->( FILIAL + C6_NUM + C6_PRODUTO ) ) )
 		while ! SC6->( eof() ) .and. SC6->( C6_FILIAL + C6_NUM + C6_PRODUTO ) == TEMP->( FILIAL + C6_NUM + C6_PRODUTO )
-			//If TEMP->C6_BLQ <> "R"   
-				recLock("SC6", .F.)
-				if TEMP->C6_QTDVEN == 0
-					SC6->C6_BLQ    := "R"
-				else
-					SC6->C6_QTDVEN := TEMP->C6_QTDVEN
-					SC6->C6_BLQ    := ""
-				endif
-				msUnlock()
-			//EndIf	
+			recLock("SC6", .F.)
+			if TEMP->C6_QTDVEN == 0
+				SC6->C6_BLQ    := "R"
+			else
+				SC6->C6_QTDVEN := TEMP->C6_QTDVEN
+				SC6->C6_BLQ    := ""
+			endif
+			msUnlock()
 			SC6->( dbSkip() )
 		end
 		TEMP->( dbSkip() )
@@ -1097,7 +1031,6 @@ local nJ
 local cProduto
 local cPedido
 
-
 	SC6->( dbSetOrder(12) )
 	SA1->( dbSetOrder(1)  )
 
@@ -1105,20 +1038,19 @@ local cPedido
 		cProduto := padR( aProds[nI][2], len(SC6->C6_PRODUTO) )
 
 		for nJ := 1 to len( aProds[nI][9] )
-//			cPedido  := padR( aProds[nI][9][nJ], len(SC5->C5_NUM) )
 			cPedido  := padR( aProds[nI][9][nJ], len(cFilAnt)+len(SC5->C5_NUM) )
 
-//			SC5->( dbSeek( xFilial("SC5") + cPedido ) )
 			SC5->( dbSeek( cPedido ) )
 			SA1->( dbSeek( xFilial("SA1") + SC5->(C5_CLIENT+C5_LOJAENT) ) )
-			
+/*
+-- é pra trazer o que foi selecionado e não o filtro de tela que ficou para tras
 			if cRede != "TODAS"
 				ACY->( dbSetOrder(3) )	// ACY_DESCRI
 				if ! ACY->( dbSeek( xFilial("ACY") + cRede ) ) .or. SA1->A1_GRPVEN != ACY->ACY_GRPVEN
 					loop
 				endif
 			endif
-			
+*/
 			SZR->( dbSeek( xFilial("SZR") + SA1->A1_XROTA ) )
 
 			SC6->( dbSeek( SC5->C5_FILIAL + SC5->C5_NUM + cProduto ) )
@@ -1264,32 +1196,27 @@ Private aCliSel  := {}
 	TEMP->( dbGotop() )
 
 	while ! TEMP->(eof())
-		//If TEMP->C6_BLQ <> "R"
-			if TEMP->C6_QTDVEN > 0
+		if TEMP->C6_QTDVEN > 0 .and. ASCAN(aCliSel, { |x| x[1] == TEMP->A1_COD+TEMP->A1_LOJA }) > 0
 
-				cFilAnt := TEMP->FILIAL
+			cFilAnt := TEMP->FILIAL
+			if SC6->( dbSeek( xFilial("SC6") + TEMP->C6_NUM + TEMP->C6_ITEM + TEMP->C6_PRODUTO) )
+				recLock("SC6", .F.)
+				SC6->C6_QTDVEN := TEMP->C6_QTDVEN
+				SC6->C6_VALOR  := SC6->C6_PRCVEN * SC6->C6_QTDVEN
+				msUnlock()
 
-				if SC6->( dbSeek( xFilial("SC6") + TEMP->C6_NUM + TEMP->C6_ITEM + TEMP->C6_PRODUTO) )
-					If ASCAN(aCliSel, { |x| x[1] == TEMP->A1_COD+TEMP->A1_LOJA }) > 0
-						recLock("SC6", .F.)
-						SC6->C6_QTDVEN := TEMP->C6_QTDVEN
-						SC6->C6_VALOR  := SC6->C6_PRCVEN * SC6->C6_QTDVEN
-						msUnlock()
-
-						dbSelectArea("SC6")
-						nQtdLib := MaLibDoFat(SC6->(RecNo()),TEMP->C6_QTDVEN,@lCredito,@lEstoque,lAvCred,lAvEst,lLiber,lTransf)
-
-						X := 1
-					EndIf	
-				endif
+				dbSelectArea("SC6")
+				nQtdLib := MaLibDoFat(SC6->(RecNo()),TEMP->C6_QTDVEN,@lCredito,@lEstoque,lAvCred,lAvEst,lLiber,lTransf)
 			endif
-		//EndIf	
+		endif
+
 		TEMP->( dbSkip())
 	end
 
 	cFilAnt := xFilAnt
 	oDlg:end()
 return nil
+
 
 Static function FILCLI()
 //Local cVar     := ""
