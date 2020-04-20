@@ -250,7 +250,8 @@ local cFilSC7   := iif( cContexto=="Filial", "='"+xFilial("SC7") +"'", "like '"+
 
 //		if ( nPos := aScan(aProds, {|it| it[2] == (cAliasQry)->C6_PRODUTO}) ) == 0
 		if ( nPos := aScan(aProds, {|it| it[2]+it[12] == (cAliasQry)->(C6_PRODUTO+ACY_DESCRI) }) ) == 0
-			aadd( aProds, { .T.,;			// 1-SELEÇÃO
+//			aadd( aProds, { .T.,;			// 1-SELEÇÃO
+			aadd( aProds, { .F.,;			// 1-SELEÇÃO
 							C6_PRODUTO,;	// 2-CÓDIGO PRODUTO
 							B1_DESC,;		// 3-DESCRIÇÃO PRODUTO
 							0,;				// 4-QTD ORIG
@@ -289,9 +290,11 @@ local cFilSC7   := iif( cContexto=="Filial", "='"+xFilial("SC7") +"'", "like '"+
 	(cAliasQry)->( dbCloseArea() )
 
 	for nI := 1 to len( aProds )
+/*
 		if aProds[nI,5] == 0
 			aProds[nI,1] := .F.
 		endif
+*/
 		aProds[nI,8] := len( aProds[nI,9] )
 	next
 
