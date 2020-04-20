@@ -105,7 +105,7 @@ local nSeq
 
 	while ! (cAliasQry)->( eof() )
 
-		cKey  := (cAliasQry)->(REDE + SETOR)
+		cKey  := (cAliasQry)->( REDE + SETOR)
 		nQtde := 0
 		nSeq  := 0
 		oReport:startPage()
@@ -116,7 +116,7 @@ local nSeq
 		oSection1:printline()
 		oSection2:init()
 
-		while ! (cAliasQry)->( eof() ) .and. cKey == (cAliasQry)->(REDE + SETOR)
+		while ! (cAliasQry)->( eof() ) .and. cKey == (cAliasQry)->( REDE + SETOR)
 			nSeq++
 			nQtde += (cAliasQry)->QTDE
 

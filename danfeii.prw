@@ -155,13 +155,14 @@ Else
 EndIf
 
 // Específico Nayumi e DDS - pergunta se deseja enviar os boleto por e-mail
+if MV_PAR04 == 2		// NF de Saída
 	if len( aNFs ) > 0 .and. msgYesNo("Deseja enviar os boletos da NF por e-mail?", "Envio Boletos por e-mail")
 		for nI := 1 to len( aNFs )
 			u_envBol( aNFs[nI,1], aNFs[nI,2] )		// rotina que envia os boletos via e-mail - Cristiam Rossi em 28/01/2020
 		next
 		MostraErro()
 	endif
-
+endif
 RestArea(aArea)
 
 Return lRet

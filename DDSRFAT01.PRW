@@ -70,6 +70,7 @@ oSectH:SetTotalInLine(.F.)  //Define se os totalizadores serão impressos em lin
 oSectH:lLineBreak := .F.
 
 TRCell():New(oSectH, "CLIENTE"     , "QRY_AUX", "Cliente"   , /*Picture*/, 29, /*lPixel*/,/*{|| code-block de impressao }*/,/*cAlign*/,/*lLineBreak*/,/*cHeaderAlign */,/*lCellBreak*/,/*nColSpace*/,/*lAutoSize*/,/*nClrBack*/,/*nClrFore*/,/*lBold*/)
+TRCell():New(oSectH, "FILIAL"      , "QRY_AUX", "Filial"    , /*Picture*/, 8, /*lPixel*/,/*{|| code-block de impressao }*/,/*cAlign*/,/*lLineBreak*/,/*cHeaderAlign */,/*lCellBreak*/,/*nColSpace*/,/*lAutoSize*/,/*nClrBack*/,/*nClrFore*/,/*lBold*/)
 TRCell():New(oSectH, "PEDIDO"      , "QRY_AUX", "Pedido"    , /*Picture*/, 8, /*lPixel*/,/*{|| code-block de impressao }*/,/*cAlign*/,/*lLineBreak*/,/*cHeaderAlign */,/*lCellBreak*/,/*nColSpace*/,/*lAutoSize*/,/*nClrBack*/,/*nClrFore*/,/*lBold*/)
 TRCell():New(oSectH, "EMISSAO"     , "QRY_AUX", "Emissao"   , /*Picture*/, 10, /*lPixel*/,/*{|| code-block de impressao }*/,/*cAlign*/,/*lLineBreak*/,/*cHeaderAlign */,/*lCellBreak*/,/*nColSpace*/,/*lAutoSize*/,/*nClrBack*/,/*nClrFore*/,/*lBold*/)
 TRCell():New(oSectH, "GRUPO"       , "QRY_AUX", "Grupo"     , /*Picture*/, 30, /*lPixel*/,/*{|| code-block de impressao }*/,/*cAlign*/,/*lLineBreak*/,/*cHeaderAlign */,/*lCellBreak*/,/*nColSpace*/,/*lAutoSize*/,/*nClrBack*/,/*nClrFore*/,/*lBold*/)
@@ -98,7 +99,10 @@ Local nI
 Local cQuebra  := ""
 Local cPedido  := ""
 
-cQryAux := "SELECT A1_NREDUZ CLIENTE,C5_NUM PEDIDO, SUBSTRING(C5_EMISSAO,7,2)+'/'+SUBSTRING(C5_EMISSAO,5,2)+'/'+SUBSTRING(C5_EMISSAO,1,4) EMISSAO,ACY_DESCRI GRUPO,C6_PRODUTO PRODUTO,C6_DESCRI DESCRICAO, C6_QTDVEN QUANTIDADE, C6_UM FROM "        + STR_PULA
+cQryAux := "SELECT A1_NREDUZ CLIENTE,C5_NUM PEDIDO, SUBSTRING(C5_EMISSAO,7,2)+'/'+SUBSTRING(C5_EMISSAO,5,2)+'/'+SUBSTRING(C5_EMISSAO,1,4) EMISSAO"
+cQryAux += ",ACY_DESCRI GRUPO,C6_PRODUTO PRODUTO,C6_DESCRI DESCRICAO, C6_QTDVEN QUANTIDADE, C6_UM, C5_FILIAL FILIAL"
+cQryAux += "," + iif( MV_PAR05==1, "C5_FILIAL+C5_NUM", "C5_FILIAL+ACY_DESCRI" ) + " QUEBRA"
+cQryAux += " FROM " + STR_PULA
 cQryAux += RetSQLName("SC6") +" A, "+RetSQLName("SC5") +" B, "+RetSQLName("SA1") +" E "
 cQryAux += " left join "+retSqlName("ACY")+" ACY on ACY_FILIAL='"+xFilial("ACY")+"' and ACY_GRPVEN=A1_GRPVEN and ACY.D_E_L_E_T_='' , "
 cQryAux += RetSQLName("SB1") +" C "+"join "+retSqlName("SBM")+" SBM on BM_FILIAL='"+xFilial("SBM")+"' and BM_GRUPO=B1_GRUPO and SBM.D_E_L_E_T_=' '"
@@ -125,9 +129,9 @@ If ! Empty(mv_par04)
 EndIf
 
 if MV_PAR05 == 1	// Quebra por Pedido
-	cQryAux += "ORDER BY C5_NUM+C6_DESCRI "       + STR_PULA
+	cQryAux += "ORDER BY C5_FILIAL, C5_NUM, C6_DESCRI "       + STR_PULA
 Else				// Quebra por Grupo de Cliente
-	cQryAux += "ORDER BY ACY_DESCRI+C5_NUM+C6_DESCRI "       + STR_PULA
+	cQryAux += "ORDER BY C5_FILIAL, ACY_DESCRI, C5_NUM, C6_DESCRI "       + STR_PULA
 endif
 
 dbUseArea(.T.,"TOPCONN",tcGenQry(,,cQryAux),"QRY_AUX", .T., .T.)
@@ -145,13 +149,14 @@ nTotal := len(aDados)
 
 oReport:SetMeter( nTotal )
 
-// 1          2       3           4           5           6          7           8
-// A1_NREDUZ, C5_NUM, C5_EMISSAO, ACY_DESCRI, C6_PRODUTO, C6_DESCRI, C6_QTDVEN , C6_UM
-// CLIENTE   ,PEDIDO, EMISSAO   , GRUPO     , PRODUTO   , DESCRICAO, QUANTIDADE, C6_UM
+// 1          2       3           4           5           6          7           8    , 9        , 10
+// A1_NREDUZ, C5_NUM, C5_EMISSAO, ACY_DESCRI, C6_PRODUTO, C6_DESCRI, C6_QTDVEN , C6_UM, C5_FILIAL, QUEBRA
+// CLIENTE   ,PEDIDO, EMISSAO   , GRUPO     , PRODUTO   , DESCRICAO, QUANTIDADE, C6_UM, FILIAL   , QUEBRA
 
 for nI := 1 to len(aDados)
 
-    If cQuebra <> iif( MV_PAR05==1, aDados[nI,2], aDados[nI,4] )
+//    If cQuebra <> iif( MV_PAR05==1, aDados[nI,2], aDados[nI,4] )
+    If cQuebra <> aDados[nI,10]
 		if nAtual > 0
 			oSectDad:Finish()
 			oReport:PrtLeft( replicate("-",300) )
@@ -162,7 +167,8 @@ for nI := 1 to len(aDados)
 	endif
 
 	if cPedido != aDados[nI,2]
-		if nAtual > 0 .and. MV_PAR05==2 .and. cQuebra == aDados[nI,4]
+//		if nAtual > 0 .and. MV_PAR05==2 .and. cQuebra == aDados[nI,4]
+		if nAtual > 0 .and. MV_PAR05==2 .and. cQuebra == aDados[nI,10]
 			oSectDad:Finish()
 			oReport:PrtLeft( replicate("-",300) )
 			oSectH:Finish()
@@ -176,6 +182,7 @@ for nI := 1 to len(aDados)
 
 		oSectH:Init()
 		oSectH:Cell("CLIENTE"):SetValue( aDados[nI,1] )
+		oSectH:Cell("FILIAL" ):SetValue( aDados[nI,9] )
 		oSectH:Cell("PEDIDO" ):SetValue( aDados[nI,2] )
 		oSectH:Cell("EMISSAO"):SetValue( aDados[nI,3] )
 		oSectH:Cell("GRUPO"  ):SetValue( aDados[nI,4] )
@@ -183,7 +190,8 @@ for nI := 1 to len(aDados)
 		oSectDad:Init()
     EndIf
 
-    cQuebra := iif( MV_PAR05==1, aDados[nI,2], aDados[nI,4] )
+//    cQuebra := iif( MV_PAR05==1, aDados[nI,2], aDados[nI,4] )
+    cQuebra := aDados[nI,10]
 	cPedido := aDados[nI,2]
 
 	//Incrementando a régua
