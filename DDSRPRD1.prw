@@ -87,6 +87,7 @@ local nSeq
 	cQryAux += " AND BM_GRUPO = B1_GRUPO "
 	cQryAux += " AND BM_FILIAL = B1_FILIAL"
 	cQryAux += " AND C5_EMISSAO between '"+DtoS(mv_par01)+"' and '"+DtoS(mv_par02)+"' "
+	cQryAux += " AND C5_TIPO = 'N'"
 
 	cQryAux += " AND C6_QTDVEN > 0 "	// não trazer item Cortado / Resíduo
 

@@ -120,6 +120,8 @@ cQryAux += "AND C5_EMISSAO between '"+DtoS(mv_par01)+"' and '"+DtoS(mv_par02)+"'
 
 cQryAux += "AND C6_QTDVEN > 0 AND C6_BLQ = ' ' "	// não trazer item Cortado / Resíduo
 
+cQryAux += "AND C5_TIPO = 'N' "
+
 if ! empty( cGrupos )
 	cQryAux += "and B1_GRUPO in ("+cGrupos+")"
 endif
