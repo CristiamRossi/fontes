@@ -390,7 +390,7 @@ aAdd( aSX3, { ;
 	{ '08'																	, .T. }, ; //X3_ORDEM
 	{ 'DA1_PRCBAS'															, .T. }, ; //X3_CAMPO
 	{ 'N'																	, .T. }, ; //X3_TIPO
-	{ 9																		, .T. }, ; //X3_TAMANHO
+	{ 14																	, .T. }, ; //X3_TAMANHO
 	{ 5																		, .T. }, ; //X3_DECIMAL
 	{ 'Preco Base'															, .T. }, ; //X3_TITULO
 	{ 'Precio Base'															, .T. }, ; //X3_TITSPA
@@ -398,7 +398,7 @@ aAdd( aSX3, { ;
 	{ 'Preco Base'															, .T. }, ; //X3_DESCRIC
 	{ 'Precio Base'															, .T. }, ; //X3_DESCSPA
 	{ 'Base Price'															, .T. }, ; //X3_DESCENG
-	{ '@E 999,999.99999'													, .T. }, ; //X3_PICTURE
+	{ '@E 99,999,999.99999'													, .T. }, ; //X3_PICTURE
 	{ 'Positivo()'															, .T. }, ; //X3_VALID
 	{ Chr(128) + Chr(128) + Chr(128) + Chr(128) + Chr(128) + ;
 	Chr(128) + Chr(128) + Chr(128) + Chr(128) + Chr(128) + ;
@@ -439,7 +439,7 @@ aAdd( aSX3, { ;
 	{ '10'																	, .T. }, ; //X3_ORDEM
 	{ 'DA1_PRCVEN'															, .T. }, ; //X3_CAMPO
 	{ 'N'																	, .T. }, ; //X3_TIPO
-	{ 9																		, .T. }, ; //X3_TAMANHO
+	{ 14																	, .T. }, ; //X3_TAMANHO
 	{ 5																		, .T. }, ; //X3_DECIMAL
 	{ 'Preco Venda'															, .T. }, ; //X3_TITULO
 	{ 'Precio Venta'														, .T. }, ; //X3_TITSPA
@@ -447,7 +447,7 @@ aAdd( aSX3, { ;
 	{ 'Preco de venda'														, .T. }, ; //X3_DESCRIC
 	{ 'Precio de venta'														, .T. }, ; //X3_DESCSPA
 	{ 'Sales Price'															, .T. }, ; //X3_DESCENG
-	{ '@E 999,999.99999'													, .T. }, ; //X3_PICTURE
+	{ '@E 99,999,999.99999'													, .T. }, ; //X3_PICTURE
 	{ 'Positivo().And.Oms010Grd()'											, .T. }, ; //X3_VALID
 	{ Chr(128) + Chr(128) + Chr(128) + Chr(128) + Chr(128) + ;
 	Chr(128) + Chr(128) + Chr(128) + Chr(128) + Chr(128) + ;
@@ -1033,7 +1033,7 @@ aAdd( aSX3, { ;
 	{ '23'																	, .T. }, ; //X3_ORDEM
 	{ 'B2_QEMPN'															, .T. }, ; //X3_CAMPO
 	{ 'N'																	, .T. }, ; //X3_TIPO
-	{ 12																	, .T. }, ; //X3_TAMANHO
+	{ 14																	, .T. }, ; //X3_TAMANHO
 	{ 5																		, .T. }, ; //X3_DECIMAL
 	{ 'Qtd. Emp. NF'														, .T. }, ; //X3_TITULO
 	{ 'Ctd.Resr.Fac'														, .T. }, ; //X3_TITSPA
@@ -1131,7 +1131,7 @@ aAdd( aSX3, { ;
 	{ '26'																	, .T. }, ; //X3_ORDEM
 	{ 'B2_RESERVA'															, .T. }, ; //X3_CAMPO
 	{ 'N'																	, .T. }, ; //X3_TIPO
-	{ 12																	, .T. }, ; //X3_TAMANHO
+	{ 14																	, .T. }, ; //X3_TAMANHO
 	{ 5																		, .T. }, ; //X3_DECIMAL
 	{ 'Qtd. Reserva'														, .T. }, ; //X3_TITULO
 	{ 'Ctd. Reserva'														, .T. }, ; //X3_TITSPA
@@ -1180,7 +1180,7 @@ aAdd( aSX3, { ;
 	{ '27'																	, .T. }, ; //X3_ORDEM
 	{ 'B2_QPEDVEN'															, .T. }, ; //X3_CAMPO
 	{ 'N'																	, .T. }, ; //X3_TIPO
-	{ 12																	, .T. }, ; //X3_TAMANHO
+	{ 14																	, .T. }, ; //X3_TAMANHO
 	{ 5																		, .T. }, ; //X3_DECIMAL
 	{ 'Qtd.Ped.Vend'														, .T. }, ; //X3_TITULO
 	{ 'Ctd.Ped.Vent'														, .T. }, ; //X3_TITSPA
@@ -1229,7 +1229,7 @@ aAdd( aSX3, { ;
 	{ '29'																	, .T. }, ; //X3_ORDEM
 	{ 'B2_NAOCLAS'															, .T. }, ; //X3_CAMPO
 	{ 'N'																	, .T. }, ; //X3_TIPO
-	{ 12																	, .T. }, ; //X3_TAMANHO
+	{ 14																	, .T. }, ; //X3_TAMANHO
 	{ 5																		, .T. }, ; //X3_DECIMAL
 	{ 'Qtd.N.Endere'														, .T. }, ; //X3_TITULO
 	{ 'Ctd.N.Direcc'														, .T. }, ; //X3_TITSPA
@@ -1327,7 +1327,7 @@ aAdd( aSX3, { ;
 	{ '33'																	, .T. }, ; //X3_ORDEM
 	{ 'B2_QTNP'																, .T. }, ; //X3_CAMPO
 	{ 'N'																	, .T. }, ; //X3_TIPO
-	{ 12																	, .T. }, ; //X3_TAMANHO
+	{ 14																	, .T. }, ; //X3_TAMANHO
 	{ 5																		, .T. }, ; //X3_DECIMAL
 	{ 'Qt.Ter.Ns.Pd'														, .T. }, ; //X3_TITULO
 	{ 'Ctd.3o.Nu.Pd'														, .T. }, ; //X3_TITSPA
@@ -1376,7 +1376,7 @@ aAdd( aSX3, { ;
 	{ '34'																	, .T. }, ; //X3_ORDEM
 	{ 'B2_QNPT'																, .T. }, ; //X3_CAMPO
 	{ 'N'																	, .T. }, ; //X3_TIPO
-	{ 12																	, .T. }, ; //X3_TAMANHO
+	{ 14																	, .T. }, ; //X3_TAMANHO
 	{ 5																		, .T. }, ; //X3_DECIMAL
 	{ 'Qt.Ns.Pd.Ter'														, .T. }, ; //X3_TITULO
 	{ 'Ctd.Nu.Pd.3o'														, .T. }, ; //X3_TITSPA
@@ -1425,7 +1425,7 @@ aAdd( aSX3, { ;
 	{ '36'																	, .T. }, ; //X3_ORDEM
 	{ 'B2_QFIM2'															, .T. }, ; //X3_CAMPO
 	{ 'N'																	, .T. }, ; //X3_TIPO
-	{ 12																	, .T. }, ; //X3_TAMANHO
+	{ 14																	, .T. }, ; //X3_TAMANHO
 	{ 5																		, .T. }, ; //X3_DECIMAL
 	{ 'Qt.Fim Mes 2'														, .T. }, ; //X3_TITULO
 	{ 'Ctd.Fin Mes2'														, .T. }, ; //X3_TITSPA
@@ -1474,7 +1474,7 @@ aAdd( aSX3, { ;
 	{ '37'																	, .T. }, ; //X3_ORDEM
 	{ 'B2_QACLASS'															, .T. }, ; //X3_CAMPO
 	{ 'N'																	, .T. }, ; //X3_TIPO
-	{ 12																	, .T. }, ; //X3_TAMANHO
+	{ 14																	, .T. }, ; //X3_TAMANHO
 	{ 5																		, .T. }, ; //X3_DECIMAL
 	{ 'Qtd.a Endere'														, .T. }, ; //X3_TITULO
 	{ 'Ctd.a Encami'														, .T. }, ; //X3_TITSPA
@@ -1768,7 +1768,7 @@ aAdd( aSX3, { ;
 	{ '49'																	, .T. }, ; //X3_ORDEM
 	{ 'B2_QEMPSA'															, .T. }, ; //X3_CAMPO
 	{ 'N'																	, .T. }, ; //X3_TIPO
-	{ 12																	, .T. }, ; //X3_TAMANHO
+	{ 14																	, .T. }, ; //X3_TAMANHO
 	{ 5																		, .T. }, ; //X3_DECIMAL
 	{ 'Qtd. Emp. SA'														, .T. }, ; //X3_TITULO
 	{ 'Ctd.Prev.SD'															, .T. }, ; //X3_TITSPA
@@ -1964,7 +1964,7 @@ aAdd( aSX3, { ;
 	{ '53'																	, .T. }, ; //X3_ORDEM
 	{ 'B2_QEMPN2'															, .T. }, ; //X3_CAMPO
 	{ 'N'																	, .T. }, ; //X3_TIPO
-	{ 12																	, .T. }, ; //X3_TAMANHO
+	{ 14																	, .T. }, ; //X3_TAMANHO
 	{ 5																		, .T. }, ; //X3_DECIMAL
 	{ 'Qtd.Emp.NF 2'														, .T. }, ; //X3_TITULO
 	{ 'Ctd.Res.Fac2'														, .T. }, ; //X3_TITSPA
@@ -2013,7 +2013,7 @@ aAdd( aSX3, { ;
 	{ '54'																	, .T. }, ; //X3_ORDEM
 	{ 'B2_RESERV2'															, .T. }, ; //X3_CAMPO
 	{ 'N'																	, .T. }, ; //X3_TIPO
-	{ 12																	, .T. }, ; //X3_TAMANHO
+	{ 14																	, .T. }, ; //X3_TAMANHO
 	{ 5																		, .T. }, ; //X3_DECIMAL
 	{ 'Reserva 2aUM'														, .T. }, ; //X3_TITULO
 	{ 'Reserva 2aUM'														, .T. }, ; //X3_TITSPA
@@ -2062,7 +2062,7 @@ aAdd( aSX3, { ;
 	{ '55'																	, .T. }, ; //X3_ORDEM
 	{ 'B2_QPEDVE2'															, .T. }, ; //X3_CAMPO
 	{ 'N'																	, .T. }, ; //X3_TIPO
-	{ 12																	, .T. }, ; //X3_TAMANHO
+	{ 14																	, .T. }, ; //X3_TAMANHO
 	{ 5																		, .T. }, ; //X3_DECIMAL
 	{ 'Qt.Pd.Ve.2UM'														, .T. }, ; //X3_TITULO
 	{ 'Ctd.Ped.Ven2'														, .T. }, ; //X3_TITSPA
@@ -2209,7 +2209,7 @@ aAdd( aSX3, { ;
 	{ '59'																	, .T. }, ; //X3_ORDEM
 	{ 'B2_QEMPPRJ'															, .T. }, ; //X3_CAMPO
 	{ 'N'																	, .T. }, ; //X3_TIPO
-	{ 12																	, .T. }, ; //X3_TAMANHO
+	{ 14																	, .T. }, ; //X3_TAMANHO
 	{ 5																		, .T. }, ; //X3_DECIMAL
 	{ 'Qtd.Emp.Prj.'														, .T. }, ; //X3_TITULO
 	{ 'Ctd.Rev.Pry.'														, .T. }, ; //X3_TITSPA
@@ -2258,7 +2258,7 @@ aAdd( aSX3, { ;
 	{ '62'																	, .T. }, ; //X3_ORDEM
 	{ 'B2_QEMPPR2'															, .T. }, ; //X3_CAMPO
 	{ 'N'																	, .T. }, ; //X3_TIPO
-	{ 12																	, .T. }, ; //X3_TAMANHO
+	{ 14																	, .T. }, ; //X3_TAMANHO
 	{ 5																		, .T. }, ; //X3_DECIMAL
 	{ 'Qt Emp Prj 2'														, .T. }, ; //X3_TITULO
 	{ 'Ct Res Pry 2'														, .T. }, ; //X3_TITSPA
@@ -2800,7 +2800,7 @@ aAdd( aSX3, { ;
 	{ '11'																	, .T. }, ; //X3_ORDEM
 	{ 'B6_PRUNIT'															, .T. }, ; //X3_CAMPO
 	{ 'N'																	, .T. }, ; //X3_TIPO
-	{ 12																	, .T. }, ; //X3_TAMANHO
+	{ 14																	, .T. }, ; //X3_TAMANHO
 	{ 5																		, .T. }, ; //X3_DECIMAL
 	{ 'Preco Unit.'															, .T. }, ; //X3_TITULO
 	{ 'Prc Unitario'														, .T. }, ; //X3_TITSPA
@@ -2808,7 +2808,7 @@ aAdd( aSX3, { ;
 	{ 'Preco Unitario'														, .T. }, ; //X3_DESCRIC
 	{ 'Precio Unitario'														, .T. }, ; //X3_DESCSPA
 	{ 'Unit Price'															, .T. }, ; //X3_DESCENG
-	{ '@E 99,999,999.99999'													, .T. }, ; //X3_PICTURE
+	{ '@E 999,999,999.99999'												, .T. }, ; //X3_PICTURE
 	{ ''																	, .T. }, ; //X3_VALID
 	{ Chr(128) + Chr(128) + Chr(128) + Chr(128) + Chr(128) + ;
 	Chr(128) + Chr(128) + Chr(128) + Chr(128) + Chr(128) + ;
@@ -3832,7 +3832,7 @@ aAdd( aSX3, { ;
 	{ '28'																	, .T. }, ; //X3_ORDEM
 	{ 'B8_PRCLOT'															, .T. }, ; //X3_CAMPO
 	{ 'N'																	, .T. }, ; //X3_TIPO
-	{ 12																	, .T. }, ; //X3_TAMANHO
+	{ 14																	, .T. }, ; //X3_TAMANHO
 	{ 5																		, .T. }, ; //X3_DECIMAL
 	{ 'Preco Lote'															, .T. }, ; //X3_TITULO
 	{ 'Preco Lote'															, .T. }, ; //X3_TITSPA
@@ -3982,7 +3982,7 @@ aAdd( aSX3, { ;
 	{ '19'																	, .T. }, ; //X3_ORDEM
 	{ 'B9_CUSTD'															, .T. }, ; //X3_CAMPO
 	{ 'N'																	, .T. }, ; //X3_TIPO
-	{ 12																	, .T. }, ; //X3_TAMANHO
+	{ 14																	, .T. }, ; //X3_TAMANHO
 	{ 5																		, .T. }, ; //X3_DECIMAL
 	{ 'Custo Stand.'														, .T. }, ; //X3_TITULO
 	{ 'Costo Estand'														, .T. }, ; //X3_TITSPA
@@ -4769,7 +4769,7 @@ aAdd( aSX3, { ;
 	{ '09'																	, .T. }, ; //X3_ORDEM
 	{ 'BF_QUANT'															, .T. }, ; //X3_CAMPO
 	{ 'N'																	, .T. }, ; //X3_TIPO
-	{ 12																	, .T. }, ; //X3_TAMANHO
+	{ 14																	, .T. }, ; //X3_TAMANHO
 	{ 5																		, .T. }, ; //X3_DECIMAL
 	{ 'Quantidade'															, .T. }, ; //X3_TITULO
 	{ 'Quantidade'															, .T. }, ; //X3_TITSPA
@@ -4818,7 +4818,7 @@ aAdd( aSX3, { ;
 	{ '10'																	, .T. }, ; //X3_ORDEM
 	{ 'BF_EMPENHO'															, .T. }, ; //X3_CAMPO
 	{ 'N'																	, .T. }, ; //X3_TIPO
-	{ 12																	, .T. }, ; //X3_TAMANHO
+	{ 14																	, .T. }, ; //X3_TAMANHO
 	{ 5																		, .T. }, ; //X3_DECIMAL
 	{ 'Empenho'																, .T. }, ; //X3_TITULO
 	{ 'Empenho'																, .T. }, ; //X3_TITSPA
@@ -4916,7 +4916,7 @@ aAdd( aSX3, { ;
 	{ '12'																	, .T. }, ; //X3_ORDEM
 	{ 'BF_QTSEGUM'															, .T. }, ; //X3_CAMPO
 	{ 'N'																	, .T. }, ; //X3_TIPO
-	{ 12																	, .T. }, ; //X3_TAMANHO
+	{ 14																	, .T. }, ; //X3_TAMANHO
 	{ 5																		, .T. }, ; //X3_DECIMAL
 	{ 'Qtd. 2a UM'															, .T. }, ; //X3_TITULO
 	{ 'Qtd. 2a UM'															, .T. }, ; //X3_TITSPA
@@ -4965,7 +4965,7 @@ aAdd( aSX3, { ;
 	{ '13'																	, .T. }, ; //X3_ORDEM
 	{ 'BF_EMPEN2'															, .T. }, ; //X3_CAMPO
 	{ 'N'																	, .T. }, ; //X3_TIPO
-	{ 12																	, .T. }, ; //X3_TAMANHO
+	{ 14																	, .T. }, ; //X3_TAMANHO
 	{ 5																		, .T. }, ; //X3_DECIMAL
 	{ 'Empenho 2UM'															, .T. }, ; //X3_TITULO
 	{ 'Empenho 2UM'															, .T. }, ; //X3_TITSPA
@@ -7721,7 +7721,7 @@ aAdd( aSX3, { ;
 	{ '05'																	, .T. }, ; //X3_ORDEM
 	{ 'C6_QTDVEN'															, .T. }, ; //X3_CAMPO
 	{ 'N'																	, .T. }, ; //X3_TIPO
-	{ 9																		, .T. }, ; //X3_TAMANHO
+	{ 14																	, .T. }, ; //X3_TAMANHO
 	{ 5																		, .T. }, ; //X3_DECIMAL
 	{ 'Quantidade'															, .T. }, ; //X3_TITULO
 	{ 'Cantidad'															, .T. }, ; //X3_TITSPA
@@ -7729,7 +7729,7 @@ aAdd( aSX3, { ;
 	{ 'Quantidade Vendida'													, .T. }, ; //X3_DESCRIC
 	{ 'Cantidad Vendida'													, .T. }, ; //X3_DESCSPA
 	{ 'Quantity Sold'														, .T. }, ; //X3_DESCENG
-	{ '@E 999999.99999'														, .T. }, ; //X3_PICTURE
+	{ '@E 999,999,999.99999'												, .T. }, ; //X3_PICTURE
 	{ 'A410QTDGRA() .AND. A410SegUm().and.A410MultT().and.a410Refr("C6_QTDVEN")', .T. }, ; //X3_VALID
 	{ Chr(128) + Chr(128) + Chr(128) + Chr(128) + Chr(128) + ;
 	Chr(128) + Chr(128) + Chr(128) + Chr(128) + Chr(128) + ;
@@ -7770,7 +7770,7 @@ aAdd( aSX3, { ;
 	{ '06'																	, .T. }, ; //X3_ORDEM
 	{ 'C6_PRCVEN'															, .T. }, ; //X3_CAMPO
 	{ 'N'																	, .T. }, ; //X3_TIPO
-	{ 11																	, .T. }, ; //X3_TAMANHO
+	{ 14																	, .T. }, ; //X3_TAMANHO
 	{ 5																		, .T. }, ; //X3_DECIMAL
 	{ 'Prc Unitario'														, .T. }, ; //X3_TITULO
 	{ 'Prc Unitario'														, .T. }, ; //X3_TITSPA
@@ -7778,7 +7778,7 @@ aAdd( aSX3, { ;
 	{ 'Preco Unitario Liquido'												, .T. }, ; //X3_DESCRIC
 	{ 'Precio Unitario Neto'												, .T. }, ; //X3_DESCSPA
 	{ 'Net Unit Price'														, .T. }, ; //X3_DESCENG
-	{ '@E 99,999,999.99999'													, .T. }, ; //X3_PICTURE
+	{ '@E 999,999,999.99999'												, .T. }, ; //X3_PICTURE
 	{ 'A410QtdGra() .And. A410MultT() .And. A410Zera() .AND. MTA410TROP(n)'		, .T. }, ; //X3_VALID
 	{ Chr(128) + Chr(128) + Chr(128) + Chr(128) + Chr(128) + ;
 	Chr(128) + Chr(128) + Chr(128) + Chr(128) + Chr(128) + ;
@@ -7819,7 +7819,7 @@ aAdd( aSX3, { ;
 	{ '08'																	, .T. }, ; //X3_ORDEM
 	{ 'C6_QTDLIB'															, .T. }, ; //X3_CAMPO
 	{ 'N'																	, .T. }, ; //X3_TIPO
-	{ 9																		, .T. }, ; //X3_TAMANHO
+	{ 14																	, .T. }, ; //X3_TAMANHO
 	{ 5																		, .T. }, ; //X3_DECIMAL
 	{ 'Qtd.Liberada'														, .T. }, ; //X3_TITULO
 	{ 'Ctd Aprobada'														, .T. }, ; //X3_TITSPA
@@ -7827,7 +7827,7 @@ aAdd( aSX3, { ;
 	{ 'Quantidade Liberada'													, .T. }, ; //X3_DESCRIC
 	{ 'Cantidad Aprobada'													, .T. }, ; //X3_DESCSPA
 	{ 'Amount Approved'														, .T. }, ; //X3_DESCENG
-	{ '@E 999999.99999'														, .T. }, ; //X3_PICTURE
+	{ '@E 999,999,999.99999'														, .T. }, ; //X3_PICTURE
 	{ 'A410QTDGRA() .AND. A440Qtdl() .and. a410MultT().and.a410Refr("C6_QTDLIB")', .T. }, ; //X3_VALID
 	{ Chr(128) + Chr(128) + Chr(128) + Chr(128) + Chr(128) + ;
 	Chr(128) + Chr(128) + Chr(128) + Chr(128) + Chr(128) + ;
@@ -7868,7 +7868,7 @@ aAdd( aSX3, { ;
 	{ '09'																	, .T. }, ; //X3_ORDEM
 	{ 'C6_QTDLIB2'															, .T. }, ; //X3_CAMPO
 	{ 'N'																	, .T. }, ; //X3_TIPO
-	{ 9																		, .T. }, ; //X3_TAMANHO
+	{ 14																	, .T. }, ; //X3_TAMANHO
 	{ 5																		, .T. }, ; //X3_DECIMAL
 	{ 'Qtd.Lib 2aUM'														, .T. }, ; //X3_TITULO
 	{ 'Ctd.Lib 2aUM'														, .T. }, ; //X3_TITSPA
@@ -7876,7 +7876,7 @@ aAdd( aSX3, { ;
 	{ 'Quantidade Liberada 2a UM'											, .T. }, ; //X3_DESCRIC
 	{ 'Cantidad Aprobada 2a UM'												, .T. }, ; //X3_DESCSPA
 	{ 'Quantity Released 2nd UOM'											, .T. }, ; //X3_DESCENG
-	{ '@E 999999.99999'														, .T. }, ; //X3_PICTURE
+	{ '@E 999,999,999.99999'												, .T. }, ; //X3_PICTURE
 	{ ''																	, .T. }, ; //X3_VALID
 	{ Chr(128) + Chr(128) + Chr(128) + Chr(128) + Chr(128) + ;
 	Chr(128) + Chr(128) + Chr(128) + Chr(128) + Chr(128) + ;
@@ -7917,7 +7917,7 @@ aAdd( aSX3, { ;
 	{ '14'																	, .T. }, ; //X3_ORDEM
 	{ 'C6_UNSVEN'															, .T. }, ; //X3_CAMPO
 	{ 'N'																	, .T. }, ; //X3_TIPO
-	{ 9																		, .T. }, ; //X3_TAMANHO
+	{ 14																	, .T. }, ; //X3_TAMANHO
 	{ 5																		, .T. }, ; //X3_DECIMAL
 	{ 'Qtd Ven 2 UM'														, .T. }, ; //X3_TITULO
 	{ 'Ctd.Ven 2aUM'														, .T. }, ; //X3_TITSPA
@@ -7925,7 +7925,7 @@ aAdd( aSX3, { ;
 	{ 'Quant. Vend. na 2 Unid M.'											, .T. }, ; //X3_DESCRIC
 	{ 'Ctd. Vend. en 2a.Unid.Med'											, .T. }, ; //X3_DESCSPA
 	{ 'Quantity Sold 2 Meas.Unit'											, .T. }, ; //X3_DESCENG
-	{ '@E 999999.99999'														, .T. }, ; //X3_PICTURE
+	{ '@E 999,999,999.99999'												, .T. }, ; //X3_PICTURE
 	{ 'A410Quant().and.(positivo().or.vazio())'								, .T. }, ; //X3_VALID
 	{ Chr(128) + Chr(128) + Chr(128) + Chr(128) + Chr(128) + ;
 	Chr(128) + Chr(128) + Chr(128) + Chr(128) + Chr(128) + ;
@@ -7966,7 +7966,7 @@ aAdd( aSX3, { ;
 	{ '17'																	, .T. }, ; //X3_ORDEM
 	{ 'C6_QTDENT'															, .T. }, ; //X3_CAMPO
 	{ 'N'																	, .T. }, ; //X3_TIPO
-	{ 9																		, .T. }, ; //X3_TAMANHO
+	{ 14																	, .T. }, ; //X3_TAMANHO
 	{ 5																		, .T. }, ; //X3_DECIMAL
 	{ 'Qtd.Entregue'														, .T. }, ; //X3_TITULO
 	{ 'Ctd.Entregad'														, .T. }, ; //X3_TITSPA
@@ -7974,7 +7974,7 @@ aAdd( aSX3, { ;
 	{ 'Quantidade Entregue'													, .T. }, ; //X3_DESCRIC
 	{ 'Cantidad Entregada'													, .T. }, ; //X3_DESCSPA
 	{ 'Quantity Delivered'													, .T. }, ; //X3_DESCENG
-	{ '@E 999999.99999'														, .T. }, ; //X3_PICTURE
+	{ '@E 999,999,999.99999'												, .T. }, ; //X3_PICTURE
 	{ ''																	, .T. }, ; //X3_VALID
 	{ Chr(128) + Chr(128) + Chr(128) + Chr(128) + Chr(128) + ;
 	Chr(128) + Chr(128) + Chr(128) + Chr(128) + Chr(128) + ;
@@ -8015,7 +8015,7 @@ aAdd( aSX3, { ;
 	{ '18'																	, .T. }, ; //X3_ORDEM
 	{ 'C6_QTDENT2'															, .T. }, ; //X3_CAMPO
 	{ 'N'																	, .T. }, ; //X3_TIPO
-	{ 9																		, .T. }, ; //X3_TAMANHO
+	{ 14																	, .T. }, ; //X3_TAMANHO
 	{ 5																		, .T. }, ; //X3_DECIMAL
 	{ 'Qtd.Seg Ent.'														, .T. }, ; //X3_TITULO
 	{ 'Ctd.Seg Ent.'														, .T. }, ; //X3_TITSPA
@@ -8023,7 +8023,7 @@ aAdd( aSX3, { ;
 	{ 'Qtd.Seg. UM Entregue'												, .T. }, ; //X3_DESCRIC
 	{ 'Ctd. Seg. UM Entregada'												, .T. }, ; //X3_DESCSPA
 	{ 'Sec. Unit Delivered Qtt.'											, .T. }, ; //X3_DESCENG
-	{ '@E 999999.99999'														, .T. }, ; //X3_PICTURE
+	{ '@E 999,999,999.99999'												, .T. }, ; //X3_PICTURE
 	{ ''																	, .T. }, ; //X3_VALID
 	{ Chr(128) + Chr(128) + Chr(128) + Chr(128) + Chr(128) + ;
 	Chr(128) + Chr(128) + Chr(128) + Chr(128) + Chr(128) + ;
@@ -8064,7 +8064,7 @@ aAdd( aSX3, { ;
 	{ '36'																	, .T. }, ; //X3_ORDEM
 	{ 'C6_PRUNIT'															, .T. }, ; //X3_CAMPO
 	{ 'N'																	, .T. }, ; //X3_TIPO
-	{ 11																	, .T. }, ; //X3_TAMANHO
+	{ 14																	, .T. }, ; //X3_TAMANHO
 	{ 5																		, .T. }, ; //X3_DECIMAL
 	{ 'Prc Lista'															, .T. }, ; //X3_TITULO
 	{ 'Precio Lista'														, .T. }, ; //X3_TITSPA
@@ -8072,7 +8072,7 @@ aAdd( aSX3, { ;
 	{ 'Preco Unitario de Tabela'											, .T. }, ; //X3_DESCRIC
 	{ 'Precio Unitario de Tabla'											, .T. }, ; //X3_DESCSPA
 	{ 'Unit List Price'														, .T. }, ; //X3_DESCENG
-	{ '@E 99,999,999.99999'													, .T. }, ; //X3_PICTURE
+	{ '@E 999,999,999.99999'												, .T. }, ; //X3_PICTURE
 	{ 'A410MultT()'															, .T. }, ; //X3_VALID
 	{ Chr(128) + Chr(128) + Chr(128) + Chr(128) + Chr(128) + ;
 	Chr(128) + Chr(128) + Chr(128) + Chr(128) + Chr(128) + ;
@@ -8113,7 +8113,7 @@ aAdd( aSX3, { ;
 	{ '62'																	, .T. }, ; //X3_ORDEM
 	{ 'C6_QTDRESE'															, .T. }, ; //X3_CAMPO
 	{ 'N'																	, .T. }, ; //X3_TIPO
-	{ 12																	, .T. }, ; //X3_TAMANHO
+	{ 14																	, .T. }, ; //X3_TAMANHO
 	{ 5																		, .T. }, ; //X3_DECIMAL
 	{ 'Qtd.Reserva'															, .T. }, ; //X3_TITULO
 	{ 'Ctd. Reserva'														, .T. }, ; //X3_TITSPA
@@ -8162,7 +8162,7 @@ aAdd( aSX3, { ;
 	{ '82'																	, .T. }, ; //X3_ORDEM
 	{ 'C6_QTDEMP'															, .T. }, ; //X3_CAMPO
 	{ 'N'																	, .T. }, ; //X3_TIPO
-	{ 9																		, .T. }, ; //X3_TAMANHO
+	{ 14																	, .T. }, ; //X3_TAMANHO
 	{ 5																		, .T. }, ; //X3_DECIMAL
 	{ 'Qt Empenhada'														, .T. }, ; //X3_TITULO
 	{ 'Ctd.Reservad'														, .T. }, ; //X3_TITSPA
@@ -8211,7 +8211,7 @@ aAdd( aSX3, { ;
 	{ '83'																	, .T. }, ; //X3_ORDEM
 	{ 'C6_QTDEMP2'															, .T. }, ; //X3_CAMPO
 	{ 'N'																	, .T. }, ; //X3_TIPO
-	{ 9																		, .T. }, ; //X3_TAMANHO
+	{ 14																, .T. }, ; //X3_TAMANHO
 	{ 5																		, .T. }, ; //X3_DECIMAL
 	{ 'Qt Seg. Emp'															, .T. }, ; //X3_TITULO
 	{ 'Ctd Seg. Res'														, .T. }, ; //X3_TITSPA
@@ -8219,7 +8219,7 @@ aAdd( aSX3, { ;
 	{ 'Qtd. Seg. UN Empenhada'												, .T. }, ; //X3_DESCRIC
 	{ 'Ctd. Seg. UN Reservada'												, .T. }, ; //X3_DESCSPA
 	{ 'Sec. Unit Allocated Qtt.'											, .T. }, ; //X3_DESCENG
-	{ '@E 999999.99999'														, .T. }, ; //X3_PICTURE
+	{ '@E 999,999,999.99999'														, .T. }, ; //X3_PICTURE
 	{ ''																	, .T. }, ; //X3_VALID
 	{ Chr(128) + Chr(128) + Chr(128) + Chr(128) + Chr(128) + ;
 	Chr(128) + Chr(128) + Chr(128) + Chr(128) + Chr(128) + ;
@@ -8263,7 +8263,7 @@ aAdd( aSX3, { ;
 	{ '08'																	, .T. }, ; //X3_ORDEM
 	{ 'C7_QUANT'															, .T. }, ; //X3_CAMPO
 	{ 'N'																	, .T. }, ; //X3_TIPO
-	{ 12																	, .T. }, ; //X3_TAMANHO
+	{ 14																	, .T. }, ; //X3_TAMANHO
 	{ 5																		, .T. }, ; //X3_DECIMAL
 	{ 'Quantidade'															, .T. }, ; //X3_TITULO
 	{ 'Cantidad'															, .T. }, ; //X3_TITSPA
@@ -8271,7 +8271,7 @@ aAdd( aSX3, { ;
 	{ 'Quantidade pedida'													, .T. }, ; //X3_DESCRIC
 	{ 'Cantidad Pedida'														, .T. }, ; //X3_DESCSPA
 	{ 'Loss Quantity'														, .T. }, ; //X3_DESCENG
-	{ '@E 999999999.99999'													, .T. }, ; //X3_PICTURE
+	{ '@E 999,999,999.99999'												, .T. }, ; //X3_PICTURE
 	{ 'A120QTDGRA().AND.Positivo().And.A120Quant(M->C7_QUANT).And.MaFisRef("IT_QUANT","MT120",M->C7_QUANT).And.a120Tabela()', .T. }, ; //X3_VALID
 	{ Chr(128) + Chr(128) + Chr(128) + Chr(128) + Chr(128) + ;
 	Chr(128) + Chr(128) + Chr(128) + Chr(128) + Chr(128) + ;
@@ -8361,7 +8361,7 @@ aAdd( aSX3, { ;
 	{ '11'																	, .T. }, ; //X3_ORDEM
 	{ 'C7_QTSEGUM'															, .T. }, ; //X3_CAMPO
 	{ 'N'																	, .T. }, ; //X3_TIPO
-	{ 11																	, .T. }, ; //X3_TAMANHO
+	{ 14																	, .T. }, ; //X3_TAMANHO
 	{ 5																		, .T. }, ; //X3_DECIMAL
 	{ 'Qtd. 2a UM'															, .T. }, ; //X3_TITULO
 	{ 'Ctd 2a. UM'															, .T. }, ; //X3_TITSPA
@@ -8369,7 +8369,7 @@ aAdd( aSX3, { ;
 	{ 'Qtde na Segunda Unidade'												, .T. }, ; //X3_DESCRIC
 	{ 'Cantidad 2a.Unidad Medida'											, .T. }, ; //X3_DESCSPA
 	{ 'Quantity in Second Unit'												, .T. }, ; //X3_DESCENG
-	{ '@E 99999999.99999'													, .T. }, ; //X3_PICTURE
+	{ '@E 999,999,999.99999'													, .T. }, ; //X3_PICTURE
 	{ 'A120QtdGra().and.(Positivo().or.Vazio()).and.A100Segum().And.a120Tabela()', .T. }, ; //X3_VALID
 	{ Chr(128) + Chr(128) + Chr(128) + Chr(128) + Chr(128) + ;
 	Chr(128) + Chr(128) + Chr(128) + Chr(128) + Chr(128) + ;
@@ -8413,7 +8413,7 @@ aAdd( aSX3, { ;
 	{ '08'																	, .T. }, ; //X3_ORDEM
 	{ 'C9_QTDLIB'															, .T. }, ; //X3_CAMPO
 	{ 'N'																	, .T. }, ; //X3_TIPO
-	{ 9																		, .T. }, ; //X3_TAMANHO
+	{ 14																	, .T. }, ; //X3_TAMANHO
 	{ 5																		, .T. }, ; //X3_DECIMAL
 	{ 'Qt Liberada'															, .T. }, ; //X3_TITULO
 	{ 'Ctd.Aprobad.'														, .T. }, ; //X3_TITSPA
@@ -8421,7 +8421,7 @@ aAdd( aSX3, { ;
 	{ 'Quantidade Liberada'													, .T. }, ; //X3_DESCRIC
 	{ 'Cantidad Aprobada'													, .T. }, ; //X3_DESCSPA
 	{ 'Quantity Released'													, .T. }, ; //X3_DESCENG
-	{ '@E 999999.99999'														, .T. }, ; //X3_PICTURE
+	{ '@E 999,999,999.99999'												, .T. }, ; //X3_PICTURE
 	{ ''																	, .T. }, ; //X3_VALID
 	{ Chr(128) + Chr(128) + Chr(128) + Chr(128) + Chr(128) + ;
 	Chr(128) + Chr(128) + Chr(128) + Chr(128) + Chr(128) + ;
@@ -8511,7 +8511,7 @@ aAdd( aSX3, { ;
 	{ '28'																	, .T. }, ; //X3_ORDEM
 	{ 'C9_QTDRESE'															, .T. }, ; //X3_CAMPO
 	{ 'N'																	, .T. }, ; //X3_TIPO
-	{ 12																	, .T. }, ; //X3_TAMANHO
+	{ 14																	, .T. }, ; //X3_TAMANHO
 	{ 5																		, .T. }, ; //X3_DECIMAL
 	{ 'Qtd.Reserva'															, .T. }, ; //X3_TITULO
 	{ 'Ctd.Reservad'														, .T. }, ; //X3_TITSPA
@@ -8560,7 +8560,7 @@ aAdd( aSX3, { ;
 	{ '44'																	, .T. }, ; //X3_ORDEM
 	{ 'C9_QTDLIB2'															, .T. }, ; //X3_CAMPO
 	{ 'N'																	, .T. }, ; //X3_TIPO
-	{ 9																		, .T. }, ; //X3_TAMANHO
+	{ 14																	, .T. }, ; //X3_TAMANHO
 	{ 5																		, .T. }, ; //X3_DECIMAL
 	{ 'Qt Liberada2'														, .T. }, ; //X3_TITULO
 	{ 'Ctd.Aprobad2'														, .T. }, ; //X3_TITSPA
@@ -8568,7 +8568,7 @@ aAdd( aSX3, { ;
 	{ 'Quantidade Liberada 2Unid'											, .T. }, ; //X3_DESCRIC
 	{ 'Cantidad Aprobada 2.UM'												, .T. }, ; //X3_DESCSPA
 	{ 'Quantity Released 2nd'												, .T. }, ; //X3_DESCENG
-	{ '@E 999999.99999'														, .T. }, ; //X3_PICTURE
+	{ '@E 999,999,999.99999'												, .T. }, ; //X3_PICTURE
 	{ ''																	, .T. }, ; //X3_VALID
 	{ Chr(128) + Chr(128) + Chr(128) + Chr(128) + Chr(128) + ;
 	Chr(128) + Chr(128) + Chr(128) + Chr(128) + Chr(128) + ;
@@ -8664,7 +8664,7 @@ aAdd( aSX3, { ;
 	{ '09'																	, .T. }, ; //X3_ORDEM
 	{ 'D1_QUANT'															, .T. }, ; //X3_CAMPO
 	{ 'N'																	, .T. }, ; //X3_TIPO
-	{ 11																	, .T. }, ; //X3_TAMANHO
+	{ 14																	, .T. }, ; //X3_TAMANHO
 	{ 5																		, .T. }, ; //X3_DECIMAL
 	{ 'Quantidade'															, .T. }, ; //X3_TITULO
 	{ 'Cantidad'															, .T. }, ; //X3_TITSPA
@@ -8672,7 +8672,7 @@ aAdd( aSX3, { ;
 	{ 'Quantidade do Produto'												, .T. }, ; //X3_DESCRIC
 	{ 'Cantidad del Producto'												, .T. }, ; //X3_DESCSPA
 	{ 'Product Quantity'													, .T. }, ; //X3_DESCENG
-	{ '@E 99999999.99999'													, .T. }, ; //X3_PICTURE
+	{ '@E 999,999,999.99999'												, .T. }, ; //X3_PICTURE
 	{ 'A103TOLER().And.Positivo().And.A100SegUm().And.MaFisRef("IT_QUANT","MT100",M->D1_QUANT)', .T. }, ; //X3_VALID
 	{ Chr(128) + Chr(128) + Chr(128) + Chr(128) + Chr(128) + ;
 	Chr(128) + Chr(128) + Chr(128) + Chr(128) + Chr(128) + ;
@@ -8762,7 +8762,7 @@ aAdd( aSX3, { ;
 	{ '45'																	, .T. }, ; //X3_ORDEM
 	{ 'D1_QTDEDEV'															, .T. }, ; //X3_CAMPO
 	{ 'N'																	, .T. }, ; //X3_TIPO
-	{ 11																	, .T. }, ; //X3_TAMANHO
+	{ 14																	, .T. }, ; //X3_TAMANHO
 	{ 5																		, .T. }, ; //X3_DECIMAL
 	{ 'Qtde Devol.'															, .T. }, ; //X3_TITULO
 	{ 'Ctd. Devuel.'														, .T. }, ; //X3_TITSPA
@@ -8863,7 +8863,7 @@ aAdd( aSX3, { ;
 	{ '06'																	, .T. }, ; //X3_ORDEM
 	{ 'D2_QUANT'															, .T. }, ; //X3_CAMPO
 	{ 'N'																	, .T. }, ; //X3_TIPO
-	{ 11																	, .T. }, ; //X3_TAMANHO
+	{ 14																	, .T. }, ; //X3_TAMANHO
 	{ 5																		, .T. }, ; //X3_DECIMAL
 	{ 'Quantidade'															, .T. }, ; //X3_TITULO
 	{ 'Cantidad'															, .T. }, ; //X3_TITSPA
@@ -8871,7 +8871,7 @@ aAdd( aSX3, { ;
 	{ 'Quantidade do Produto'												, .T. }, ; //X3_DESCRIC
 	{ 'Cantidad del Producto'												, .T. }, ; //X3_DESCSPA
 	{ 'Product Quantity'													, .T. }, ; //X3_DESCENG
-	{ '@E 99999999.99999'													, .T. }, ; //X3_PICTURE
+	{ '@E 999,999,999.99999'													, .T. }, ; //X3_PICTURE
 	{ 'Positivo().and. A100SegUm().And.MaFisRef("IT_QUANT","MT100",M->D2_QUANT)', .T. }, ; //X3_VALID
 	{ Chr(128) + Chr(128) + Chr(128) + Chr(128) + Chr(128) + ;
 	Chr(128) + Chr(128) + Chr(128) + Chr(128) + Chr(128) + ;
@@ -9255,7 +9255,7 @@ aAdd( aSX3, { ;
 	{ '36'																	, .T. }, ; //X3_ORDEM
 	{ 'D2_QTSEGUM'															, .T. }, ; //X3_CAMPO
 	{ 'N'																	, .T. }, ; //X3_TIPO
-	{ 11																	, .T. }, ; //X3_TAMANHO
+	{ 14																	, .T. }, ; //X3_TAMANHO
 	{ 5																		, .T. }, ; //X3_DECIMAL
 	{ 'Qtde 2a UM'															, .T. }, ; //X3_TITULO
 	{ 'Ctd. 2a. UM'															, .T. }, ; //X3_TITSPA
@@ -9263,7 +9263,7 @@ aAdd( aSX3, { ;
 	{ 'Segunda Unidade de Medida'											, .T. }, ; //X3_DESCRIC
 	{ 'Segunda Unidad de Medida'											, .T. }, ; //X3_DESCSPA
 	{ '2nd. Unit of Measure'												, .T. }, ; //X3_DESCENG
-	{ '@E 99,999,999.99999'													, .T. }, ; //X3_PICTURE
+	{ '@E 999,999,999.99999'												, .T. }, ; //X3_PICTURE
 	{ 'Positivo()'															, .T. }, ; //X3_VALID
 	{ Chr(128) + Chr(128) + Chr(128) + Chr(128) + Chr(128) + ;
 	Chr(128) + Chr(128) + Chr(128) + Chr(128) + Chr(128) + ;
@@ -9304,7 +9304,7 @@ aAdd( aSX3, { ;
 	{ '43'																	, .T. }, ; //X3_ORDEM
 	{ 'D2_QTDEDEV'															, .T. }, ; //X3_CAMPO
 	{ 'N'																	, .T. }, ; //X3_TIPO
-	{ 11																	, .T. }, ; //X3_TAMANHO
+	{ 14																	, .T. }, ; //X3_TAMANHO
 	{ 5																		, .T. }, ; //X3_DECIMAL
 	{ 'Qtde Devol.'															, .T. }, ; //X3_TITULO
 	{ 'Ctd. Devuel.'														, .T. }, ; //X3_TITSPA
@@ -9312,7 +9312,7 @@ aAdd( aSX3, { ;
 	{ 'Qtde Devolvida'														, .T. }, ; //X3_DESCRIC
 	{ 'Cantidad Devuelta'													, .T. }, ; //X3_DESCSPA
 	{ 'Quantity Returned'													, .T. }, ; //X3_DESCENG
-	{ '@E 99,999,999.99999'													, .T. }, ; //X3_PICTURE
+	{ '@E 999,999,999.99999'												, .T. }, ; //X3_PICTURE
 	{ ''																	, .T. }, ; //X3_VALID
 	{ Chr(128) + Chr(128) + Chr(128) + Chr(128) + Chr(128) + ;
 	Chr(128) + Chr(128) + Chr(128) + Chr(128) + Chr(128) + ;
@@ -10140,7 +10140,7 @@ aAdd( aSX3, { ;
 	{ '05'																	, .T. }, ; //X3_ORDEM
 	{ 'D3_QUANT'															, .T. }, ; //X3_CAMPO
 	{ 'N'																	, .T. }, ; //X3_TIPO
-	{ 12																	, .T. }, ; //X3_TAMANHO
+	{ 14																	, .T. }, ; //X3_TAMANHO
 	{ 5																		, .T. }, ; //X3_DECIMAL
 	{ 'Quantidade'															, .T. }, ; //X3_TITULO
 	{ 'Cantidad'															, .T. }, ; //X3_TITSPA
@@ -10434,7 +10434,7 @@ aAdd( aSX3, { ;
 	{ '24'																	, .T. }, ; //X3_ORDEM
 	{ 'D3_QTSEGUM'															, .T. }, ; //X3_CAMPO
 	{ 'N'																	, .T. }, ; //X3_TIPO
-	{ 12																	, .T. }, ; //X3_TAMANHO
+	{ 14																	, .T. }, ; //X3_TAMANHO
 	{ 5																		, .T. }, ; //X3_DECIMAL
 	{ 'Qtd. 2a UM'															, .T. }, ; //X3_TITULO
 	{ 'Ctd. 2a UM'															, .T. }, ; //X3_TITSPA
@@ -11071,7 +11071,7 @@ aAdd( aSX3, { ;
 	{ '86'																	, .T. }, ; //X3_ORDEM
 	{ 'D3_QTGANHO'															, .T. }, ; //X3_CAMPO
 	{ 'N'																	, .T. }, ; //X3_TIPO
-	{ 12																	, .T. }, ; //X3_TAMANHO
+	{ 14																	, .T. }, ; //X3_TAMANHO
 	{ 5																		, .T. }, ; //X3_DECIMAL
 	{ 'Qtde. Ganho'															, .T. }, ; //X3_TITULO
 	{ 'Cant. Gananc'														, .T. }, ; //X3_TITSPA
@@ -11120,7 +11120,7 @@ aAdd( aSX3, { ;
 	{ '87'																	, .T. }, ; //X3_ORDEM
 	{ 'D3_QTMAIOR'															, .T. }, ; //X3_CAMPO
 	{ 'N'																	, .T. }, ; //X3_TIPO
-	{ 12																	, .T. }, ; //X3_TAMANHO
+	{ 14																	, .T. }, ; //X3_TAMANHO
 	{ 5																		, .T. }, ; //X3_DECIMAL
 	{ 'Qtde. Maior'															, .T. }, ; //X3_TITULO
 	{ 'Cant. Mayor'															, .T. }, ; //X3_TITSPA
@@ -11172,7 +11172,7 @@ aAdd( aSX3, { ;
 	{ '13'																	, .T. }, ; //X3_ORDEM
 	{ 'D5_QUANT'															, .T. }, ; //X3_CAMPO
 	{ 'N'																	, .T. }, ; //X3_TIPO
-	{ 12																	, .T. }, ; //X3_TAMANHO
+	{ 14																	, .T. }, ; //X3_TAMANHO
 	{ 5																		, .T. }, ; //X3_DECIMAL
 	{ 'Quantidade'															, .T. }, ; //X3_TITULO
 	{ 'Cantidad'															, .T. }, ; //X3_TITSPA
@@ -11221,7 +11221,7 @@ aAdd( aSX3, { ;
 	{ '17'																	, .T. }, ; //X3_ORDEM
 	{ 'D5_QTSEGUM'															, .T. }, ; //X3_CAMPO
 	{ 'N'																	, .T. }, ; //X3_TIPO
-	{ 12																	, .T. }, ; //X3_TAMANHO
+	{ 14																	, .T. }, ; //X3_TAMANHO
 	{ 5																		, .T. }, ; //X3_DECIMAL
 	{ 'Qtd. 2a UM'															, .T. }, ; //X3_TITULO
 	{ 'Qtd. 2a UM'															, .T. }, ; //X3_TITSPA
@@ -11273,7 +11273,7 @@ aAdd( aSX3, { ;
 	{ '04'																	, .T. }, ; //X3_ORDEM
 	{ 'DA_SALDO'															, .T. }, ; //X3_CAMPO
 	{ 'N'																	, .T. }, ; //X3_TIPO
-	{ 12																	, .T. }, ; //X3_TAMANHO
+	{ 14																	, .T. }, ; //X3_TAMANHO
 	{ 5																		, .T. }, ; //X3_DECIMAL
 	{ 'Saldo'																, .T. }, ; //X3_TITULO
 	{ 'Saldo'																, .T. }, ; //X3_TITSPA
@@ -11322,7 +11322,7 @@ aAdd( aSX3, { ;
 	{ '16'																	, .T. }, ; //X3_ORDEM
 	{ 'DA_EMPENHO'															, .T. }, ; //X3_CAMPO
 	{ 'N'																	, .T. }, ; //X3_TIPO
-	{ 12																	, .T. }, ; //X3_TAMANHO
+	{ 14																	, .T. }, ; //X3_TAMANHO
 	{ 5																		, .T. }, ; //X3_DECIMAL
 	{ 'Empenho'																, .T. }, ; //X3_TITULO
 	{ 'Empenho'																, .T. }, ; //X3_TITSPA
@@ -11371,7 +11371,7 @@ aAdd( aSX3, { ;
 	{ '17'																	, .T. }, ; //X3_ORDEM
 	{ 'DA_QTSEGUM'															, .T. }, ; //X3_CAMPO
 	{ 'N'																	, .T. }, ; //X3_TIPO
-	{ 12																	, .T. }, ; //X3_TAMANHO
+	{ 14																	, .T. }, ; //X3_TAMANHO
 	{ 5																		, .T. }, ; //X3_DECIMAL
 	{ 'Saldo 2a UM'															, .T. }, ; //X3_TITULO
 	{ 'Saldo 2a UM'															, .T. }, ; //X3_TITSPA
@@ -11420,7 +11420,7 @@ aAdd( aSX3, { ;
 	{ '18'																	, .T. }, ; //X3_ORDEM
 	{ 'DA_QTDORI2'															, .T. }, ; //X3_CAMPO
 	{ 'N'																	, .T. }, ; //X3_TIPO
-	{ 12																	, .T. }, ; //X3_TAMANHO
+	{ 14																	, .T. }, ; //X3_TAMANHO
 	{ 5																		, .T. }, ; //X3_DECIMAL
 	{ 'Qtd Ori 2aUM'														, .T. }, ; //X3_TITULO
 	{ 'Qtd Ori 2aUM'														, .T. }, ; //X3_TITSPA
@@ -11469,7 +11469,7 @@ aAdd( aSX3, { ;
 	{ '19'																	, .T. }, ; //X3_ORDEM
 	{ 'DA_EMP2'																, .T. }, ; //X3_CAMPO
 	{ 'N'																	, .T. }, ; //X3_TIPO
-	{ 12																	, .T. }, ; //X3_TAMANHO
+	{ 14																	, .T. }, ; //X3_TAMANHO
 	{ 5																		, .T. }, ; //X3_DECIMAL
 	{ 'Empenho 2aUM'														, .T. }, ; //X3_TITULO
 	{ 'Empenho 2aUM'														, .T. }, ; //X3_TITSPA
@@ -11521,7 +11521,7 @@ aAdd( aSX3, { ;
 	{ '14'																	, .T. }, ; //X3_ORDEM
 	{ 'DB_QUANT'															, .T. }, ; //X3_CAMPO
 	{ 'N'																	, .T. }, ; //X3_TIPO
-	{ 12																	, .T. }, ; //X3_TAMANHO
+	{ 14																	, .T. }, ; //X3_TAMANHO
 	{ 5																		, .T. }, ; //X3_DECIMAL
 	{ 'Qtd Distribu'														, .T. }, ; //X3_TITULO
 	{ 'Qtd Distribu'														, .T. }, ; //X3_TITSPA
@@ -11570,7 +11570,7 @@ aAdd( aSX3, { ;
 	{ '21'																	, .T. }, ; //X3_ORDEM
 	{ 'DB_EMPENHO'															, .T. }, ; //X3_CAMPO
 	{ 'N'																	, .T. }, ; //X3_TIPO
-	{ 12																	, .T. }, ; //X3_TAMANHO
+	{ 14																	, .T. }, ; //X3_TAMANHO
 	{ 5																		, .T. }, ; //X3_DECIMAL
 	{ 'Empenho'																, .T. }, ; //X3_TITULO
 	{ 'Empenho'																, .T. }, ; //X3_TITSPA
@@ -11619,7 +11619,7 @@ aAdd( aSX3, { ;
 	{ '22'																	, .T. }, ; //X3_ORDEM
 	{ 'DB_QTSEGUM'															, .T. }, ; //X3_CAMPO
 	{ 'N'																	, .T. }, ; //X3_TIPO
-	{ 12																	, .T. }, ; //X3_TAMANHO
+	{ 14																	, .T. }, ; //X3_TAMANHO
 	{ 5																		, .T. }, ; //X3_DECIMAL
 	{ 'Qtd. 2a UM'															, .T. }, ; //X3_TITULO
 	{ 'Qtd. 2a UM'															, .T. }, ; //X3_TITSPA
@@ -11668,7 +11668,7 @@ aAdd( aSX3, { ;
 	{ '23'																	, .T. }, ; //X3_ORDEM
 	{ 'DB_EMP2'																, .T. }, ; //X3_CAMPO
 	{ 'N'																	, .T. }, ; //X3_TIPO
-	{ 12																	, .T. }, ; //X3_TAMANHO
+	{ 14																	, .T. }, ; //X3_TAMANHO
 	{ 5																		, .T. }, ; //X3_DECIMAL
 	{ 'Empenho 2aUM'														, .T. }, ; //X3_TITULO
 	{ 'Empenho 2aUM'														, .T. }, ; //X3_TITSPA
@@ -11717,7 +11717,7 @@ aAdd( aSX3, { ;
 	{ '59'																	, .T. }, ; //X3_ORDEM
 	{ 'DB_QTDORI'															, .T. }, ; //X3_CAMPO
 	{ 'N'																	, .T. }, ; //X3_TIPO
-	{ 12																	, .T. }, ; //X3_TAMANHO
+	{ 14																	, .T. }, ; //X3_TAMANHO
 	{ 5																		, .T. }, ; //X3_DECIMAL
 	{ 'Qtd.Original'														, .T. }, ; //X3_TITULO
 	{ 'Qtd.Original'														, .T. }, ; //X3_TITSPA
