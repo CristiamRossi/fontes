@@ -120,15 +120,17 @@ return nil
 static function fSelClick( aProds, nItem )
 local nPos
 local cProduto
+local cRede
 
 	if nItem == 0 .or. len( aProds ) == 0
 		return nil
 	endif
 
 	cProduto         :=   aProds[nItem][2]
+	cRede            :=   aProds[nItem][12]
 	aProds[nItem][1] := ! aProds[nItem][1]
 
-	if ( nPos := aScan(aAllPrd, {|aIt| aIt[2] == cProduto } ) ) > 0
+	if ( nPos := aScan(aAllPrd, {|aIt| aIt[2]+aIt[12] == cProduto+cRede } ) ) > 0
 		aAllPrd[nPos][1] := aProds[nItem][1]
 	endif
 return nil
@@ -141,7 +143,7 @@ local nPos
 	for nI := 1 to len( aProds )
 		if alltrim(aProds[nI][7]) == cGrupo .or. cGrupo == "TODOS"
 			aProds[nI][1] := xValor
-			if ( nPos := aScan(aAllPrd, {|aIt| aIt[2] == aProds[nI][2] } ) ) > 0
+			if ( nPos := aScan(aAllPrd, {|aIt| aIt[2]+aIt[12] == aProds[nI][2]+aProds[nI][12] } ) ) > 0
 				aAllPrd[nPos][1] := aProds[nI][1]
 			endif
 		endif
@@ -228,6 +230,7 @@ local cFilSC7   := iif( cContexto=="Filial", "='"+xFilial("SC7") +"'", "like '"+
 		cQuery += " and C5_XDTREPO = ' '"
 	endif
 
+	cQuery += " and C5_TIPO='N'"
 	cQuery += " and C6_NOTA=' '"
 	cQuery += " and C6_QTDENT = 0"
 	cQuery += " and C6_QTDEMP = 0"
@@ -472,6 +475,7 @@ private oNGetD1
 	aadd( aEstru, {"C6_ITEM"   ,"C", 2                  ,0} )
 	aadd( aEstru, {"C6_PRODUTO","C",len(SC6->C6_PRODUTO),0} )
 	aadd( aEstru, {"FILIAL"    ,"C",len(cFilAnt)        ,0} )
+	aadd( aEstru, {"REDE"      ,"C",30                  ,0} )
 	aadd( aEstru, {"C6_BLQ"    ,"C", 1                  ,0} )
 
 	oTabTemp := FWTemporaryTable():New( "TEMP" )  
@@ -1045,6 +1049,10 @@ local cPedido
 
 			SC5->( dbSeek( cPedido ) )
 			SA1->( dbSeek( xFilial("SA1") + SC5->(C5_CLIENT+C5_LOJAENT) ) )
+
+			ACY->( dbSetOrder(1) )
+			ACY->( dbSeek( xFilial("ACY") + SA1->A1_GRPVEN ) )
+
 /*
 -- é pra trazer o que foi selecionado e não o filtro de tela que ficou para tras
 			if cRede != "TODAS"
@@ -1071,6 +1079,7 @@ local cPedido
 					TEMP->C6_ITEM    := SC6->C6_ITEM
 					TEMP->C6_PRODUTO := SC6->C6_PRODUTO
 					TEMP->FILIAL     := SC6->C6_FILIAL
+					TEMP->REDE       := ACY->ACY_DESCRI
 					TEMP->C6_BLQ     := SC6->C6_BLQ
 					msUnlock()
 					If ! ASCAN(aCliRep, { |x| x[1] == TEMP->A1_COD+TEMP->A1_LOJA+TEMP->A1_NOME }) > 0
@@ -1089,6 +1098,7 @@ local cPedido
 					TEMP->C6_ITEM    := SC6->C6_ITEM
 					TEMP->C6_PRODUTO := SC6->C6_PRODUTO
 					TEMP->FILIAL     := SC6->C6_FILIAL
+					TEMP->REDE       := ACY->ACY_DESCRI
 					TEMP->C6_BLQ     := SC6->C6_BLQ
 					msUnlock()
 				EndIf
@@ -1155,6 +1165,7 @@ local aHead1    := {}
 	aAdd(aHead1,{"Item"        ,"C6_ITEM"   ,"C",  2                  , 0,"@X"               })
 	aAdd(aHead1,{"Produto"     ,"C6_PRODUTO","C", len(SC6->C6_PRODUTO), 0,"@X"               })
 	aAdd(aHead1,{"Filial"      ,"FILIAL"    ,"C", len(cFilAnt)        , 0,"@X"               })
+	aAdd(aHead1,{"Rede"        ,"REDE"      ,"C", len(ACY->ACY_DESCRI), 0,"@X"               })
 
 	for nI := 1 to len( aHead1 )
 		aAdd(aColumns , FWBrwColumn():New())
