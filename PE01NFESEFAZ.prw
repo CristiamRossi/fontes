@@ -38,7 +38,9 @@ Private cNumPV	:= aInfoItem[1][01]
 //Alimenta Retorno
 aadd(aRetorno,aProd)
 aadd(aRetorno,cMensCli+" PV: "+cNumPV)
-aadd(aRetorno,cMensFis)
+aadd(aRetorno,cMensFis+" Disp. Legal ICMS: ISENTO – ARTIGO 8 – RICMS/SP – DECRETO 45.920/2000 – ANEXO 1 – ARTIGO 36 – INC I"+" / "+;
+                        "Disp. Legal PIS/COFINS: ALIQUOTA ZERO – LEI 10.854/2004 – ARTIGO 28 – INC III"+" / "+;
+                        "Disp. Legal Lei IPI: NAO TRIBUTADO – DECRETO 8950/2016 – CAPITULO 7 - TIPI")
 aadd(aRetorno,aDest)
 aadd(aRetorno,aNota)
 aadd(aRetorno,aInfoItem)
