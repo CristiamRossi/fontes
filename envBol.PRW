@@ -14,6 +14,7 @@ user function envBol( _cPrefixo, _cDupl )
 local   aArea      := getArea()
 local   cPrefixo   := padR( _cPrefixo, len(SE1->E1_PREFIXO))
 local   cNumero    := padR( _cDupl   , len(SE1->E1_NUM)    )
+local   cFilK	   := xFilial("SE1")
 local   cPasta
 private cFilePrint := ""
 
@@ -30,6 +31,14 @@ private cFilePrint := ""
 		restArea( aArea )
 		return nil
 	endif
+	
+	If SE1->E1_TIPO <> "NF "
+		SE1->(DbSkip())
+		If xFilial("SE1")+SE1->E1_PREFIXO+SE1->E1_NUM <> cFilK+cPrefixo+cNumero
+			RestArea( aArea )
+			Return nil
+		EndIf 
+	EndIf 		
 
 	if empty( SE1->E1_PORTADO )
 		AutoGrLog("Boleto não poderá ser enviado por e-mail, Título ["+SE1->E1_PREFIXO+"-"+SE1->E1_NUM+"/"+SE1->E1_PARCELA+"] sem Portador")
