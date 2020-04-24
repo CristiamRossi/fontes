@@ -157,7 +157,6 @@ oReport:SetMeter( nTotal )
 
 for nI := 1 to len(aDados)
 
-//    If cQuebra <> iif( MV_PAR05==1, aDados[nI,2], aDados[nI,4] )
     If cQuebra <> aDados[nI,10]
 		if nAtual > 0
 			oSectDad:Finish()
@@ -169,7 +168,6 @@ for nI := 1 to len(aDados)
 	endif
 
 	if cPedido != aDados[nI,2]
-//		if nAtual > 0 .and. MV_PAR05==2 .and. cQuebra == aDados[nI,4]
 		if nAtual > 0 .and. MV_PAR05==2 .and. cQuebra == aDados[nI,10]
 			oSectDad:Finish()
 			oReport:PrtLeft( replicate("-",300) )
@@ -192,7 +190,6 @@ for nI := 1 to len(aDados)
 		oSectDad:Init()
     EndIf
 
-//    cQuebra := iif( MV_PAR05==1, aDados[nI,2], aDados[nI,4] )
     cQuebra := aDados[nI,10]
 	cPedido := aDados[nI,2]
 
@@ -402,12 +399,12 @@ local nItens    := 0
 local nTamLine  := oReport:nLineHeight+3
 local nTamCab   := nTamLine * 8
 local nTamItem  := 0
-local nTamPag   := 3320
+local nTamPag   := 3200	// 3320
 local nTamSecao := 0
 local nI
 
 // no começa da página... não precisa quebrar
-	if oReport:nRow < nTamLine * 8
+	if oReport:nRow < nTamCab
 		return .F.
 	endif
 
