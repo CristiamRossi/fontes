@@ -73,7 +73,7 @@ default lQuiet     := .F.
 	endif
 
 	SE1->( dbSetOrder(1) )
-	if ! SE1->( dbSeek( xFilial("SE1")+ cPrefixo + cNumero + cParcDe ) )
+	if ! SE1->( dbSeek( xFilial("SE1")+ cPrefixo + cNumero + cParcDe+"NF " ) )
 		msgStop( "Título(s) não encontrado(s), verifique!", cTitulo)
 	else
 
@@ -92,7 +92,7 @@ default lQuiet     := .F.
 		SA6->( DbSetOrder(1) )
 		SEE->( DbSetOrder(1) )
 
-		cFilePrint := "BOLETO_"+ SE1->( E1_FILIAL +"_"+ E1_PREFIXO +"_"+ E1_NUM +"-"+ E1_NOMCLI )
+		cFilePrint := AllTrim(StrTran("BOLETO_"+ SE1->( E1_FILIAL +"_"+ E1_PREFIXO +"_"+ E1_NUM +"-"+ E1_NOMCLI ),"'",""))
 
 		if file( cPasta + cFilePrint + ".pdf" )
 			fErase( cPasta + cFilePrint + ".pdf" )
@@ -108,7 +108,7 @@ default lQuiet     := .F.
 
 		while ! SE1->( eof() ) .and. SE1->(E1_FILIAL+E1_PREFIXO+E1_NUM) == xFilial("SE1")+ cPrefixo + cNumero .and. SE1->E1_PARCELA <= cParcAte
 
-			if SE1->E1_TIPO $ "CF-;CS-;IN-;IR-;PI-;IS-;NCC;RA ;TX ;AB-;DE " .or. SE1->E1_SALDO == 0 
+			if SE1->E1_TIPO $ "CF-;CS-;IN-;IR-;PI-;IS-;NCC;RA ;TX ;AB-;DM-;DE " .or. SE1->E1_SALDO == 0 
 				SE1->( dbSkip() )
 				loop
 			end

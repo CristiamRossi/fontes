@@ -205,9 +205,10 @@ for nI := 1 to len(aDados)
 
 	oSectDad:Cell("PRODUTO"   ):SetValue( aDados[nI,5])
 	oSectDad:Cell("DESCRICAO" ):SetValue( aDados[nI,6])
-	oSectDad:Cell("QUANTIDADE"):SetValue( aDados[nI,7])
+	oSectDad:Cell("QUANTIDADE"):SetValue( AllTrim(Str(aDados[nI,7])))
 	oSectDad:Cell("C6_UM"     ):SetValue( aDados[nI,8])
 	oSectDad:PrintLine()
+	oReport:ThinLine()
 next
 
 oSectDad:Finish()
