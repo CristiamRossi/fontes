@@ -12025,7 +12025,7 @@ For nI := 1 To Len( aSX3 )
 				If  aEstrut[nJ][2] > 0 .AND. ;
 					PadR( StrTran( AllToChar( cX3Dado ), " ", "" ), 250 ) <> ;
 					PadR( StrTran( AllToChar( aSX3[nI][nJ][1] ), " ", "" ), 250 ) .AND. ;
-					cX3Campo $ "X3_DECIMAL;X3_PICTURE"
+					cX3Campo $ "X3_DECIMAL;X3_PICTURE;X3_TAMANHO"
 //					! cX3Campo = "X3_ORDEM"
 
 					cMsg := "O campo " + aSX3[nI][nPosCpo][1] + " está com o " + cX3Campo + ;
