@@ -8,6 +8,10 @@ User Function SF2460I()
 Local 	nValTit   := 0
 Private nValDes   := 0
 
+If GetAdvFVal("SF4","F4_DUPLIC",xFilial("SF4")+SD2->D2_TES,1,"Errox") == "N" //Regra para TES s/ Financeiro - VP 30/04/2020
+	RETURN()
+ENDIF
+
 If !SF2->F2_TIPO $ "DB"
 	nValTit	:= SF2->F2_VALBRUT
 	If Empty(SA1->A1_XDESC) .or. SA1->A1_XDESC == 0
