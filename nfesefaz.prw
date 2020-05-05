@@ -6559,7 +6559,13 @@ Static Function NfeDest(aDest,cVerAmb,aTransp,aCST,lBrinde,cMunDest)
 		cMailTrans := ""
 	EndIf
 	if !lBrinde
-		cString += NfeTag('<EMAIL>',AllTrim(aDest[16])+cMailTrans)
+		If Substr(AllTrim(cFilAnt),1,2) $ "01" //Nayumi
+			cString += NfeTag('<EMAIL>',AllTrim(aDest[16])+cMailTrans+";"+ SuperGetMv("MV_XMAILCP",.T.,"auditoria@nayumi.com.br") )
+		ElseIf Substr(AllTrim(cFilAnt),1,2) $ "02" //DDS
+			cString += NfeTag('<EMAIL>',AllTrim(aDest[16])+cMailTrans+";"+ SuperGetMv("MV_XMAILCP",.T.,"auditoria@diretodaserra.com.br") )
+		Else
+			cString += NfeTag('<EMAIL>',AllTrim(aDest[16])+cMailTrans)
+		EndIf
 	endif
 	
 	cString += '</dest>'
