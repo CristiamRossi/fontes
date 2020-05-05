@@ -30,7 +30,7 @@ local aAreaSEE := SEE->( getArea() )
 
 			SE1->( dbSetOrder(1))
 			SE1->( dbSeek(xFilial("SE1")+SF2->(F2_PREFIXO+F2_DUPL)))
-			while ! SE1->(eof()) .and. xFilial("SF2")+SF2->(F2_PREFIXO+F2_DUPL) == SE1->(E1_FILIAL+E1_SERIE+E1_NUM)
+			while ! SE1->(eof()) .and. xFilial("SF2")+SF2->(F2_PREFIXO+F2_DUPL) == SE1->(E1_FILIAL+E1_PREFIXO+E1_NUM)
 
 				RecLock("SEE",.F.)
 				cFxAtu := strZero( val(alltrim(SEE->EE_FAXATU))+1 , 6)
