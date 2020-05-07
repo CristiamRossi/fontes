@@ -871,22 +871,24 @@ private aProcERR := {}
 			aItens := {}
 			cItem  := StrZero(1, len(SC6->C6_ITEM), 0)
 
-			aAdd(aCabec,{"C5_TIPO"		,"N"					,Nil})
-			aAdd(aCabec,{"C5_CLIENTE"	,aPVs[nI][1][1]			,Nil})
-			aAdd(aCabec,{"C5_LOJACLI"	,aPVs[nI][1][2]			,Nil})
+			If Len(aPVs[nI][2]) > 0
+				aAdd(aCabec,{"C5_TIPO"		,"N"					,Nil})
+				aAdd(aCabec,{"C5_CLIENTE"	,aPVs[nI][1][1]			,Nil})
+				aAdd(aCabec,{"C5_LOJACLI"	,aPVs[nI][1][2]			,Nil})
 
-			for nJ := 1 to len( aPVs[nI][2] )
+				for nJ := 1 to len( aPVs[nI][2] )
 
-				aLinha := {}
-				aAdd(aLinha,{"C6_ITEM"		,cItem				,Nil})
-				aAdd(aLinha,{"C6_PRODUTO"	,aPVs[nI][2][nJ][1]	,Nil})
-				aAdd(aLinha,{"C6_QTDVEN"	,aPVs[nI][2][nJ][2]	,Nil})
-				aAdd(aItens, aLinha)
+					aLinha := {}
+					aAdd(aLinha,{"C6_ITEM"		,cItem				,Nil})
+					aAdd(aLinha,{"C6_PRODUTO"	,aPVs[nI][2][nJ][1]	,Nil})
+					aAdd(aLinha,{"C6_QTDVEN"	,aPVs[nI][2][nJ][2]	,Nil})
+					aAdd(aItens, aLinha)
 
-				cItem := soma1( cItem )
-			next
+					cItem := soma1( cItem )
+				next
 
-			Processa({|| ProcPV( aCabec, aItens )},"Incluindo Pedidos...","Aguarde!...")
+				Processa({|| ProcPV( aCabec, aItens )},"Incluindo Pedidos...","Aguarde!...")
+			EndIf
 		next
 
 		lBack := .T.
