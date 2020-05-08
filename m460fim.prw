@@ -33,15 +33,19 @@ local aAreaSEE := SEE->( getArea() )
 			while ! SE1->(eof()) .and. xFilial("SF2")+SF2->(F2_PREFIXO+F2_DUPL) == SE1->(E1_FILIAL+E1_PREFIXO+E1_NUM)
 
 				RecLock("SEE",.F.)
-				cFxAtu := strZero( val(alltrim(SEE->EE_FAXATU))+1 , 6)
-				SEE->EE_FAXATU := cFxAtu
+				_cFxAtu := strZero( val(alltrim(SEE->EE_FAXATU))+1 , 6)
+				SEE->EE_FAXATU := _cFxAtu
 				msUnlock()
 
 				RecLock("SE1",.F.)
 				SE1->E1_PORTADO := SEE->EE_CODIGO
 				SE1->E1_AGEDEP  := SEE->EE_AGENCIA
 				SE1->E1_CONTA   := SEE->EE_CONTA
-				SE1->E1_NUMBCO  := cFxAtu
+				If SEE->EE_CODIGO == "300" //Itau
+					SE1->E1_NUMBCO  := _cFxAtu 
+				ElseIf SEE->EE_CODIGO == "700" //Sicredi
+					SE1->E1_NUMBCO  := _cFxAtu + Substr(u_fNossoNum(_cFxAtu),Len(u_fNossoNum(_cFxAtu)),1)
+				EndIf
 				MsUnLock()
 				SE1->( DbSkip() )
 			enddo
