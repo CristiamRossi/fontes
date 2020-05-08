@@ -180,12 +180,12 @@ default lQuiet     := .F.
 
 			if Empty( SE1->E1_NUMBCO )
 				RecLock("SEE",.F.)
-				cFxAtu := strZero( val(alltrim(SEE->EE_FAXATU))+1 , 6)
-				SEE->EE_FAXATU := cFxAtu
+				_cFxAtu := strZero( val(alltrim(SEE->EE_FAXATU))+1 , 6)
+				SEE->EE_FAXATU := _cFxAtu
 				msUnlock()
 
 				recLock("SE1", .F.)
-				SE1->E1_NUMBCO := cFxAtu
+				SE1->E1_NUMBCO := _cFxAtu
 				msUnlock()
 			endif
 
