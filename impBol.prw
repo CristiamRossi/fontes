@@ -184,12 +184,12 @@ default lQuiet     := .F.
 
 			if Empty( SE1->E1_NUMBCO )
 				RecLock("SEE",.F.)
-				cFxAtu := strZero( val(alltrim(SEE->EE_FAXATU))+1 , 6)
-				SEE->EE_FAXATU := cFxAtu
+				_cFxAtu := strZero( val(alltrim(SEE->EE_FAXATU))+1 , 6)
+				SEE->EE_FAXATU := _cFxAtu
 				msUnlock()
 
 				recLock("SE1", .F.)
-				SE1->E1_NUMBCO := cFxAtu + Substr(fNossoNum(cFxAtu),Len(fNossoNum(cFxAtu)),1)
+				SE1->E1_NUMBCO := _cFxAtu + Substr(U_fNossoNum(_cFxAtu),Len(U_fNossoNum(_cFxAtu)),1)
 				msUnlock()
 			endif
 
@@ -200,7 +200,7 @@ default lQuiet     := .F.
 							dDataBase          							,;	// [3] Data da emissão do boleto
 							dVencto										,;	// [4] Data do vencimento
 							(nVlrBol - nVlrAbat + nAcrescimo)			,;	// [5] Valor do título
-							fNossoNum( Substr(cNroDoc,1,6) )			,;	// [6] Nosso número (Ver fórmula para calculo) // de 3 coloquei 9
+							U_fNossoNum( Substr(cNroDoc,1,6) )			,;	// [6] Nosso número (Ver fórmula para calculo) // de 3 coloquei 9
 							SE1->E1_PREFIXO								,;	// [7] Prefixo da NF
 							iif(cEmpAnt$"010201;010301;020201","DR","DM"),;	// [8] Tipo do Titulo
 							nVlrBol * (SE1->E1_DESCFIN/100) }				// [9] Desconto financeiro
@@ -747,11 +747,11 @@ local aRet			:= {}
 
 	// campo livre
 	cCampoL := cCart + "1" + sohDigit(cNossoNum) + cAgencia + cPosto + cCedente + "1" + "0"
-	cCampoL += fMod11( cCampoL, .T. )
+	cCampoL += u_fMod11( cCampoL, .T. )
 
 	// campo do digito verificador do codigo de barra
 	cBarra := cBanco + cMoeda + "" +  cFator + cValor + cCampoL
-	cDigBarra := fMod11( cBarra, .F., .T. )
+	cDigBarra := u_fMod11( cBarra, .F., .T. )
 
 	// campo do codigo de barra
 	cBarra    := left(cBarra,4) + cDigBarra + substr(cBarra,5)
@@ -790,16 +790,20 @@ Return aRet
 
 
 //-----------------------------
-static function fNossoNum( cParNosso )
+user function fNossoNum( cParNosso )
 local cRet := Right( DtoC( date() ), 2)
 local cString := SA6->( alltrim( A6_AGENCIA ) + A6_XPOSTO + A6_NUMCON )
-
-	cString += cRet + StrZero( val( cParNosso ), 6 )
+	If FunName() == "MATA461"
+		cString := alltrim( SEE->EE_AGENCIA ) + Posicione("SA6",1,xFilial("SEE")+SEE->(EE_CODIGO+EE_AGENCIA+EE_CONTA),"A6_XPOSTO") + SEE->EE_CONTA
+		cString += cRet + StrZero( val( cParNosso ), 6 )
+	Else
+		cString += cRet + StrZero( val( cParNosso ), 6 )
+	Endif
 
 	cRet += "/"
 	cRet += StrZero( val( cParNosso ), 6 )
 	cRet += "-"
-	cRet += fMod11( cString )
+	cRet += u_fMod11( cString )
 return cRet
 
 //-----------------------------
@@ -831,7 +835,7 @@ return cValToChar(nRet)
 
 
 //-----------------------------
-static function fMod11( cParte, lCpoLivre, lCodBar )
+user function fMod11( cParte, lCpoLivre, lCodBar )
 local   cRet      := ""
 local   nAcm      := 0
 local   nVez      := 2
