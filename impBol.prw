@@ -793,7 +793,7 @@ Return aRet
 user function fNossoNum( cParNosso )
 local cRet := Right( DtoC( date() ), 2)
 local cString := SA6->( alltrim( A6_AGENCIA ) + A6_XPOSTO + A6_NUMCON )
-	If FunName() == "MATA461"
+	If FunName() $ "MATA461" .Or. FunName() $ "MATA460A"
 		cString := alltrim( SEE->EE_AGENCIA ) + Posicione("SA6",1,xFilial("SEE")+SEE->(EE_CODIGO+EE_AGENCIA+EE_CONTA),"A6_XPOSTO") + SEE->EE_CONTA
 		cString += cRet + StrZero( val( cParNosso ), 6 )
 	Else
