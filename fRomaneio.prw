@@ -90,6 +90,7 @@ local aEmb      := {}
 		cQuery += " and SUBSTRING(F2_FILIAL,1,2) = '"+SubStr(xFilial("SF2"),1,2)+"' "
 	EndIf	
 	cQuery += " order by C5_XROTA, F2_TRANSP, A1_CEP, A1_COD, A1_LOJA"
+
 	dbUseArea(.T.,"TOPCONN",tcGenQry(,,cQuery),cAliasQry,.T.,.T.)
 
 	while ! (cAliasQry)->( eof() )
@@ -139,8 +140,9 @@ local aEmb      := {}
 			(cAliasQry)->( dbSkip() )
 		end
 
-		nDif1 := abs( val(aItens[1,7]) - val(SM0->M0_CEPENT) )
-		nDif2 := abs( val(aItens[len(aItens),7]) - val(SM0->M0_CEPENT) )
+		nPosCEP := (cAliasQry)->( fieldPos( "A1_CEP" ) )
+		nDif1   := abs( val(aItens[          1,nPosCEP]) - val(SM0->M0_CEPENT) )
+		nDif2   := abs( val(aItens[len(aItens),nPosCEP]) - val(SM0->M0_CEPENT) )
 
 		if Min( nDif1, nDif2 ) == nDif1
 			nIni  := 1
@@ -158,7 +160,7 @@ local aEmb      := {}
 		cChave := ""
 		for nI := nIni to nFim step nStep
 			if cChave != aItens[nI,4] + aItens[nI,5] + aItens[nI,6]
-				if nI != 1
+				if nI != iif(nStep == 1, nIni, nFim )
 					oReport:skipLine()
 					oReport:thinLine()
 				endif
@@ -183,11 +185,13 @@ local aEmb      := {}
 			oSection2:Cell("COD1"):SetValue( aItens[nI,11] )
 			oSection2:Cell("DES1"):SetValue( aItens[nI,12] )
 
-			if nI + 1 <= len(aItens) .and.  cChave == aItens[nI+1,4] + aItens[nI+1,5] + aItens[nI+1,6]
-				oSection2:Cell("QTD2"):SetValue( aItens[nI+1,10] )
-				oSection2:Cell("COD2"):SetValue( aItens[nI+1,11] )
-				oSection2:Cell("DES2"):SetValue( aItens[nI+1,12] )
-				nI++
+			nK := nI + nStep
+
+			if iif( nStep==1, (nK <= len(aItens)), ( nK == 1) ) .and.  cChave == aItens[nK,4] + aItens[nK,5] + aItens[nK,6]
+				oSection2:Cell("QTD2"):SetValue( aItens[nK,10] )
+				oSection2:Cell("COD2"):SetValue( aItens[nK,11] )
+				oSection2:Cell("DES2"):SetValue( aItens[nK,12] )
+				nI := nK
 			else
 				oSection2:Cell("QTD2"):SetValue( "" )
 				oSection2:Cell("COD2"):SetValue( "" )
