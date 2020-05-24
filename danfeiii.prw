@@ -14,13 +14,13 @@
 #DEFINE HMARGEM   030
 #DEFINE VMARGEM   030
 #DEFINE MAXITEM   010                                                // Máximo de produtos para a primeira página
-#DEFINE MAXITEMP2 044                                                // Máximo de produtos para a pagina 2 (caso nao utilize a opção de impressao em verso)
-#DEFINE MAXITEMP3 015                                                // Máximo de produtos para a pagina 2 (caso utilize a opção de impressao em verso) - Tratamento implementado para atender a legislacao que determina que a segunda pagina de ocupar 50%.
-#DEFINE MAXITEMP4 022                                                // Máximo de produtos para a pagina 2 (caso contenha main info cpl que suporta a primeira pagina)
+#DEFINE MAXITEMP2 022                                                // página 02 em diante com inf. complementar
+#DEFINE MAXITEMP2F 042                                               // pagina 2 em diante sem informação complementar
+#DEFINE MAXITEMP3 022                                                // Máximo de produtos para a pagina 2 (caso utilize a opção de impressao em verso) - Tratamento implementado para atender a legislacao que determina que a segunda pagina de ocupar 50%.
 #DEFINE MAXITEMC  012                                                // Máxima de caracteres por linha de produtos/serviços
 #DEFINE MAXMENLIN 130                                                // Máximo de caracteres por linha de dados adicionais
 #DEFINE MAXMSG    006                                                // Máximo de dados adicionais na primeira página
-#DEFINE MAXMSG2   019                                                // Máximo de dados adicionais na segunda página
+#DEFINE MAXMSG2   018                                                // Máximo de dados adicionais na segunda página
 #DEFINE MAXBOXH   800                                                // Tamanho maximo do box Horizontal
 #DEFINE MAXBOXV   600
 #DEFINE INIBOXH   -10
@@ -819,10 +819,10 @@ If lContinua
 							EndIf
 							//-------------------------------
 							If Empty(cAviso) .And. Empty(cErro) .And. MV_PAR04==1 .And. (oNfe:_NFE:_INFNFE:_IDE:_TPNF:TEXT=="0")
-								ImpDet(@oDanfe,oNFe,cAutoriza,cModalidade,oNfeDPEC,cCodAutDPEC,aXml[nX][6],aXml[nX][7],aNotas[nX])
+								ImpDet(@oDanfe,oNFe,cAutoriza,cModalidade,oNfeDPEC,cCodAutDPEC,aXml[nX][6],aXml[nX][7],aNotas[nX],aXml[nX][11])
 								lExistNfe := .T.							
 							ElseIf Empty(cAviso) .And. Empty(cErro) .And. MV_PAR04==2 .And. (oNfe:_NFE:_INFNFE:_IDE:_TPNF:TEXT=="1")
-								ImpDet(@oDanfe,oNFe,cAutoriza,cModalidade,oNfeDPEC,cCodAutDPEC,aXml[nX][6],aXml[nX][7],aNotas[nX])
+								ImpDet(@oDanfe,oNFe,cAutoriza,cModalidade,oNfeDPEC,cCodAutDPEC,aXml[nX][6],aXml[nX][7],aNotas[nX],aXml[nX][11])
 								lExistNfe := .T.
 							EndIf
 	
@@ -1057,6 +1057,7 @@ Local lMv_ItDesc    := Iif( GetNewPar("MV_ITDESC","N")=="S", .T., .F. )
 Local lNFori2       := .T.
 Local lCompleECF    := .F.
 Local lEntIpiDev   	:= GetNewPar("MV_EIPIDEV",.F.) /*Apenas para nota de entrada de Devolução de ipi. .T.-Séra destacado no cabeçalho + inf.compl/.F.-Será destacado apenas em inf.compl*/
+Local lVerso		:= .F. // Impressão de DANFE no verso?
 
 Local lPontilhado 	:= .F.
 Local aAuxCom 		:= {}    	
@@ -1101,7 +1102,7 @@ Private nXAux	    := 0
 Private lArt488MG   := .F.
 Private lArt274SP   := .F.  
 
-Private nAjustImp     := 0
+Private nAjustaImp    := 0
 Private nAjustaRet    := 0
 Private nAjustaEnt    := 0
 Private nAjustaFat    := 0
@@ -1117,14 +1118,14 @@ oBrush              := TBrush():New( , CLR_BLACK )
 nFaturas := IIf(oFatura<>Nil,IIf(ValType(oNF:_InfNfe:_Cobr:_Dup)=="A",Len(oNF:_InfNfe:_Cobr:_Dup),1),0)
 oDet := IIf(ValType(oDet)=="O",{oDet},oDet)
 
-nAjustImp  := 0
-nAjustaRet := 0
-nAjustaEnt := 0
-nAjustaFat := 0
-nAjustaVt  := 0
-nAjustaPro := 0
-nAjustaISSQN:=0
-nAjustaNat := 0
+nAjustaImp		:= 0
+nAjustaRet		:= 0
+nAjustaEnt		:= 0
+nAjustaFat		:= 0
+nAjustaVt		:= 0
+nAjustaPro		:= 0
+nAjustaISSQN	:= 0
+nAjustaNat		:= 0
 // Popula as variaveis
 if( valType(oEntrega)=="O" ) .and. ( valType(oRetirada)=="O")
 	
@@ -1132,35 +1133,35 @@ if( valType(oEntrega)=="O" ) .and. ( valType(oRetirada)=="O")
     nAjustaEnt   := 81
 	nAjustaRet   := 162
 	nAjustaFat   := 149
-	nAjustImp    := 148
-    nAjustaVt    :=  147
+	nAjustaImp   := 148
+    nAjustaVt    := 147
 	nAjustaISSQN := 20
 	nAjustaPro   := 0
-    nAjustaDad   :=  20
+    nAjustaDad   := 20
     nAjustaDest  := 10
 	nMaxItem     := 0
 
 ElseIF ( valType(oEntrega)=="O" ) .and. ( valType(oRetirada)=="U")
 	nAjustaNat   := 4
-    nAjustaEnt   := 84
-    nAjustaFat   := 71
-    nAjustImp    := 70
-    nAjustaVt    := 70
-    nAjustaISSQN := 20
-	nAjustaPro   := 70
-	nAjustaDad   := 20
-	nAjustaDest  := 7
+	nAjustaRet   := 81
+	nAjustaFat   := 68 
+    nAjustaImp   := 67
+    nAjustaVt    := 67
+    nAjustaISSQN := 13
+	nAjustaPro   := 67
+	nAjustaDad   := 13
+	nAjustaDest  := 10 
 	nMAXITEM     := 4
 ElseIF ( valType(oEntrega)=="U" ) .and. ( valType(oRetirada)=="O")
 	nAjustaNat   := 4
-	nAjustaRet   := 84
-	nAjustaFat   := 71
-    nAjustImp    := 70
-    nAjustaVt    := 70
-    nAjustaISSQN := 20
-	nAjustaPro   := 70
-	nAjustaDad   := 20
-	nAjustaDest  := 7
+	nAjustaRet   := 81
+	nAjustaFat   := 68 
+    nAjustaImp   := 67
+    nAjustaVt    := 67
+    nAjustaISSQN := 13
+	nAjustaPro   := 67
+	nAjustaDad   := 13
+	nAjustaDest  := 10 
 	nMAXITEM     := 4
 
 EndIf
@@ -2392,7 +2393,6 @@ endif
 //ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
 //³Calculo do numero de folhas                                             ³
 //ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
-
 nFolhas	  := 1
 nLenItens := Len(aItens) - MAXITEM // Todos os produtos/serviços excluindo a primeira página
 nMsgCompl := Len(aMensagem) - MAXMSG // Todas as mensagens complementares excluindo a primeira página
@@ -2401,8 +2401,12 @@ While lFlag
 	// Caso existam produtos/serviços e mensagens complementares a serem escritas
 	If nLenItens > 0 .And. nMsgCompl > 0
 		nFolhas++
-		nLenItens -= MAXITEMP4
-		nMsgCompl := 0
+		If MV_PAR05 == 1 .And. (nFolhas % 2) == 0
+			nLenItens -= MAXITEMP3
+		Else // Frente e Verso Impressão até 50% da página
+			nLenItens -= MAXITEMP2
+			nMsgCompl -= MAXMSG
+		Endif
 	// Caso existam apenas mensagens complementares a serem escritas
 	ElseIf nLenItens <= 0 .And. nMsgCompl > 0
 		nFolhas++
@@ -2410,7 +2414,12 @@ While lFlag
 	// Caso existam apenas produtos/serviços a serem escritos
 	ElseIf nLenItens > 0 .And. nMsgCompl <= 0
 		nFolhas++
-		nLenItens -= MAXITEMP2
+		// Se estiver habilitado frente e verso e for uma página impar
+		If MV_PAR05 == 1 .And. (nFolhas % 2) == 0
+			nLenItens -= MAXITEMP3
+		Else
+			nLenItens -= MAXITEMP2F
+		EndIf
 	// Se não tiver mais nada a ser escrito fecha a contagem
 	Else
 		lFlag := .F.
@@ -2694,7 +2703,7 @@ oDanfe:Box(nLine+277+nAjustaFat,nBaseCol+30+nPos1Col,nLine+310+nAjustaFat,MAXBOX
 
 
 nColuna := nBaseCol+36
-If Len(aFaturas) >0
+If Len(aFaturas) > 0
 	For nY := 1 To 9
 		oDanfe:Say(nLine+287+nAjustaFat,nColuna,aAux[1][ny][1],oFont08:oFont)
 		oDanfe:Say(nLine+296+nAjustaFat,nColuna,aAux[1][ny][2],oFont08:oFont)
@@ -2710,55 +2719,55 @@ nLine -= 18
 //ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
 nBaseTxt -= 30 
 //oDanfe:Box(nLine+328,nBaseCol,nLine+376,nBaseCol+30)
-oDanfe:FillRect({nLine+329+nAjustImp,nBaseCol,nLine+375+nAjustImp,nBaseCol+30},oBrush)
-oDanfe:Say(nLine+372+nAjustImp,nBaseTxt,"CALCULO",oFont08N:oFont, ,CLR_WHITE , 270 )
-oDanfe:Say(nLine+360+nAjustImp,nBaseTxt+7,"DO",oFont08N:oFont, , CLR_WHITE, 270 )
-oDanfe:Say(nLine+370+nAjustImp,nBaseTxt+14,"IMPOSTO",oFont08N:oFont, , CLR_WHITE, 270 )
+oDanfe:FillRect({nLine+329+nAjustaImp,nBaseCol,nLine+375+nAjustaImp,nBaseCol+30},oBrush)
+oDanfe:Say(nLine+372+nAjustaImp,nBaseTxt,"CALCULO",oFont08N:oFont, ,CLR_WHITE , 270 )
+oDanfe:Say(nLine+360+nAjustaImp,nBaseTxt+7,"DO",oFont08N:oFont, , CLR_WHITE, 270 )
+oDanfe:Say(nLine+370+nAjustaImp,nBaseTxt+14,"IMPOSTO",oFont08N:oFont, , CLR_WHITE, 270 )
 nBaseTxt += 30 
 
-oDanfe:Box(nLine+328+nAjustImp,nBaseCol+30,nLine+353+nAjustImp,262)
-oDanfe:Say(nLine+336+nAjustImp,nBaseTxt,"BASE DE CALCULO DO ICMS",oFont08N:oFont)
+oDanfe:Box(nLine+328+nAjustaImp,nBaseCol+30,nLine+353+nAjustaImp,262)
+oDanfe:Say(nLine+336+nAjustaImp,nBaseTxt,"BASE DE CALCULO DO ICMS",oFont08N:oFont)
 If cMVCODREG $ "2|3" 
-	oDanfe:Say(nLine+346+nAjustImp,nBaseTxt,aTotais[01],oFont08:oFont)
+	oDanfe:Say(nLine+346+nAjustaImp,nBaseTxt,aTotais[01],oFont08:oFont)
 ElseIf lImpSimpN
-	oDanfe:Say(nLine+346+nAjustImp,nBaseTxt,aSimpNac[01],oFont08:oFont)	
+	oDanfe:Say(nLine+346+nAjustaImp,nBaseTxt,aSimpNac[01],oFont08:oFont)	
 Endif
-oDanfe:Box(nLine+328+nAjustImp,262,nLine+353+nAjustImp,402)
-oDanfe:Say(nLine+336+nAjustImp,272,"VALOR DO ICMS",oFont08N:oFont)
+oDanfe:Box(nLine+328+nAjustaImp,262,nLine+353+nAjustaImp,402)
+oDanfe:Say(nLine+336+nAjustaImp,272,"VALOR DO ICMS",oFont08N:oFont)
 If cMVCODREG $ "2|3" 
-	oDanfe:Say(nLine+346+nAjustImp,272,aTotais[02],oFont08:oFont)
+	oDanfe:Say(nLine+346+nAjustaImp,272,aTotais[02],oFont08:oFont)
 ElseIf lImpSimpN
-	oDanfe:Say(nLine+346+nAjustImp,272,aSimpNac[02],oFont08:oFont)
+	oDanfe:Say(nLine+346+nAjustaImp,272,aSimpNac[02],oFont08:oFont)
 Endif
-oDanfe:Box(nLine+328+nAjustImp,402,nLine+353+nAjustImp,557)
-oDanfe:Say(nLine+336+nAjustImp,412,"BASE DE CALCULO DO ICMS ST",oFont08N:oFont)
-oDanfe:Say(nLine+346+nAjustImp,412,aTotais[03],oFont08:oFont)
-oDanfe:Box(nLine+328+nAjustImp,557,nLine+353+nAjustImp,697)
-oDanfe:Say(nLine+336+nAjustImp,567,"VALOR DO ICMS SUBSTITUIÇÃO",oFont08N:oFont)
-oDanfe:Say(nLine+346+nAjustImp,567,aTotais[04],oFont08:oFont)
-oDanfe:Box(nLine+328+nAjustImp,697,nLine+353+nAjustImp,MAXBOXH+70)
-oDanfe:Say(nLine+336+nAjustImp,707,"VALOR TOTAL DOS PRODUTOS",oFont08N:oFont)
-oDanfe:Say(nLine+346+nAjustImp,707,aTotais[05],oFont08:oFont)
+oDanfe:Box(nLine+328+nAjustaImp,402,nLine+353+nAjustaImp,557)
+oDanfe:Say(nLine+336+nAjustaImp,412,"BASE DE CALCULO DO ICMS ST",oFont08N:oFont)
+oDanfe:Say(nLine+346+nAjustaImp,412,aTotais[03],oFont08:oFont)
+oDanfe:Box(nLine+328+nAjustaImp,557,nLine+353+nAjustaImp,697)
+oDanfe:Say(nLine+336+nAjustaImp,567,"VALOR DO ICMS SUBSTITUIÇÃO",oFont08N:oFont)
+oDanfe:Say(nLine+346+nAjustaImp,567,aTotais[04],oFont08:oFont)
+oDanfe:Box(nLine+328+nAjustaImp,697,nLine+353+nAjustaImp,MAXBOXH+70)
+oDanfe:Say(nLine+336+nAjustaImp,707,"VALOR TOTAL DOS PRODUTOS",oFont08N:oFont)
+oDanfe:Say(nLine+346+nAjustaImp,707,aTotais[05],oFont08:oFont)
 
 
-oDanfe:Box(nLine+353+nAjustImp,nBaseCol+30,nLine+378+nAjustImp,232)
-oDanfe:Say(nLine+361+nAjustImp,nBaseTxt,"VALOR DO FRETE",oFont08N:oFont)
-oDanfe:Say(nLine+371+nAjustImp,nBaseTxt,aTotais[06],oFont08:oFont)
-oDanfe:Box(nLine+353+nAjustImp,232,nLine+378+nAjustImp,352)
-oDanfe:Say(nLine+361+nAjustImp,242,"VALOR DO SEGURO",oFont08N:oFont)
-oDanfe:Say(nLine+371+nAjustImp,242,aTotais[07],oFont08:oFont)
-oDanfe:Box(nLine+353+nAjustImp,352,nLine+378+nAjustImp,452)
-oDanfe:Say(nLine+361+nAjustImp,362,"DESCONTO",oFont08N:oFont)
-oDanfe:Say(nLine+371+nAjustImp,362,aTotais[08],oFont08:oFont)
-oDanfe:Box(nLine+353+nAjustImp,452,nLine+378+nAjustImp,592)
-oDanfe:Say(nLine+361+nAjustImp,462,"OUTRAS DESPESAS ACESSÓRIAS",oFont08N:oFont)
-oDanfe:Say(nLine+371+nAjustImp,462,aTotais[09],oFont08:oFont)
-oDanfe:Box(nLine+353+nAjustImp,592,nLine+378+nAjustImp,712)
-oDanfe:Say(nLine+361+nAjustImp,602,"VALOR TOTAL DO IPI",oFont08N:oFont)
-oDanfe:Say(nLine+371+nAjustImp,602,aTotais[10],oFont08:oFont)
-oDanfe:Box(nLine+353+nAjustImp,712,nLine+378+nAjustImp,MAXBOXH+70)
-oDanfe:Say(nLine+361+nAjustImp,722,"VALOR TOTAL DA NOTA",oFont08N:oFont)
-oDanfe:Say(nLine+371+nAjustImp,722,aTotais[11],oFont08:oFont)
+oDanfe:Box(nLine+353+nAjustaImp,nBaseCol+30,nLine+378+nAjustaImp,232)
+oDanfe:Say(nLine+361+nAjustaImp,nBaseTxt,"VALOR DO FRETE",oFont08N:oFont)
+oDanfe:Say(nLine+371+nAjustaImp,nBaseTxt,aTotais[06],oFont08:oFont)
+oDanfe:Box(nLine+353+nAjustaImp,232,nLine+378+nAjustaImp,352)
+oDanfe:Say(nLine+361+nAjustaImp,242,"VALOR DO SEGURO",oFont08N:oFont)
+oDanfe:Say(nLine+371+nAjustaImp,242,aTotais[07],oFont08:oFont)
+oDanfe:Box(nLine+353+nAjustaImp,352,nLine+378+nAjustaImp,452)
+oDanfe:Say(nLine+361+nAjustaImp,362,"DESCONTO",oFont08N:oFont)
+oDanfe:Say(nLine+371+nAjustaImp,362,aTotais[08],oFont08:oFont)
+oDanfe:Box(nLine+353+nAjustaImp,452,nLine+378+nAjustaImp,592)
+oDanfe:Say(nLine+361+nAjustaImp,462,"OUTRAS DESPESAS ACESSÓRIAS",oFont08N:oFont)
+oDanfe:Say(nLine+371+nAjustaImp,462,aTotais[09],oFont08:oFont)
+oDanfe:Box(nLine+353+nAjustaImp,592,nLine+378+nAjustaImp,712)
+oDanfe:Say(nLine+361+nAjustaImp,602,"VALOR TOTAL DO IPI",oFont08N:oFont)
+oDanfe:Say(nLine+371+nAjustaImp,602,aTotais[10],oFont08:oFont)
+oDanfe:Box(nLine+353+nAjustaImp,712,nLine+378+nAjustaImp,MAXBOXH+70)
+oDanfe:Say(nLine+361+nAjustaImp,722,"VALOR TOTAL DA NOTA",oFont08N:oFont)
+oDanfe:Say(nLine+371+nAjustaImp,722,aTotais[11],oFont08:oFont)
 
 nLine -= 3
 
@@ -2998,78 +3007,50 @@ aTamCol := RetTamCol(aAuxCabec, aAux, oDanfe, oFont08N:oFont, oFont07:oFont)
 aColProd := {}
 DanfeIT(oDanfe, @nLine, @nBaseCol, @nBaseTxt, nFolha, nFolhas, @aColProd, aMensagem, nPosMsg, aTamCol)
 
-lPag1 := .T.
-lPag2 := .F.
-lPagX := .F.
-lInfoAd:= .F.
-
 nFolha++
-nLinha    :=nLine+478
+nLinha    := nLine+478
 nL:=0  
+
+lVerso := MV_PAR05 == 1
 
 For nY := 1 To nLenItens
 	nL++
-	If lPag1
-		If nL > nMaxItem .And. nFolha == 2
+	
+	If nY > nMaxItem
+		nAjustaPro := 0
+	endif 
+
+	if nL > nMaxItem
+		if nPosMsg > 0 .and. nPosMsg <= Len(aMensagem) 
+			nMaxItem := MAXITEMP2 // 22 itens
+		else 
+			nMaxItem := MAXITEMP2F // 44 itens
+		endif
+		if lVerso // Imprime no verso?
+			if (nFolha % 2==0) // Somente folha par
+				nMaxItem := MAXITEMP3 // 22 itens
+			endif
+		endif
+
 			oDanfe:EndPage()
 			oDanfe:StartPage()
 			nLinha    	:=	181
 
 			DanfeCab(oDanfe,nPosV,oNFe,oIdent,oEmitente,nFolha,nFolhas,cCodAutSef,oNfeDPEC,cCodAutDPEC,cDtHrRecCab,dDtReceb,@nLine,@nBaseCol,@nBaseTxt,aUf)			
 			DanfeIT(oDanfe, @nLine, @nBaseCol, @nBaseTxt, nFolha, nFolhas, @aColProd, aMensagem, nPosMsg, aTamCol)
-			If nPosMsg > 0
+			
+			if nPosMsg > 0 .and. (!lVerso .or. (nFolha % 2 !=0) ) // Impressão no verso somente em folha par e sem mensagem complementar.
 				DanfeInfC(oDanfe,aMensagem,@nBaseTxt,@nBaseCol,@nLine,@nPosMsg,nFolha)
-				lInfoAd := .T.
-			EndIf	
-			nL :=0
-			lPag1 := .F.
-			lPag2 := .T.
+			EndIf
+
+			nL := 0
 			nLinha := 169
-		Endif           
+			nFolha++   
 	Endif
 
-	If lPag2  .And. lInfoAd
-		If	nL > MAXITEMP4
-			nFolha++
-			oDanfe:EndPage()
-			oDanfe:StartPage()
-			nColLim		:=	Iif(!(nfolha-1)%2==0 .And. MV_PAR05==1,435,865)
-			nLinha    	:=	181
-			
-			DanfeCab(oDanfe,nPosV,oNFe,oIdent,oEmitente,nFolha,nFolhas,cCodAutSef,oNfeDPEC,cCodAutDPEC,cDtHrRecCab,dDtReceb,@nLine,@nBaseCol,@nBaseTxt,aUf)			
-			DanfeIT(oDanfe, @nLine, @nBaseCol, @nBaseTxt, nFolha, nFolhas, @aColProd, aMensagem, nPosMsg, aTamCol)  
-			nLinha := 169
-	
-			nL:=0
-			lPag2 := .F.
-			lPagX := .T.      
-			lInfoAd:= .F.
-		EndIf
-	Else
-		If	nL >= MAXITEMP2
-			nFolha++
-			oDanfe:EndPage()
-			oDanfe:StartPage()
-			nColLim		:=	Iif(!(nfolha-1)%2==0 .And. MV_PAR05==1,435,865)
-			nLinha    	:=	181
-			
-			DanfeCab(oDanfe,nPosV,oNFe,oIdent,oEmitente,nFolha,nFolhas,cCodAutSef,oNfeDPEC,cCodAutDPEC,cDtHrRecCab,dDtReceb,@nLine,@nBaseCol,@nBaseTxt,aUf)			
-			DanfeIT(oDanfe, @nLine, @nBaseCol, @nBaseTxt, nFolha, nFolhas, @aColProd, aMensagem, nPosMsg, aTamCol)
-			nLinha := 169
-	
-			nL:=0		
-		EndIf
-	EndIf
-	
 	If aAux[1][1][nY] == "-"
-		If nY > nMaxItem
-	   		nAjustaPro:=0
-	   	endif 
 		oDanfe:Say(nLinha+nAjustaPro, aColProd[1][1] + 2, Replicate("- ", 192), oFont07:oFont)
 	Else
-		If nY > nMaxItem
-	   		nAjustaPro:=0
-	   	endif 
 		oDanfe:Say(nLinha+nAjustaPro, aColProd[1][1] + 2, aAux[1][1][nY], oFont07:oFont)
 		oDanfe:Say(nLinha+nAjustaPro, aColProd[2][1] + 2, aAux[1][2][nY], oFont07:oFont)
 		oDanfe:Say(nLinha+nAjustaPro, aColProd[3][1] + 2, aAux[1][3][nY], oFont07:oFont)
@@ -3115,24 +3096,13 @@ For nY := 1 To nLenItens
 		nAuxH2 := len(aAux[1][19][nY]) + (aColProd[19][1] + ((aColProd[19][2] - aColProd[19][1]) - RetTamTex(aAux[1][19][nY], oFont07:oFont, oDanfe)))
 		oDanfe:Say(nLinha+nAjustaPro, nAuxH2, aAux[1][19][nY], oFont07:oFont)
 	EndIf
-	
 	nLinha := nLinha + 10 
 Next nY 
-If nL <= nMaxItem .And. Len(aMensagem) > MAXMSG .And. nFolha == 2 .And. nLenItens <= MAXMSG
+If nPosMsg > 0 
 	oDanfe:EndPage()
 	oDanfe:StartPage()
 	nLinha    	:=	181                
 	DanfeCab(oDanfe,nPosV,oNFe,oIdent,oEmitente,nFolha,nFolhas,cCodAutSef,oNfeDPEC,cCodAutDPEC,cDtHrRecCab,dDtReceb,@nLine,@nBaseCol,@nBaseTxt,aUf)
-	DanfeIT(oDanfe, @nLine, @nBaseCol, @nBaseTxt, nFolha, nFolhas, @aColProd, aMensagem, nPosMsg, aTamCol)
-	If nPosMsg > 0
-		DanfeInfC(oDanfe,aMensagem,@nBaseTxt,@nBaseCol,@nLine,@nPosMsg,nFolha)
-	EndIf
-elseif nPosMsg > 0 
-	oDanfe:EndPage()
-	oDanfe:StartPage()
-	nLinha    	:=	181                
-	DanfeCab(oDanfe,nPosV,oNFe,oIdent,oEmitente,nFolha,nFolhas,cCodAutSef,oNfeDPEC,cCodAutDPEC,cDtHrRecCab,dDtReceb,@nLine,@nBaseCol,@nBaseTxt,aUf)
-	
 	DanfeInfC(oDanfe,aMensagem,@nBaseTxt,@nBaseCol,@nLine,@nPosMsg,nFolha,.T.)
 Endif
 
@@ -3165,7 +3135,6 @@ Return(.T.)
 Static Function DanfeCab(oDanfe,nPosV,oNFe,oIdent,oEmitente,nFolha,nFolhas,cCodAutSef,oNfeDPEC,cCodAutDPEC,cDtHrRecCab,dDtReceb,nLine,nBaseCol,nBaseTxt,aUf)
 
 Local aTamanho   := {}
-//Local aUF		 := {}
 Local nHPage     := 0
 Local nVPage     := 0
 Local nPosVOld   := 0
@@ -3184,8 +3153,8 @@ Local cUF		 := ""
 Local cCNPJCPF	 := ""
 Local cLogo      := FisxLogo("1")
 Local lConverte  := GetNewPar("MV_CONVERT",.F.)
-Local lMv_Logod := If( GetNewPar("MV_LOGOD", "N" ) == "S", .T., .F. )
-Local cLogoD	:= ""
+Local lMv_Logod	 := If( GetNewPar("MV_LOGOD", "N" ) == "S", .T., .F. )
+Local cLogoD	 := ""
 
 Local cDescLogo		:= ""
 Local cGrpCompany	:= ""
@@ -3195,7 +3164,6 @@ Local cFilGrp		:= ""
 
 Private oDPEC    := oNfeDPEC
 
-
 Default cCodAutSef := ""
 Default cCodAutDPEC:= ""
 Default cDtHrRecCab:= ""
@@ -3204,8 +3172,6 @@ Default dDtReceb   := CToD("")
 nLine    := -42
 nBaseCol := 70
 
-// PICOTE DO RECIBO
-//oDanfe:Say(MAXBOXV, INIBOXH+80, Replicate("- ",500), oFont08N:oFont, , , 270 )
 oDanfe:Say(000, INIBOXH+74, Replicate("- ",150), oFont08N:oFont, , , 90 )
 
 oDanfe:Box(nLine+135, INIBOXH+10, MAXBOXV, INIBOXH+35)
@@ -3611,9 +3577,9 @@ If nFolha == 1
 			oDanfe:FillRect({nLine+455,nBaseCol,nLine+574,nBaseCol+30},oBrush)
 			oDanfe:Say(nLine+568,nBaseTxt+7,"DADOS DO PRODUTO / SERVIÇO",oFont08N:oFont, ,CLR_WHITE , 270 )
         ElseIf ( valType(oEntrega)=="O" ) .or. ( valType(oRetirada)=="O")
-	    	oDanfe:FillRect({nLine+525,nBaseCol,nLine+595,nBaseCol+30},oBrush)
-			oDanfe:Say(nLine+593,nBaseTxt+7,"DADOS DO PRODUTO/",oFont08N:oFont, ,CLR_WHITE , 270 )
-        	oDanfe:Say(nLine+585,nBaseTxt+14,"SERVIÇO",oFont08N:oFont, ,CLR_WHITE , 270 )
+	    	oDanfe:FillRect({nLine+522,nBaseCol,nLine+592,nBaseCol+30},oBrush)
+			oDanfe:Say(nLine+587,nBaseTxt+7,"DADOS DO PRODUTO/",oFont08N:oFont, ,CLR_WHITE , 270 )
+        	oDanfe:Say(nLine+579,nBaseTxt+14,"SERVIÇO",oFont08N:oFont, ,CLR_WHITE , 270 )
         Endif
 
 		nBaseTxt += 30 
@@ -3733,7 +3699,7 @@ If nFolha == 1
 			If ( valType(oEntrega)=="U" ) .and. ( valType(oRetirada)=="U")
 				oDanfe:Box(nLine+469,aColProd[nX][1],nLine+575,aColProd[nX][2])
 			ElseIf ( valType(oEntrega)=="O" ) .or. ( valType(oRetirada)=="O")
-				oDanfe:Box(nLine+469+nAjustaPro,aColProd[nX][1],nLine+575+20,aColProd[nX][2])		
+				oDanfe:Box(nLine+469+nAjustaPro,aColProd[nX][1],nLine+575+13,aColProd[nX][2])		
 			Endif
 		Next
 	EndIf
@@ -3742,8 +3708,6 @@ Else
 	If nPosMsg > 0
 		nLine -= 265
 	
-	//	nBaseTxt -= 30 
-	//	oDanfe:Box(nLine+454,nBaseCol,MAXBOXV,nBaseCol+30)
 		oDanfe:FillRect({nLine+455,nBaseCol,397,nBaseCol+30},oBrush)
 		oDanfe:Say(360,nBaseTxt+7,"DADOS DO PRODUTO / SERVIÇO",oFont08N:oFont, , CLR_WHITE, 270 )
 		nBaseTxt += 30 
@@ -4017,12 +3981,11 @@ Static Function DanfeInfC(oDanfe,aMensagem,nBaseTxt,nBaseCol,nLine,nPosMsg, nFol
 local cLogoTotvs := "Powered_by_TOTVS.bmp"
 local cStartPath := GetSrvProfString("Startpath","")
 Local Nx:= 0
-Local Nw:= 0
 local nPosAdicionais := 0
 default lComplemento := .F.
 oBrush := TBrush():New( , CLR_BLACK )
 
-If nFolha ==1
+If nFolha == 1
 
 	nBaseTxt -= 30 
 	//oDanfe:Box(nLine+597,nBaseCol,MAXBOXV,nBaseCol+30)
@@ -4047,6 +4010,8 @@ If nFolha ==1
 	
 	If Nx <= nLenMensagens 
 		nPosMsg := Nx
+	else 
+		nPosMsg := 0 
 	EndIf 
 	
 	//oDanfe:Box(nLine+597,622,MAXBOXV,MAXBOXH+70)
@@ -4066,7 +4031,7 @@ If nFolha ==1
   		nLin:= nLin+10
 	Next
 
-ElseIf nFolha == 2
+ElseIf nFolha >= 2
 
 	if lComplemento
 		nLine -= 208
@@ -4092,20 +4057,19 @@ ElseIf nFolha == 2
 	endif
 	oDanfe:Say(nLine+406,nBaseTxt,"INFORMAÇÕES COMPLEMENTARES",oFont08N:oFont)
 	
-	
 	nLenMensagens:= Len(aMensagem)
 	nLin:= nLine+416
-	
-	For nX := nPosMsg To nLenMensagens
+
+	For nX := nPosMsg To Min(nLenMensagens,nPosMsg+MAXMSG2)
 		oDanfe:Say(nLin,nBaseTxt,aMensagem[nX],oFont07:oFont)
 		nLin:= nLin+10
-		Nw++
-		If Nw >= MAXMSG2
-			Exit
-		EndIf	
 	Next nX
-	
-	nPosMsg := 0
+		
+	If Nx <= nLenMensagens 
+		nPosMsg := Nx
+	else 
+		nPosMsg := 0 
+	EndIf 
 	
 	oDanfe:Box(nLine+397,622,MAXBOXV,MAXBOXH+70)
 	oDanfe:Say(nLine+406,632,"RESERVADO AO FISCO",oFont08N:oFont)
@@ -4214,39 +4178,39 @@ Static Function RetTamCol(aCabec, aValores, oPrinter, oFontCabec, oFont)
 	Local nAux       := 0
 
 	Local nX         := 0
-	Local nY         := 0
-	Local oFontSize  := FWFontSize():new()
+	// Local nY         := 0
+	// Local oFontSize  := FWFontSize():new()
 	
-	if !oPrinter:lInJob
-		For nX := 1 To Len(aCabec)
+	// if !oPrinter:lInJob
+	// 	For nX := 1 To Len(aCabec)
 			
-			AADD(aTamCol, {})
-			//aTamCol[nX] := Round(oPrinter:GetTextWidth(aCabec[nX], oFontCabec) * nConsNeg + 2, 0)
-			aTamCol[nX] := oFontSize:getTextWidth( alltrim(aCabec[nX]), oFontCabec:Name, oFontCabec:nWidth, oFontCabec:Bold, oFontCabec:Italic )
-		Next nX
+	// 		AADD(aTamCol, {})
+	// 		//aTamCol[nX] := Round(oPrinter:GetTextWidth(aCabec[nX], oFontCabec) * nConsNeg + 2, 0)
+	// 		aTamCol[nX] := oFontSize:getTextWidth( alltrim(aCabec[nX]), oFontCabec:Name, oFontCabec:nWidth, oFontCabec:Bold, oFontCabec:Italic )
+	// 	Next nX
 		
-		For nX := 1 To Len(aValores[1])
+	// 	For nX := 1 To Len(aValores[1])
 			
-			nAux := 0
+	// 		nAux := 0
 			
-			For nY := 1 To Len(aValores[1][nX])
+	// 		For nY := 1 To Len(aValores[1][nX])
 				
-				If (oPrinter:GetTextWidth(aValores[1][nX][nY], oFont) * nConsTex + 2) > nAux
-					//nAux := Round(oPrinter:GetTextWidth(aValores[1][nX][nY], oFont) * nConsTex + 2, 0)
-					nAux := oFontSize:getTextWidth( Alltrim(aValores[1][nX][nY]), oFontCabec:Name, oFontCabec:nWidth, oFontCabec:Bold, oFontCabec:Italic )+ 7
-				EndIf
+	// 			If (oPrinter:GetTextWidth(aValores[1][nX][nY], oFont) * nConsTex + 2) > nAux
+	// 				//nAux := Round(oPrinter:GetTextWidth(aValores[1][nX][nY], oFont) * nConsTex + 2, 0)
+	// 				nAux := oFontSize:getTextWidth( Alltrim(aValores[1][nX][nY]), oFontCabec:Name, oFontCabec:nWidth, oFontCabec:Bold, oFontCabec:Italic )+ 7
+	// 			EndIf
 				
-			Next nY
+	// 		Next nY
 			
-			If aTamCol[nX] < nAux
-				aTamCol[nX] := nAux
-			EndIf
+	// 		If aTamCol[nX] < nAux
+	// 			aTamCol[nX] := nAux
+	// 		EndIf
 			
-		Next nX
+	// 	Next nX
 
-	else
+	// else
 		aTamCol := {45, 69, 39, 19, 23, 19, 33, 49, 46, 40, 41, 45, 39, 46,40,51,42,34,30}
-	endif	
+	// endif	
 	// Workaround para o método FWMSPrinter:GetTextWidth() na coluna UN
 	aTamCol[6] += 5
 	
@@ -4403,6 +4367,8 @@ Local aResposta		:= {}
 Local aRetorno		:= {}
 Local aDados		:= {} 
 Local aIdNfe		:= {}
+Local aWsErro		:= {}
+
 Local cAviso		:= "" 
 Local cDHRecbto		:= ""
 Local cDtHrRec		:= ""
@@ -4415,8 +4381,10 @@ Local cRetDPEC		:= ""
 Local cRetorno		:= ""
 Local cCodRetNFE	:= ""
 Local cMsgNFE		:=	""
+Local cMsgRet		:= ""
 Local cURL			:= PadR(GetNewPar("MV_SPEDURL","http://localhost:8080/sped"),250)
 Local cModel		:= "55"
+Local cCodStat		:= ""
 Local dDtRecib		:= CToD("")
 Local lFlag			:= .T.
 Local nDtHrRec1		:= 0
@@ -4427,8 +4395,9 @@ Local nZ			:= 1
 Local nCount		:= 0
 Local nLenNFe
 Local nLenWS
+Local nPos			:= 0
+
 Local oWS
-local cMsgRet		:= ""
 
 Private oDHRecbto
 Private oNFeRet
@@ -4474,7 +4443,8 @@ if !lUsacolab
 				cProtocolo      := oWs:oWSRETORNANOTASNXRESULT:OWSNOTAS:OWSNFES5[nX]:oWSNFE:CPROTOCOLO								
 				cDHRecbto  		:= oWs:oWSRETORNANOTASNXRESULT:OWSNOTAS:OWSNFES5[nX]:oWSNFE:CXMLPROT
 				oNFeRet			:= XmlParser(cRetorno,"_",@cAviso,@cErro)
-				cModTrans		  := IIf(ValAtrib("oNFeRet:_NFE:_INFNFE:_IDE:_TPEMIS:TEXT") <> "U",IIf (!Empty("oNFeRet:_NFE:_INFNFE:_IDE:_TPEMIS:TEXT"),oNFeRet:_NFE:_INFNFE:_IDE:_TPEMIS:TEXT,1),1)
+				cModTrans		:= IIf(ValAtrib("oNFeRet:_NFE:_INFNFE:_IDE:_TPEMIS:TEXT") <> "U",IIf (!Empty("oNFeRet:_NFE:_INFNFE:_IDE:_TPEMIS:TEXT"),oNFeRet:_NFE:_INFNFE:_IDE:_TPEMIS:TEXT,1),1)
+				cCodStat		:= ""
 				If ValType(oWs:OWSRETORNANOTASNXRESULT:OWSNOTAS:OWSNFES5[nX]:OWSDPEC)=="O"
 					cRetDPEC        := oWs:oWSRETORNANOTASNXRESULT:OWSNOTAS:OWSNFES5[nX]:oWSDPEC:CXML
 					cProtDPEC       := oWs:oWSRETORNANOTASNXRESULT:OWSNOTAS:OWSNFES5[nX]:oWSDPEC:CPROTOCOLO
@@ -4487,6 +4457,7 @@ if !lUsacolab
 					cDtHrRec		:= IIf(ValAtrib("oDHRecbto:_ProtNFE:_INFPROT:_DHRECBTO:TEXT")<>"U",oDHRecbto:_ProtNFE:_INFPROT:_DHRECBTO:TEXT,"")
 					nDtHrRec1		:= RAT("T",cDtHrRec)
 					cMsgRet 		:= IIf(ValAtrib("oDHRecbto:_ProtNFE:_INFPROT:_XMSG:TEXT")<>"U",oDHRecbto:_ProtNFE:_INFPROT:_XMSG:TEXT,"")
+					cCodStat		:= IIf(ValAtrib("oDHRecbto:_ProtNFE:_INFPROT:_CSTAT:TEXT")<>"U",oDHRecbto:_ProtNFE:_INFPROT:_CSTAT:TEXT,"")
 					If nDtHrRec1 <> 0
 						cDtHrRec1   :=	SubStr(cDtHrRec,nDtHrRec1+1)
 						dDtRecib	:=	SToD(StrTran(SubStr(cDtHrRec,1,AT("T",cDtHrRec)-1),"-",""))
@@ -4505,8 +4476,23 @@ if !lUsacolab
 					cMsgNFE := aRetAuto[06]
 				else
 					If oWS:MONITORFAIXA()
-						cCodRetNFE := oWS:oWsMonitorFaixaResult:OWSMONITORNFE[1]:OWSERRO:OWSLOTENFE[len(oWS:oWsMonitorFaixaResult:OWSMONITORNFE[1]:OWSERRO:OWSLOTENFE)]:CCODRETNFE
-						cMsgNFE	:= oWS:oWsMonitorFaixaResult:OWSMONITORNFE[1]:OWSERRO:OWSLOTENFE[len(oWS:oWsMonitorFaixaResult:OWSMONITORNFE[1]:OWSERRO:OWSLOTENFE)]:CMSGRETNFE
+						nPos    := 0
+						aWsErro := {}
+						If !Empty(cProtocolo) .AND. !Empty(cCodStat)
+							aWsErro := oWS:OWSMONITORFAIXARESULT:OWSMONITORNFE[1]:OWSERRO:OWSLOTENFE
+							For nPos := 1 To Len(aWsErro)
+								If Alltrim(aWsErro[nPos]:CCODRETNFE) == Alltrim(cCodStat)
+									Exit
+								Endif
+							Next
+						Endif
+						If nPos > 0 .And. nPos <= Len(aWsErro)
+							cCodRetNFE := oWS:oWsMonitorFaixaResult:OWSMONITORNFE[1]:OWSERRO:OWSLOTENFE[nPos]:CCODRETNFE
+							cMsgNFE	:= oWS:oWsMonitorFaixaResult:OWSMONITORNFE[1]:OWSERRO:OWSLOTENFE[nPos]:CMSGRETNFE
+						Else
+							cCodRetNFE := oWS:oWsMonitorFaixaResult:OWSMONITORNFE[1]:OWSERRO:OWSLOTENFE[len(oWS:oWsMonitorFaixaResult:OWSMONITORNFE[1]:OWSERRO:OWSLOTENFE)]:CCODRETNFE
+							cMsgNFE	:= oWS:oWsMonitorFaixaResult:OWSMONITORNFE[1]:OWSERRO:OWSLOTENFE[len(oWS:oWsMonitorFaixaResult:OWSMONITORNFE[1]:OWSERRO:OWSLOTENFE)]:CMSGRETNFE
+						EndIf
 					EndIf
 				endif
 	
@@ -4522,33 +4508,10 @@ if !lUsacolab
 					aRetorno[nY][10]:= cMsgNFE
 					aRetorno[nY][11]:= cMsgRet
 					
-					//aadd(aResposta,aIdNfe[nY])
 				EndIf
 				cRetDPEC := ""
 				cProtDPEC:= ""
 			Next nX
-			/*For nX := 1 To Len(aIdNfe)
-				If aScan(aResposta,{|x| x[4] == aIdNfe[nX,04] .And. x[5] == aIdNfe[nX,05] })==0
-				
-					conout("Falta")
-					conout(aIdNfe[nX][4]+" - "+aIdNfe[nX][5])
-					aadd(aFalta,aIdNfe[nX])
-				EndIf
-			Next nX
-			If Len(aFalta)>0
-				aExecute := GetXML(cIdEnt,aFalta,@cModalidade)
-			Else
-				aExecute := {}
-			EndIf*/
-			/*For nX := 1 To Len(aExecute)
-				nY := aScan(aRetorno,{|x| x[3] == aExecute[nX][03]})
-				If nY == 0
-					aadd(aRetorno,{aExecute[nX][01],aExecute[nX][02],aExecute[nX][03]})
-				Else
-					aRetorno[nY][01] := aExecute[nX][01]
-					aRetorno[nY][02] := aExecute[nX][02]
-				EndIf
-			Next nX*/
 		EndIf
 	Else
 		if !lAutomato
@@ -4561,7 +4524,7 @@ else
 	oDoc:cTipoMov	:= "1"									
 	oDoc:cIDERP	:= aIdNfe[nZ][4]+aIdNfe[nZ][5]+FwGrpCompany()+FwCodFil()
 	
-	aadd(aRetorno,{"","",aIdNfe[nZ][4]+aIdNfe[nZ][5],"","","",CToD(""),"","",""})
+	aadd(aRetorno,{"","",aIdNfe[nZ][4]+aIdNfe[nZ][5],"","","",CToD(""),"","","",""})
 	
 	if odoc:consultar()
 		aDados := ColDadosNf(1)
@@ -4577,10 +4540,11 @@ else
 			aDadosXml[9] := SubStr(cRetorno,At('<obsCont xCampo="nRegDPEC"><xTexto>',cRetorno)+35,15)
 		endif	
 		
-		cProtocolo		:= aDadosXml[3]		
-		cModTrans		:= IIF(Empty(aDadosXml[5]),aDadosXml[7],aDadosXml[5])
+		cProtocolo	:= aDadosXml[3]		
+		cModTrans	:= IIF(Empty(aDadosXml[5]),aDadosXml[7],aDadosXml[5])
 		cCodRetNFE	:= aDadosXml[1]
-		cMsgNFE 	:= aDadosXml[2]			
+		cMsgNFE 	:= aDadosXml[2]
+		cMsgRet		:= aDadosXml[11]			
 		
 		//Dados do DEPEC
 		If !Empty( aDadosXml[9] )
@@ -4611,6 +4575,7 @@ else
 		aRetorno[1][8] := cModTrans
 		aRetorno[1][9] := cCodRetNFE
 		aRetorno[1][10]:= cMsgNFE
+		aRetorno[1][11]:= cMsgRet
 								
 		cRetDPEC := ""
 		cProtDPEC:= ""		
@@ -4715,6 +4680,7 @@ local aDados	:= {}
 			aadd(aDados,"NFE|INFNFE|IDE|TPAMB") //8 - Ambiente de transmissão -  Caso nao tenha retorno			
 			aadd(aDados,"NFEPROC|RETDEPEC|INFDPECREG|NREGDPEC") //9 - Numero de autorização DPEC
 			aadd(aDados,"NFEPROC|PROTNFE|INFPROT|CHNFE") //10 - Chave da autorizacao
+			aadd(aDados,"NFEPROC|PROTNFE|INFPROT|XMSG") //11 - Tag <xMsg>
 		
 		case nInf == 2	
 			//Informacoes do cancelamento - evento
@@ -4728,6 +4694,7 @@ local aDados	:= {}
 			aadd(aDados,"ENVEVENTO|EVENTO|INFEVENTO|TPAMB") //8 - Ambiente de transmissão -  Caso nao tenha retorno												
 			aadd(aDados,"") //9 - Numero de autorização DPEC
 			aadd(aDados,"") //10 - Chave da autorizacao
+			aadd(aDados,"") //11 - Tag <xMsg>
 		
 		case nInf == 3	
 			//Informações da Inutilização
@@ -4741,6 +4708,7 @@ local aDados	:= {}
 			aadd(aDados,"INUTNFE|INFINUT|TPAMB	") //8 - Ambiente de transmissão -  Caso nao tenha retorno												
 			aadd(aDados,"") //9 - Numero de autorização DPEC
 			aadd(aDados,"") //10 - Chave da autorizacao
+			aadd(aDados,"") //11 - Tag <xMsg>
 	end
 	
 return(aDados)
