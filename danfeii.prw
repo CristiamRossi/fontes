@@ -458,7 +458,7 @@ If !lImpDir .or. oDanfe:lInJob
 								EndIf
 								MsUnlock()
 								// especifico - Nayumi e DDS - Cristiam Rossi em 06/02/2020
-								if isInCallStack("PrtNfeSef")	// só adiciona no Array se for impresão do usuário
+								if isInCallStack("U_PrtNfeSef")	// só adiciona no Array se for impresão do usuário
 									aadd( aNFs, { SF2->F2_PREFIXO, SF2->F2_DUPL } )			   
 								endif
 								// Grava quando a nota for Transferencia entre filiais
