@@ -2186,17 +2186,18 @@ If cTipo == "1"
 							else
 								cMensCli += " Nota fiscal emitida sem destaque do ICMS."
 							endif
-							/*-------------------------------------------------------*
-							| Específico Nayumi e DDs - Cristiam Rossi em 29/01/2020 |
-							| Pedido do Cliente nas mensagens da NF                  |
-							*-------------------------------------------------------*/
-							if ! empty( SC5->C5_XPEDCLI ) .And. !AllTrim(SC5->C5_XPEDCLI) $ cMensCli
-								if Len( cMensCli ) > 0 
-									cMensCli += '  '
-								endif
-								cMensCli += "Pedido Cliente: " + alltrim(SC5->C5_XPEDCLI)
-							EndIf
-						endif 				
+						endif
+						
+						/*-------------------------------------------------------*
+						| Específico Nayumi e DDs - Cristiam Rossi em 29/01/2020 |
+						| Pedido do Cliente nas mensagens da NF                  |
+						*-------------------------------------------------------*/
+						if ! empty( SC5->C5_XPEDCLI ) .And. !AllTrim(SC5->C5_XPEDCLI) $ cMensCli
+							if Len( cMensCli ) > 0 
+								cMensCli += '  '
+							endif
+							cMensCli += "Pedido Cliente: " + alltrim(SC5->C5_XPEDCLI)
+						EndIf
 						
 						//Obtem os dados do veiculo informado no pedido de venda
 						If Empty(aVeiculo)
