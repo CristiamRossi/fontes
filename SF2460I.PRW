@@ -5,6 +5,8 @@
 //Cria titulos tipo DM-
 
 User Function SF2460I()
+Local aArea  := GetArea()
+Local aAreaE2 := SE2->(GetArea()) 
 Local 	nValTit   := 0
 Private nValDes   := 0
 
@@ -27,6 +29,30 @@ If !SF2->F2_TIPO $ "DB"
 		FGERAE1()
 	EndIf	
 EndIf
+
+//NF PRODUTOR RURAL
+If SC5->C5_TIPO == "D"
+	RecLock("SF2",.F.)
+	SF2->F2_XNFPROD := SC5->C5_XNFPROD
+	SF2->(MsUnlock())
+
+	DbSelectArea("SE2")
+	SE2->(DbSetOrder(6)) //FILIAL+FORNECE+LOJA+PREFIXO+NUM
+	If DbSeek(xFilial("SE2")+SF2->F2_CLIENTE+SF2->F2_LOJA+SF2->F2_SERIE+SF2->F2_DOC)
+	
+		While SE2->(!Eof()) .and. SE2->E2_NUM == SF2->F2_DOC .and. SE2->E2_PREFIXO == SF2->F2_SERIE
+			If RecLock("SE2",.F.)
+				SE2->E2_XNFPROD := SC5->C5_XNFPROD
+				MsUnlock()
+			Endif
+			SE2->(DbSkip())
+			
+		Enddo
+	EndIf	
+EndIf
+
+RestArea(aArea)
+RestArea(aAreaE2)
 Return()
 
 
