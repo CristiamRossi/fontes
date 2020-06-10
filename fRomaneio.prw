@@ -89,11 +89,13 @@ local aEmb      := {}
 	If mv_par03 == 1 //NAO"
 		cQuery += " and SUBSTRING(F2_FILIAL,1,2) = '"+SubStr(xFilial("SF2"),1,2)+"' "
 	EndIf	
-	cQuery += " order by C5_XROTA, F2_TRANSP, A1_CEP, A1_COD, A1_LOJA"
+	cQuery += " order by C5_XROTA, F2_TRANSP, A1_CEP, A1_COD, A1_LOJA, B1_DESC"
 
 	dbUseArea(.T.,"TOPCONN",tcGenQry(,,cQuery),cAliasQry,.T.,.T.)
 
 	while ! (cAliasQry)->( eof() )
+
+		oReport:IncMeter()
 
 		aEmb    := {}
 		cKey    := xFilial("SZC") + (cAliasQry)->( F2_TRANSP + F2_DOC + F2_SERIE )
@@ -109,6 +111,7 @@ local aEmb      := {}
 			SZC->( dbSkip() )
 		end
 
+PtInternal(1,'Rota: '+ (cAliasQry)->C5_XROTA + " - "  + Time())
 
 		cKey    := (cAliasQry)->(C5_XROTA + F2_TRANSP)
 		cRota   := (cAliasQry)->C5_XROTA + " - " + (cAliasQry)->ZR_DESCR
@@ -159,8 +162,12 @@ local aEmb      := {}
 
 		cChave := ""
 		for nI := nIni to nFim step nStep
+
+PtInternal(1,'Rota: '+ (cAliasQry)->C5_XROTA + " - Ini: "+cValToChar(nIni) + " - nI: "+cValToChar(nI) + " - Fim: "+cValToChar(nFim) + " - Step: "+cValToChar(nStep) + " - "  + Time())
+
 			if cChave != aItens[nI,4] + aItens[nI,5] + aItens[nI,6]
-				if nI != iif(nStep == 1, nIni, nFim )
+//				if nI != iif(nStep == 1, nIni, nFim )
+				if nI != nIni
 					oReport:skipLine()
 					oReport:thinLine()
 				endif
@@ -187,7 +194,8 @@ local aEmb      := {}
 
 			nK := nI + nStep
 
-			if iif( nStep==1, (nK <= len(aItens)), ( nK == 1) ) .and.  cChave == aItens[nK,4] + aItens[nK,5] + aItens[nK,6]
+//			if iif( nStep==1, (nK <= len(aItens)), ( nK == 1) ) .and.  cChave == aItens[nK,4] + aItens[nK,5] + aItens[nK,6]
+			if nK >= 1 .and. nK <= len(aItens)  .and.  cChave == aItens[nK,4] + aItens[nK,5] + aItens[nK,6]
 				oSection2:Cell("QTD2"):SetValue( aItens[nK,10] )
 				oSection2:Cell("COD2"):SetValue( aItens[nK,11] )
 				oSection2:Cell("DES2"):SetValue( aItens[nK,12] )
@@ -264,13 +272,15 @@ local aEmb      := {}
 		oReport:endPage()
 	end
 
-
 if len( aTotGer ) > 0
 	oReport:SetCustomText( {|| criaCab(oReport, .T.)} )
 	oReport:startPage()
 
 	oSection2:init()
 	for nI := 1 to len( aTotGer )
+
+PtInternal(1,'Total Geral: '+ cValToChar(nI) +"/" + cValToChar( len( aTotGer ) ) + " - "  + Time())
+
 		oSection2:Cell("QTD1"):SetValue( aTotGer[nI,1] )
 		oSection2:Cell("COD1"):SetValue( aTotGer[nI,2] )
 		oSection2:Cell("DES1"):SetValue( aTotGer[nI,3] )
