@@ -192,12 +192,12 @@ default lQuiet     := .F.
 			cNroDoc := alltrim(SE1->E1_NUMBCO)
 
 			//CB_RN_NN	:= Ret_cBarra(Subs(aDadosBanco[1],1,3)+"9",aDadosBanco[3],aDadosBanco[4],aDadosBanco[5],AllTrim(SE1->E1_NUM),(SE1->E1_VALOR-nVlrAbat),SE1->E1_VENCTO)
-			CB_RN_NN	:= U_Ret_cBarra(Subs(aDadosBanco[1],1,3)+"9",aDadosBanco[3],aDadosBanco[4],aDadosBanco[5],cNroDoc,(SE1->E1_VALOR-nVlrAbat),SE1->E1_VENCTO)
+			CB_RN_NN	:= U_Ret_cBarra(Subs(aDadosBanco[1],1,3)+"9",aDadosBanco[3],aDadosBanco[4],aDadosBanco[5],cNroDoc,(SE1->E1_VALOR-nVlrAbat),dVencto)
 
 			aDadosTit	:= {AllTrim(SE1->E1_NUM)+AllTrim(SE1->E1_PARCELA)						,;  // [1] N�mero do t�tulo
 							SE1->E1_EMISSAO                              						,;  // [2] Data da emiss�o do t�tulo
 							Date()                                  							,;  // [3] Data da emiss�o do boleto
-							SE1->E1_VENCTO                         	      						,;  // [4] Data do vencimento
+							dVencto                              	      						,;  // [4] Data do vencimento
 							(SE1->E1_SALDO - nVlrAbat)                  						,;  // [5] Valor do t�tulo
 							CB_RN_NN[3]                             							,;  // [6] Nosso numero (Ver formula para calculo)
 							SE1->E1_PREFIXO                               						,;  // [7] Prefixo da NF
