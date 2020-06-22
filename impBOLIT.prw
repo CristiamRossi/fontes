@@ -267,10 +267,10 @@ local aRet   := {}
 	MV_PAR03 := space(len(SE1->E1_PARCELA))
 
 	aAdd(aPergs,{1,"Prefixo"	,MV_PAR01		,"", ,"SE1",".T.",0,.F.})
-	aAdd(aPergs,{1,"Nï¿½mero"		,MV_PAR02		,"", ,""   ,".T.",0,.F.})
+	aAdd(aPergs,{1,"Numero"		,MV_PAR02		,"", ,""   ,".T.",0,.F.})
 	aAdd(aPergs,{1,"Parcela"	,MV_PAR03		,"", ,""   ,".T.",0,.F.})
 
-	if ParamBox(aPergs,"Selecione o Tï¿½tulo para impressï¿½o do boleto SICREDI",@aRet,,,,,,,,.F.)
+	if ParamBox(aPergs,"Selecione o Titulo para impressao do boleto SICREDI",@aRet,,,,,,,,.F.)
 		cPrefixo   := aRet[1]
 		cNumero    := aRet[2]
 		cParcDe    := aRet[3]
@@ -702,6 +702,9 @@ NN   := _cCart + bldocnufinal + '-' + AllTrim(dvnn)
 //	-------- Definicao do CODIGO DE BARRAS
 s    := cBanco + _cfator + blvalorfinal + _cCart + bldocnufinal + AllTrim(dvnn) + cAgencia + cConta + cDacCC + '000'
 dvcb := modulo11(s)
+If AllTrim(dvcb) $ "0/1/10/11" //Alteração Vinicius 19/06/2020
+	dvcb := "1"
+EndIf
 CB   := SubStr(s, 1, 4) + AllTrim(dvcb) + SubStr(s,5)
 
 //-------- Definicao da LINHA DIGITAVEL (Representacao Numerica)
