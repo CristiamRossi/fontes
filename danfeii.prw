@@ -158,9 +158,9 @@ EndIf
 if MV_PAR04 == 2		// NF de Saída
 	if len( aNFs ) > 0 .and. msgYesNo("Deseja enviar os boletos da NF por e-mail?", "Envio Boletos por e-mail")
 		for nI := 1 to len( aNFs )
-			u_envBol( aNFs[nI,1], aNFs[nI,2] )		// rotina que envia os boletos via e-mail - Cristiam Rossi em 28/01/2020
+			u_envBol( aNFs[nI,1], aNFs[nI,2], aNFs[nI,3]) // rotina que envia os boletos via e-mail - Cristiam Rossi em 28/01/2020
 		next
-		MostraErro()
+		Mostraerro()
 	endif
 endif
 RestArea(aArea)
@@ -459,7 +459,7 @@ If !lImpDir .or. oDanfe:lInJob
 								MsUnlock()
 								// especifico - Nayumi e DDS - Cristiam Rossi em 06/02/2020
 								if isInCallStack("U_PrtNfeSef")	// só adiciona no Array se for impresão do usuário
-									aadd( aNFs, { SF2->F2_PREFIXO, SF2->F2_DUPL } )			   
+									aadd( aNFs, { SF2->F2_PREFIXO, SF2->F2_DUPL, SF2->F2_TIPO } )			   
 								endif
 								// Grava quando a nota for Transferencia entre filiais
 								IF SF2->(FieldPos("F2_FILDEST"))> 0 .And. SF2->(FieldPos("F2_FORDES"))> 0 .And.SF2->(FieldPos("F2_LOJADES"))> 0 .And.SF2->(FieldPos("F2_FORMDES"))> 0 .And. !EMPTY (SF2->F2_FORDES)
