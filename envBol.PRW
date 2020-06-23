@@ -10,7 +10,7 @@ Rotina - geração de boletos .PDF e envio por e-mail a clientes
 (examples)
 @see (links_or_references)
 /*/
-user function envBol( _cPrefixo, _cDupl )
+user function envBol( _cPrefixo, _cDupl, _cTipo )
 local   aArea      := getArea()
 local   cPrefixo   := padR( _cPrefixo, len(SE1->E1_PREFIXO))
 local   cNumero    := padR( _cDupl   , len(SE1->E1_NUM)    )
@@ -39,6 +39,11 @@ private cFilePrint := ""
 			Return nil
 		EndIf 
 	EndIf 		
+
+	if _cTipo <> "N"
+		AutoGrLog("Boleto não será gerado, Título ["+SE1->E1_PREFIXO+"-"+SE1->E1_NUM+"/"+SE1->E1_PARCELA+"] se refere a uma NF do tipo "+_cTipo)
+		return nil
+	endif
 
 	if empty( SE1->E1_PORTADO )
 		AutoGrLog("Boleto não poderá ser enviado por e-mail, Título ["+SE1->E1_PREFIXO+"-"+SE1->E1_NUM+"/"+SE1->E1_PARCELA+"] sem Portador")
