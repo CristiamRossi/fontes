@@ -95,6 +95,10 @@ default lQuiet     := .F.
 
 		cFilePrint := AllTrim(StrTran("BOLETO_"+ SE1->( E1_FILIAL +"_"+ E1_PREFIXO +"_"+ E1_NUM +"-"+ E1_NOMCLI ),"'",""))
 		
+		If At(".",cFilePrint) > 0
+			cFilePrint := Substr(cFilePrint,1,At(".",cFilePrint)-1) + Substr(cFilePrint,At(".",cFilePrint)+1,Len(cFilePrint))
+		EndIf
+
 		if file( cPasta + cFilePrint + ".pdf" )
 			fErase( cPasta + cFilePrint + ".pdf" )
 		endif
