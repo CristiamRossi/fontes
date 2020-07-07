@@ -71,7 +71,7 @@ else
 	aAdd(aVetSE1, {"E1_PARCELA", "A ",  	Nil})
 EndIf		
 aAdd(aVetSE1, {"E1_TIPO",    "DM-",             Nil})
-aAdd(aVetSE1, {"E1_NATUREZ", SE1->E1_NATUREZ,   Nil})
+aAdd(aVetSE1, {"E1_NATUREZ", "310101009"    ,   Nil})
 aAdd(aVetSE1, {"E1_CLIENTE", SE1->E1_CLIENTE,   Nil})
 aAdd(aVetSE1, {"E1_LOJA",    SE1->E1_LOJA,      Nil})
 aAdd(aVetSE1, {"E1_NOMCLI",  SE1->E1_NOMCLI,    Nil})
