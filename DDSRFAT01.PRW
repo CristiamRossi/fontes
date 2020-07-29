@@ -102,6 +102,7 @@ Local cPedido  := ""
 cQryAux := "SELECT A1_NREDUZ CLIENTE,C5_NUM PEDIDO, SUBSTRING(C5_EMISSAO,7,2)+'/'+SUBSTRING(C5_EMISSAO,5,2)+'/'+SUBSTRING(C5_EMISSAO,1,4) EMISSAO"
 cQryAux += ",ACY_DESCRI GRUPO,C6_PRODUTO PRODUTO,C6_DESCRI DESCRICAO, C6_QTDVEN QUANTIDADE, C6_UM, C5_FILIAL FILIAL"
 cQryAux += "," + iif( MV_PAR05==1, "C5_FILIAL+C5_NUM", "C5_FILIAL+ACY_DESCRI" ) + " QUEBRA"
+cQryAux += ",C6_NOTA FATURADO"
 cQryAux += " FROM " + STR_PULA
 cQryAux += RetSQLName("SC6") +" A, "+RetSQLName("SC5") +" B, "+RetSQLName("SA1") +" E "
 cQryAux += " left join "+retSqlName("ACY")+" ACY on ACY_FILIAL='"+xFilial("ACY")+"' and ACY_GRPVEN=A1_GRPVEN and ACY.D_E_L_E_T_='' , "
@@ -119,6 +120,7 @@ cQryAux += "AND BM_FILIAL = B1_FILIAL"       + STR_PULA
 cQryAux += "AND C5_EMISSAO between '"+DtoS(mv_par01)+"' and '"+DtoS(mv_par02)+"' "       + STR_PULA
 
 cQryAux += "AND C6_QTDVEN > 0 AND C6_BLQ = ' ' "	// n√£o trazer item Cortado / Res√≠duo
+//cQryAux += "AND C6_NOTA = ' ' "	// N„o trazer item faturado
 
 cQryAux += "AND C5_TIPO = 'N' "
 
@@ -151,16 +153,16 @@ nTotal := len(aDados)
 
 oReport:SetMeter( nTotal )
 
-// 1          2       3           4           5           6          7           8    , 9        , 10
-// A1_NREDUZ, C5_NUM, C5_EMISSAO, ACY_DESCRI, C6_PRODUTO, C6_DESCRI, C6_QTDVEN , C6_UM, C5_FILIAL, QUEBRA
-// CLIENTE   ,PEDIDO, EMISSAO   , GRUPO     , PRODUTO   , DESCRICAO, QUANTIDADE, C6_UM, FILIAL   , QUEBRA
+// 1          2       3           4           5           6          7           8    , 9        , 10	  , 11
+// A1_NREDUZ, C5_NUM, C5_EMISSAO, ACY_DESCRI, C6_PRODUTO, C6_DESCRI, C6_QTDVEN , C6_UM, C5_FILIAL, QUEBRA , C6_NOTA
+// CLIENTE   ,PEDIDO, EMISSAO   , GRUPO     , PRODUTO   , DESCRICAO, QUANTIDADE, C6_UM, FILIAL   , QUEBRA , FATURADO
 
 for nI := 1 to len(aDados)
 
     If cQuebra <> aDados[nI,10]
 		if nAtual > 0
 			oSectDad:Finish()
-			oReport:PrtLeft( replicate("-",300) )
+			oReport:PrtLeft( If(!Empty(aDados[nI,11]),"J¡ FATURADO! ","")+replicate("-",300) )
 			oSectH:Finish()
         	oReport:endPage()
 		endif
@@ -170,7 +172,7 @@ for nI := 1 to len(aDados)
 	if cPedido != aDados[nI,2]
 		if nAtual > 0 .and. MV_PAR05==2 .and. cQuebra == aDados[nI,10]
 			oSectDad:Finish()
-			oReport:PrtLeft( replicate("-",300) )
+			oReport:PrtLeft( If(!Empty(aDados[nI,11]),"J¡ FATURADO! ","")+replicate("-",300) )
 			oSectH:Finish()
 			oReport:skipLine()
 		endif
