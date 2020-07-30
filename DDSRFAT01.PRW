@@ -98,6 +98,7 @@ Local aDados   := {}
 Local nI
 Local cQuebra  := ""
 Local cPedido  := ""
+Local cUltLin  := ""
 
 cQryAux := "SELECT A1_NREDUZ CLIENTE,C5_NUM PEDIDO, SUBSTRING(C5_EMISSAO,7,2)+'/'+SUBSTRING(C5_EMISSAO,5,2)+'/'+SUBSTRING(C5_EMISSAO,1,4) EMISSAO"
 cQryAux += ",ACY_DESCRI GRUPO,C6_PRODUTO PRODUTO,C6_DESCRI DESCRICAO, C6_QTDVEN QUANTIDADE, C6_UM, C5_FILIAL FILIAL"
@@ -208,10 +209,14 @@ for nI := 1 to len(aDados)
 	oSectDad:Cell("C6_UM"     ):SetValue( aDados[nI,8])
 	oSectDad:PrintLine()
 	oReport:ThinLine()
+
+	If nI == len(aDados)
+		cUltLin := If(!Empty(aDados[nI,11]),"JÁ FATURADO! ","")
+	EndIf
 next
 
 oSectDad:Finish()
-oReport:PrtLeft( replicate("-",300) )
+oReport:PrtLeft( cUltLin+replicate("-",300) )
 oSectH:Finish()
 oReport:endPage()
 
